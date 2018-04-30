@@ -55,7 +55,7 @@ em38_spatial <- function(n38_decoded = NULL,
                          out_mode = c('Vertical', 'Horizontal')) {
   out <- lapply(2:length(n38_decoded), function(i) {
     # pull out location data and group it by repeating sequence of records
-    loc <- n38_decoded$survey_line_1$location_data
+    loc <- n38_decoded[[i]][['location_data']]
     loc <- dplyr::mutate(loc,
                          lag_chk = ifelse(.data$TYPE == .data$TYPE[1], T, F),
                          group   = cumsum(.data$lag_chk)
@@ -76,11 +76,13 @@ em38_spatial <- function(n38_decoded = NULL,
     })
     loc_f <- do.call('rbind', loc_s)
 
-    # filter out low-precision locations
+    # filter out low-precision locations and also some dud readings (checksum passed but message
+    # still missing essential data)
     loc_f <- if (!is.null(hdop_filter)) {
-      loc_f[loc_f$HDOP < hdop_filter,]
+      x <- loc_f[loc_f$HDOP < hdop_filter,]
+      x[!is.na(x$HDOP), ]
     } else {
-      loc_f
+      loc_f[!is.na(loc_f$HDOP), ]
     }
 
     # add lead(lat) and lead(long) for interpolation, plus time lag between readings

@@ -81,10 +81,11 @@ n38_chunk <- function(n38_mat = NULL) {
     sline_list[['timer_data']]   <- sl_x[which(sl_rids == '*'), ]
 
     # instrument readings
-    sline_list[['reading_data']] <- sl_x[which(sl_rids == 'T'), ]
+    sline_list[['reading_data']] <- sl_x[which(sl_rids %in% c('T', 't', '2')), ]
 
-    # location data
-    gps <- which(!(sl_rids %in% c('L', 'B', 'A', 'Z','O', '*', 'T', 'C', 'S', 'X')))
+    # location data (note readings that fail the checksum still come through here and are
+    # handled later)
+    gps <- which(!(sl_rids %in% c('L', 'B', 'A', 'Z','O', '*', 'T', 't', '2', 'C', 'S', 'X')))
     sline_list[['location_data']] <- sl_x[gps, ]
 
     # new station (nb often null, for when no GPS in use???)
@@ -192,13 +193,13 @@ n38_decode <- function(chunks = NULL) {
     mode    = chunks[[i]][['reading_data']]$mode,
     reading = chunks[[i]][['reading_data']]$IP_1)
 
-
     # location data
     # each reading starts with @, different types are different lengths, and there
     # are variable stretches of whitespace plus multiline signifiers to deal with,
     # what a fun time this was
     loc  <- rawToChar(unlist(t(chunks[[i]][['location_data']])), multiple = TRUE)
-    locs <- split(loc, cumsum(loc == '@'))
+    locs <- split(loc, cumsum(loc %in% c('@', '?')))
+
     # ditch the `#` newline signifiers and whitespace, convert to string
     locs <- lapply(locs, function(x) {
       x[x == '#'] <- NA
@@ -206,9 +207,11 @@ n38_decode <- function(chunks = NULL) {
       paste0(na.omit(x), collapse = '')
     })
 
-    # GPS messages can occasionally get cut off if someone hits pause at the wrong time
-    # remove any locs list element that is incomplete (ie missing an '!')
-    keep <- purrr::map_lgl(locs, function(x) grepl('@*!', x))
+    # The following ditches checksum fails - these start with ? not @ and use " instead of # as an
+    # internal newline signifier. Also handled are cases where GPS messages can occasionally get cut
+    # off after the message comes through but before the timestamp does (this where  someone hits
+    # pause at the wrong time
+    keep <- purrr::map_lgl(locs, function(x) grepl('^@.+\\!', x))
     locs <- locs[keep]
 
     # split up string into main components (decode happens later)
@@ -223,12 +226,12 @@ n38_decode <- function(chunks = NULL) {
        })
 
     chunks[[i]][['location_data']] <- purrr::transpose(chunks[[i]][['location_data']])
-      out <- lapply(chunks[[i]][['location_data']], function(x) {
+    out <- lapply(chunks[[i]][['location_data']], function(x) {
         unlist(x, recursive = FALSE)
         })
-      chunks[[i]][['location_data']] <- as.data.frame(out,
-                                                      col.names = names(out),
-                                                      stringsAsFactors = FALSE)
+    chunks[[i]][['location_data']] <- as.data.frame(out,
+                                                    col.names = names(out),
+                                                    stringsAsFactors = FALSE)
 
     chunks[[i]][['new_station']] <- process_nstat(chunks[[i]][['new_station']])
 
