@@ -39,7 +39,7 @@ n38_chunk <- function(n38_mat = NULL) {
   # pull all the start-of-row characters, they ID what each row is about
   rids <- rawToChar(n38_mat[ , 1], multiple = TRUE)
   # count total number of survey lines in file
-  slines <- length(match(c('L'), rids))
+  slines <- length(which(rids == 'L'))
 
   # establish a list with one file header entry and n sline entries
   out_list <- vector('list', length = 1 + slines)
@@ -51,8 +51,8 @@ n38_chunk <- function(n38_mat = NULL) {
   fh_rns <- match('E', rids)
   out_list[['file_header']] <- n38_mat[fh_rns:(fh_rns + 1), ]
 
-  # get each survey line
-  sl_starts <- match(c('L'), rids)
+  # get each survey line start and end row numbers into two vectors
+  sl_starts <- which(rids == 'L')
   sl_ends   <- if(length(sl_starts) == 1) {
     nrow(n38_mat)
   } else {
@@ -197,6 +197,9 @@ n38_decode <- function(chunks = NULL) {
     # each reading starts with @, different types are different lengths, and there
     # are variable stretches of whitespace plus multiline signifiers to deal with,
     # what a fun time this was
+    chunks[[i]][['location_data']] <- if(nrow(chunks[[i]][['location_data']]) == 0) {
+      NA
+    } else {
     loc  <- rawToChar(unlist(t(chunks[[i]][['location_data']])), multiple = TRUE)
     locs <- split(loc, cumsum(loc %in% c('@', '?')))
 
@@ -216,7 +219,7 @@ n38_decode <- function(chunks = NULL) {
 
     # split up string into main components (decode happens later)
     # note that only TYPE = 'GPGGA' is used in final output
-    chunks[[i]][['location_data']] <-
+    out <-
       purrr::map(locs, function(x) {
          type <- substr(x, 3, 7)
          bang <- as.integer(gregexpr('!', x))
@@ -225,17 +228,24 @@ n38_decode <- function(chunks = NULL) {
          list('TYPE' = type, 'MESSAGE' = msg, 'timestamp_ms' = ts)
        })
 
-    chunks[[i]][['location_data']] <- purrr::transpose(chunks[[i]][['location_data']])
-    out <- lapply(chunks[[i]][['location_data']], function(x) {
+    out <- purrr::transpose(out)
+    out <- lapply(out, function(x) {
         unlist(x, recursive = FALSE)
         })
-    chunks[[i]][['location_data']] <- as.data.frame(out,
-                                                    col.names = names(out),
-                                                    stringsAsFactors = FALSE)
+    as.data.frame(out, col.names = names(out), stringsAsFactors = FALSE)
+    }
 
-    chunks[[i]][['new_station']] <- process_nstat(chunks[[i]][['new_station']])
+    chunks[[i]][['new_station']] <- if(nrow(chunks[[i]][['new_station']]) == 0) {
+      NA
+    } else {
+      process_nstat(chunks[[i]][['new_station']])
+    }
 
-    chunks[[i]][['comments']] <- process_comment(chunks[[i]][['comments']])
+    chunks[[i]][['comments']] <- if(nrow(chunks[[i]][['comments']]) == 0) {
+      NA
+      } else {
+        process_comment(chunks[[i]][['comments']])
+      }
 
     chunks[[i]]
   })
@@ -298,9 +308,18 @@ n38_to_m38 <- function(n38_decoded = NULL) {
            ' ', fn, '   ', datetime)
 
     # add station data to readings
-    n38_decoded[[i]]$reading_data$station <- seq(from = n38_decoded[[i]]$sl_header$start_station,
-                                                 to = nrow(n38_decoded[[i]]$reading_data),
-                                                 by = n38_decoded[[i]]$sl_header$station_increment)
+    # review this... idk why tf increment is even allowed to be -ve :/
+    # fkn hope it can't be 0
+    n38_decoded[[i]]$reading_data$station <- if(n38_decoded[[i]]$sl_header$station_increment > 0) {
+     seq(from = n38_decoded[[i]]$sl_header$start_station,
+         to = nrow(n38_decoded[[i]]$reading_data),
+         by = n38_decoded[[i]]$sl_header$station_increment)
+    } else {
+      seq(from = n38_decoded[[i]]$sl_header$start_station,
+          to = n38_decoded[[i]]$sl_header$start_station - (nrow(n38_decoded[[i]]$reading_data) - 1),
+          by = n38_decoded[[i]]$sl_header$station_increment)
+    }
+
 
     reading_split <- split(n38_decoded[[i]]$reading_data, 1:nrow(n38_decoded[[i]]$reading_data))
     # slow :/
@@ -349,7 +368,7 @@ n38_to_m38 <- function(n38_decoded = NULL) {
                as.character(n38_decoded[[i]]$timer_data$computer_time +
                               (row$timestamp_ms - n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
                             format = '%H:%M:%OS'))
-      })} else {NULL}
+      })} else {NA}
 
   comments <- if(!is.na(n38_decoded[[i]]$comments)) {
     apply(n38_decoded[[i]]$comments, MARGIN = 1, FUN = function(row) {
@@ -358,7 +377,10 @@ n38_to_m38 <- function(n38_decoded = NULL) {
              as.character(n38_decoded[[i]]$timer_data$computer_time +
                             (row$timestamp_ms - n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
                           format = '%H:%M:%OS'))
-    })} else {NULL}
+    })
+  } else {
+      NA
+  }
 
   # only some location messages are output
   loc_subset <- n38_decoded[[i]]$location_data[n38_decoded[[i]]$location_data$TYPE %in%
