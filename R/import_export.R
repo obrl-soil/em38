@@ -212,8 +212,8 @@ n38_decode <- function(chunks = NULL) {
 
     # The following ditches checksum fails - these start with ? not @ and use " instead of # as an
     # internal newline signifier. Also handled are cases where GPS messages can occasionally get cut
-    # off after the message comes through but before the timestamp does (this where  someone hits
-    # pause at the wrong time
+    # off after the message comes through but before the timestamp does (this where someone hits
+    # pause at the wrong time)
     keep <- purrr::map_lgl(locs, function(x) grepl('^@.+\\!', x))
     locs <- locs[keep]
 
@@ -261,10 +261,10 @@ n38_decode <- function(chunks = NULL) {
 #' software or process it further with the DAT38MK2 application.
 #' @param n38_decoded Nested list output by n38_decode
 #' @return Large character; combination of location data and calibrated instrument
-#' readings. Note that record timestamps won't always agree with the official decode at the
+#' readings. Note that record timestamps won't always agree with an 'official' m38 file at the
 #' microsecond level.
 #' @note Write output to file in working directory with
-#'  e.g. `write(out, paste0('m38_from_R_', Sys.Date(), '.m38'))`
+#'  e.g. `write(m38_example, paste0('m38_from_R_', Sys.Date(), '.m38'))`
 #' @examples
 #' data('n38_demo')
 #' n38_chunks <- n38_chunk(n38_demo)
@@ -308,8 +308,8 @@ n38_to_m38 <- function(n38_decoded = NULL) {
            ' ', fn, '   ', datetime)
 
     # add station data to readings
-    # review this... idk why tf increment is even allowed to be -ve :/
-    # fkn hope it can't be 0
+    # increment is -ve when GPS not in use and GRD dir is South or West
+    # must make it easier to recombine back-and-forth tracks
     n38_decoded[[i]]$reading_data$station <- if(n38_decoded[[i]]$sl_header$station_increment > 0) {
      seq(from = n38_decoded[[i]]$sl_header$start_station,
          to = nrow(n38_decoded[[i]]$reading_data),
@@ -354,7 +354,8 @@ n38_to_m38 <- function(n38_decoded = NULL) {
              paste0(rep.int(' ', 11 - nchar(sprintf('%.3f', row['temp_05']))), collapse = ''),
              sprintf('%.3f', row['temp_05']), ',',
              # timestamp - should be ok but doesn't quite match offical version -
-             # some kind of rounding at 3rd dec pl, difference is never more than 1 ms
+             # some kind of rounding at 3rd dec pl, difference is never more than a couple of ms
+             # main thing is that order of records is not affected so all good
              as.character(n38_decoded[[i]]$timer_data$computer_time +
                             (row$timestamp_ms - n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
                           format = '%H:%M:%OS') # note options set above
@@ -438,7 +439,7 @@ n38_to_m38 <- function(n38_decoded = NULL) {
   })
 
   out <- append(file_header, unlist(survey_lines))
- # write(out, paste0('m38_from_R_', Sys.Date(), '.m38'))
+  # write(out, paste0('m38_from_R_', Sys.Date(), '.m38'))
   out
 
   }

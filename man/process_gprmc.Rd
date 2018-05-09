@@ -18,8 +18,8 @@ This function pulls out reccommended minimum sentence data from NMEA-0183 GPRMC 
 and dumps it into a list.
 }
 \examples{
-\dontrun{
-data('n38_demo')
-cal <- process_gprmc(n38_demo[??,])}
+# first GPRMC msg from decoded demo dataset
+msg_1   <- "$GPRMC,015808.00,A,2726.53758,S,15126.05255,E,0.32,208.02,160318,,,A*48"
+gprmc_1 <- em38:::process_gprmc(string = msg_1)
 
 }

@@ -1,6 +1,6 @@
 #' Signal to conductivity/inphase reading
 #'
-#' This function converts an EM38-MK2 signal recieved onany of Channels 1 to 4. Additional
+#' This function converts an EM38-MK2 signal recieved on any of Channels 1 to 4. Additional
 #' conversion is required for inphase signals, and further application of a calibration factor is
 #'  required to derive the final conductivity or resistivity value. Do not use this function in
 #'  isolation.
@@ -49,7 +49,7 @@ gpgga_lat <- function(lat = NULL, dir = NULL) {
   degrees <- as.integer(substr(lat, 1, 2))
   dec_minutes <- as.numeric(substr(lat, 3, nchar(lat)))
 
-  # 7 dec pl is about a centimetre
+  # 7 dec pl is about a centimetre on-ground
   if(dir == 'S') {
     round(0 - (degrees + dec_minutes/60), 7)
   } else {

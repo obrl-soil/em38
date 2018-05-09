@@ -20,7 +20,7 @@ This function pulls out new station data from N38 binaries and dumps it into a l
 \dontrun{
 data('n38_demo')
 n38_chunked <- n38_chunk(n38_demo)
-# no comments in this file, soz. sub in yr own data
+# no new station data in this file, soz. sub in yr own data
 n38_ns1 <- em38:::process_nstat(n38_chunked[['survey_line_1']][['new_stations']][1, ])
 }
 

@@ -11,7 +11,7 @@ n38_to_m38(n38_decoded = NULL)
 }
 \value{
 Large character; combination of location data and calibrated instrument
-readings. Note that record timestamps won't always agree with the official decode at the
+readings. Note that record timestamps won't always agree with an 'official' m38 file at the
 microsecond level.
 }
 \description{
@@ -21,7 +21,7 @@ software or process it further with the DAT38MK2 application.
 }
 \note{
 Write output to file in working directory with
- e.g. `write(out, paste0('m38_from_R_', Sys.Date(), '.m38'))`
+ e.g. `write(m38_example, paste0('m38_from_R_', Sys.Date(), '.m38'))`
 }
 \examples{
 data('n38_demo')

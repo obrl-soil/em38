@@ -18,7 +18,7 @@ for the ride.
 This function pulls out position fix data from NMEA-0183 GPGGA strings and dumps it into a list.
 }
 \examples{
-\dontrun{
-data('n38_demo')
-cal <- process_gpgga(n38_demo[??,])}
+# first GPGGA msg from decoded demo dataset
+msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
+gpgga_1 <- em38:::process_gpgga(string = msg_1)
 }

@@ -10,8 +10,7 @@
 #' n38_fh <- em38:::process_fheader(n38_chunked[['file_header']])
 #'
 process_fheader <- function(file_header = NULL) {
-
-  out <- vector('list', length = 9)
+        out  <- vector('list', length = 9)
   names(out) <- c(   'prog_file_id',  'version_no',  'survey_type',
                         'unit_type', 'dipole_mode',  'survey_mode',
                   'instrument_type',   'file_name', 'time_samples')
@@ -60,8 +59,8 @@ process_fheader <- function(file_header = NULL) {
 #' n38_slh <- em38:::process_slheader(n38_chunked[['survey_line_1']][['sl_header']])
 #'
 process_slheader <- function(survline_header = NULL) {
-  out <- vector('list', length = 5)
-  names(out) <- c(        'line_name', 'start_station', 'direction',
+        out  <- vector('list', length = 5)
+  names(out) <- c('line_name', 'start_station', 'direction',
                   'station_increment',     'timestamp')
 
   out[['line_name']]         <-  trimws(rawToChar(survline_header[1, 2:9]))
@@ -86,10 +85,10 @@ process_slheader <- function(survline_header = NULL) {
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
-#' n38_cal1 <- em38:::process_cal(n38_chunked[['survey_line_1']][['cal_data']][1 , ])
+#' n38_cal1 <- em38:::process_cal(n38_chunked[['survey_line_1']][['cal_data']][1, ])
 #'
 process_cal <- function(cal_row = NULL) {
-  out              <-  vector('list', length = 3)
+        out     <- vector('list', length = 3)
   names(out)    <- c('channel', 'cal_current', 'cal_former')
   out[['channel']]     <- rawToChar(cal_row[2])
   out[['cal_current']] <- as.numeric(rawToChar(cal_row[3:12]))
@@ -111,7 +110,7 @@ process_cal <- function(cal_row = NULL) {
 #' n38_t <- em38:::process_timer(n38_chunked[['survey_line_1']][['timer_data']])
 #'
 process_timer <- function(timer_rel = NULL) {
-  out <- vector('list', length = 2)
+        out  <- vector('list', length = 2)
   names(out) <- c('computer_time', 'timestamp_ms')
   # may combine these later, not sure how best to handle yet
   out[['computer_time']] <- as.POSIXlt(rawToChar(timer_rel[2:13]), format = '%H:%M:%OS')
@@ -133,7 +132,7 @@ process_timer <- function(timer_rel = NULL) {
 #' n38_r1 <- em38:::process_reading(n38_chunked[['survey_line_1']][['reading_data']][1, ])
 #'
 process_reading <- function(reading = NULL) {
-  out <- vector('list', length = 10)
+        out  <- vector('list', length = 10)
   names(out) <- c('indicator',  'marker', 'mode', 'cond_05', 'cond_1',
                   'IP_05', 'IP_1', 'temp_05', 'temp_1', 'timestamp_ms')
 
@@ -189,7 +188,7 @@ process_reading <- function(reading = NULL) {
 #' }
 #'
 process_comment <- function(comment = NULL) {
-  out <- vector('list', length = 2)
+        out  <- vector('list', length = 2)
   names(out) <- c('comment', 'timestamp_ms')
 
   out[['comment']]       <- rawToChar(comment[2:12])
@@ -205,12 +204,12 @@ process_comment <- function(comment = NULL) {
 #' @examples \dontrun{
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
-#' # no comments in this file, soz. sub in yr own data
+#' # no new station data in this file, soz. sub in yr own data
 #' n38_ns1 <- em38:::process_nstat(n38_chunked[['survey_line_1']][['new_stations']][1, ])
 #' }
 #'
 process_nstat <- function(nstat = NULL) {
-  out <- vector('list', length = 2)
+        out  <- vector('list', length = 2)
   names(out) <- c('new_station', 'timestamp_ms')
 
   out[['new_station']]  <- as.integer(rawToChar(nstat[2:12]))

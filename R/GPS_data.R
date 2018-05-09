@@ -5,9 +5,10 @@
 #' @return A list containing 15 data elements recorded in NMEA-0183 GPGGA data chunks. Elements
 #' are given appropriate data types. NB UTC time is returned as POSIXlt, so Sys.date() comes along
 #' for the ride.
-#' @examples \dontrun{
-#' data('n38_demo')
-#' cal <- process_gpgga(n38_demo[??,])}
+#' @examples
+#' # first GPGGA msg from decoded demo dataset
+#' msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
+#' gpgga_1 <- em38:::process_gpgga(string = msg_1)
 #' @importFrom units ud_units
 #'
 process_gpgga <- function(string = NULL) {
@@ -58,9 +59,10 @@ process_gpgga <- function(string = NULL) {
 #' @param string A string with valid NMEA-0183 GPVTG structure.
 #' @return A list containing 6 data elements recorded in NMEA-0183 GPVTG data chunks. Elements
 #' are given appropriate data types.
-#' @examples \dontrun{
-#' data('n38_demo')
-#' cal <- process_gpvtg(n38_demo[??,])}
+#' @examples
+#' # first GPGVTG msg from decoded demo dataset
+#' msg_1   <- "$GPVTG,208.02,T,,M,0.32,N,0.59,K,A*38"
+#' gpvtg_1 <- em38:::process_gpvtg(string = msg_1)
 #' @importFrom units ud_units
 #'
 process_gpvtg <- function(string = NULL) {
@@ -89,9 +91,10 @@ process_gpvtg <- function(string = NULL) {
 #' @param string A string with valid NMEA-0183 GPRMC structure.
 #' @return A list containing 9 data elements recorded in NMEA-0183 GPRMC data chunks. Elements
 #' are given appropriate data types.
-#' @examples \dontrun{
-#' data('n38_demo')
-#' cal <- process_gprmc(n38_demo[??,])}
+#' @examples
+#' # first GPRMC msg from decoded demo dataset
+#' msg_1   <- "$GPRMC,015808.00,A,2726.53758,S,15126.05255,E,0.32,208.02,160318,,,A*48"
+#' gprmc_1 <- em38:::process_gprmc(string = msg_1)
 #'
 process_gprmc <- function(string = NULL) {
   rmc_reading <- unlist(strsplit(string, split = c(',')))
@@ -130,9 +133,10 @@ process_gprmc <- function(string = NULL) {
 #' @param string A string with valid NMEA-0183 GPGSA structure.
 #' @return A list containing n data elements recorded in NMEA-0183 GPGSA data chunks. Elements
 #' are given appropriate data types.
-#' @examples \dontrun{
-#' data('n38_demo')
-#' cal <- process_gprmc(n38_demo[??,])}
+#' @examples
+#' # first GPGSA msg from decoded demo dataset
+#' msg_1   <- "$GPGSA,M,3,05,10,15,16,20,21,26,29,,,,,1.6,1.0,1.2*32"
+#' gpgsa_1 <- em38:::process_gpgsa(string = msg_1)
 #'
 process_gpgsa <- function(string = NULL) {
   gsa_reading <- unlist(strsplit(string, split = c(',')))
@@ -171,11 +175,12 @@ process_gpgsa <- function(string = NULL) {
 #' are given appropriate data types.
 #' Note that depending on the number of satellites in view, up to three of these messages may
 #' exist for every GPS reading. Up to four satellites are reported on per string.
-#' Note that SNR is receiver-dependant and should only be considered relative to other readings
-#'  in the same dataset.
-#' @examples \dontrun{
-#' data('n38_demo')
-#' cal <- process_gpgsv(n38_demo[??,])}
+#' Note also that SNR is receiver-dependant and should only be considered relative to other
+#' readings in the same dataset.
+#' @examples
+#' # first GPGSV msg from decoded demo dataset
+#' msg_1   <- "$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76"
+#' gpgsv_1 <- em38:::process_gpgsv(string = msg_1)
 #'
 process_gpgsv <- function(string = NULL) {
   gsv_reading <- unlist(strsplit(string, split = c(',')))

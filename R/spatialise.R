@@ -23,7 +23,7 @@ get_loc_data <- function(block = NULL) {
              'HDOP'         = gpgga[['HDOP']],
              'timestamp_ms' = block$timestamp_ms[block$TYPE == 'GPGGA'])
   # if this fails, suspect #1 is multiple GPGGA messages in block
-  # suspect #2 is a GPS device that doesn't return GPGGA (e.g. GL, or GPRMC)
+  # suspect #2 is a GPS device that doesn't return GPGGA (e.g. GLGPA, or GPRMC)
   # will defo need to add handlers for GLONASS and other systems but need test data
 
 }
@@ -33,12 +33,12 @@ get_loc_data <- function(block = NULL) {
 #' This function processes a decoded N38 record into a point spatial dataset.
 #' @param n38_decoded Nested list output by n38_decode
 #' @param hdop_filter Numeric, discard GPS data where the Horizontal Dilution of Precision is
-#' greater than this number. Defaults to 3 metres. Set to NULL to keep all readings
+#' greater than this number. Defaults to 3 metres. Set to NULL to keep all readings.
 #' @param out_mode Character, em38 dipole mode. Output dataset can only contain Vertical or
 #' Horizontal data, never both.
 #' @return An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded object
 #'  contains more than one survey line, a list of sf objects is returned - one for each line.
-#' @note Input n38_deoded object must be of survey type 'GPS' and record type 'auto'.
+#' @note Input n38_decoded object must be of survey type 'GPS' and record type 'auto'.
 #' @examples
 #' data('n38_demo')
 #' n38_chunks  <- n38_chunk(n38_demo)
@@ -94,8 +94,10 @@ em38_spatial <- function(n38_decoded = NULL,
         })
         loc_f <- do.call('rbind', loc_s)
 
-        # filter out low-precision locations and also some dud readings (checksum passed but message
-        # still missing essential data)
+        # filter out low-precision locations and also some dud readings (checksum passed
+        # but message still missing essential data)
+        # note that this is not done by the nmea parser on purpose - prefer record sequence
+        # intact for grouping above
         loc_f <- if (!is.null(hdop_filter)) {
           x <- loc_f[loc_f$HDOP < hdop_filter,]
           x[!is.na(x$HDOP), ]

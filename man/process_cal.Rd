@@ -19,6 +19,6 @@ This function pulls out calibration data from N38 binaries and dumps it into a l
 \examples{
 data('n38_demo')
 n38_chunked <- n38_chunk(n38_demo)
-n38_cal1 <- em38:::process_cal(n38_chunked[['survey_line_1']][['cal_data']][1 , ])
+n38_cal1 <- em38:::process_cal(n38_chunked[['survey_line_1']][['cal_data']][1, ])
 
 }

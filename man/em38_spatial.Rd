@@ -11,7 +11,7 @@ em38_spatial(n38_decoded = NULL, hdop_filter = 3, out_mode = c("Vertical",
 \item{n38_decoded}{Nested list output by n38_decode}
 
 \item{hdop_filter}{Numeric, discard GPS data where the Horizontal Dilution of Precision is
-greater than this number. Defaults to 3 metres. Set to NULL to keep all readings}
+greater than this number. Defaults to 3 metres. Set to NULL to keep all readings.}
 
 \item{out_mode}{Character, em38 dipole mode. Output dataset can only contain Vertical or
 Horizontal data, never both.}
@@ -24,7 +24,7 @@ An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded o
 This function processes a decoded N38 record into a point spatial dataset.
 }
 \note{
-Input n38_deoded object must be of survey type 'GPS' and record type 'auto'.
+Input n38_decoded object must be of survey type 'GPS' and record type 'auto'.
 }
 \examples{
 data('n38_demo')

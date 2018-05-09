@@ -14,16 +14,16 @@ A list containing 15 data elements recorded in NMEA-0183 GPGSV data chunks. Elem
 are given appropriate data types.
 Note that depending on the number of satellites in view, up to three of these messages may
 exist for every GPS reading. Up to four satellites are reported on per string.
-Note that SNR is receiver-dependant and should only be considered relative to other readings
- in the same dataset.
+Note also that SNR is receiver-dependant and should only be considered relative to other
+readings in the same dataset.
 }
 \description{
 This function pulls out satellites in view data from NMEA-0183 GPGSV strings
 and dumps it into a list.
 }
 \examples{
-\dontrun{
-data('n38_demo')
-cal <- process_gpgsv(n38_demo[??,])}
+# first GPGSV msg from decoded demo dataset
+msg_1   <- "$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76"
+gpgsv_1 <- em38:::process_gpgsv(string = msg_1)
 
 }
