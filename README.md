@@ -12,9 +12,6 @@ Install development versions from github with
 ``` r
 library(devtools)
 install_github("obrl-soil/em38")
-#> Downloading GitHub repo obrl-soil/em38@master
-#> from URL https://api.github.com/repos/obrl-soil/em38/zipball/master
-#> Installation failed: Not Found (404)
 ```
 
 This package is in early development phase. Improving its reliability requires access to a wide variety of test datasets, so if you have an \*.n38 file that fails to decode correctly, please consider sending it to me. I have been able to test decoding on around 50 sample files from two different EM38-MKII devices, but could always use more. The device and its logger have a large number of possible setting combinations, and have not seen all of them. Additionally, a third-party GPS needs to be attached to the device and its data-logger, and GPS output data are notoriously variable by brand and model.
