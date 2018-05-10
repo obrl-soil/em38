@@ -1,3 +1,8 @@
+# v. 0.0.0.9001
+
+  * wrapper function added - `n38_to_points()` goes from on-disk file to spatial points in one line.
+  * rebuilt demo data to match demo extdata
+  * variable name fix in `n38_import()`
 
 # v. 0.0.0.9000
 

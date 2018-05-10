@@ -1,17 +1,17 @@
 #' Import EM38 data
 #'
 #' This function reads N38 binary files into R and does some minimal pre-processing.
-#' @param x A file path pointing to a valid *.N38 file, produced by a Geonics EM38-MK2 conductivity
-#' sensor connected to an Allegra CX datalogger (and optionally, a GPS device).
+#' @param path A file path pointing to a valid *.N38 file, produced by a Geonics EM38-MK2 conductivity
+#' sensor connected to an Allegra CX or Archer datalogger (and optionally, a GPS device).
 #' @return A matrix with n rows and 25 columns, containing raw bytes.
 #' @examples
 #' n38_mat <- n38_import(system.file("extdata", "em38_demo.n38", package = "em38"))
 #' @export
 #'
-n38_import <- function(x = NULL) {
+n38_import <- function(path = NULL) {
 
-  n38_con <- file(x, open = 'rb')
-  n38_raw <- readBin(n38_con, what = raw(), n = file.size(x))
+  n38_con <- file(path, open = 'rb')
+  n38_raw <- readBin(n38_con, what = raw(), n = file.size(path))
   close(n38_con)
 
   n38_mat <- matrix(n38_raw, ncol = 26, byrow = TRUE)

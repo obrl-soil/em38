@@ -4,11 +4,11 @@
 \alias{n38_import}
 \title{Import EM38 data}
 \usage{
-n38_import(x = NULL)
+n38_import(path = NULL)
 }
 \arguments{
-\item{x}{A file path pointing to a valid *.N38 file, produced by a Geonics EM38-MK2 conductivity
-sensor connected to an Allegra CX datalogger (and optionally, a GPS device).}
+\item{path}{A file path pointing to a valid *.N38 file, produced by a Geonics EM38-MK2 conductivity
+sensor connected to an Allegra CX or Archer datalogger (and optionally, a GPS device).}
 }
 \value{
 A matrix with n rows and 25 columns, containing raw bytes.

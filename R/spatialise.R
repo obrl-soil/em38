@@ -28,7 +28,7 @@ get_loc_data <- function(block = NULL) {
 
 }
 
-#' Spatialise data
+#' Spatialise EM38 data
 #'
 #' This function processes a decoded N38 record into a point spatial dataset.
 #' @param n38_decoded Nested list output by n38_decode
@@ -38,7 +38,9 @@ get_loc_data <- function(block = NULL) {
 #' Horizontal data, never both.
 #' @return An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded object
 #'  contains more than one survey line, a list of sf objects is returned - one for each line.
-#' @note Input n38_decoded object must be of survey type 'GPS' and record type 'auto'.
+#' @note Input n38_decoded object should be of survey type 'GPS' and record type 'auto'. If not, the
+#'   function will fail gracefully by returning a list of reasons why the data could not be
+#'   converted to points.
 #' @examples
 #' data('n38_demo')
 #' n38_chunks  <- n38_chunk(n38_demo)
@@ -64,7 +66,11 @@ em38_spatial <- function(n38_decoded = NULL,
       readings <- n38_decoded[[i]][['reading_data']]
 
       # filter readings to chosen dipole mode
-      readings <- readings[readings$mode == out_mode, ]
+      readings <- if(out_mode %in% c('Vertical', 'Horizontal')) {
+        readings[readings$mode == out_mode, ]
+      } else {
+        return('Please check the value of out_mode.')
+      }
 
       # if no readings of the chosen out_mode exist in this sl,
       if(nrow(readings) == 0) {
@@ -215,5 +221,36 @@ em38_spatial <- function(n38_decoded = NULL,
   } else {
     out
   }
+
+}
+
+#' Import and convert N38 logfiles to points
+#'
+#' This is a wrapper function that processes a raw on-disk N38 file into an sf point spatial
+#' dataset.
+#' @param path A file path pointing to a valid *.N38 file, produced by a Geonics EM38-MK2
+#'   conductivity sensor connected to an Allegra CX or Archer datalogger (and optionally, a GPS
+#'   device).
+#' @param hdop_filter Numeric, discard GPS data where the Horizontal Dilution of Precision is
+#'   greater than this number. Defaults to 3 metres. Set to NULL to keep all readings.
+#' @param out_mode Character, em38 dipole mode. Output dataset can only contain Vertical or
+#'   Horizontal data, never both.
+#' @return An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded object
+#'   contains more than one survey line, a list of sf objects is returned - one for each line.
+#' @note Input file should be of survey type 'GPS' and record type 'auto'. If not, the
+#'   function will fail gracefully by returning reasons why the data could not be
+#'   converted to points.
+#' @examples
+#' vert_points <-
+#' n38_to_points(path = system.file("extdata", "em38_demo.n38", package = "em38"),
+#'               hdop_filter = 3, out_mode = 'Vertical')
+#' @export
+n38_to_points <- function(path = NULL, hdop_filter = 3,
+                          out_mode = c('Vertical', 'Horizontal')) {
+  mat  <- n38_import(path)
+  chnk <- n38_chunk(mat)
+  dec  <- n38_decode(chnk)
+
+  em38_spatial(n38_decoded = dec, hdop_filter = hdop_filter, out_mode = out_mode)
 
 }

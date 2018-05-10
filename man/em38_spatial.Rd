@@ -2,7 +2,7 @@
 % Please edit documentation in R/spatialise.R
 \name{em38_spatial}
 \alias{em38_spatial}
-\title{Spatialise data}
+\title{Spatialise EM38 data}
 \usage{
 em38_spatial(n38_decoded = NULL, hdop_filter = 3, out_mode = c("Vertical",
   "Horizontal"))
@@ -24,7 +24,9 @@ An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded o
 This function processes a decoded N38 record into a point spatial dataset.
 }
 \note{
-Input n38_decoded object must be of survey type 'GPS' and record type 'auto'.
+Input n38_decoded object should be of survey type 'GPS' and record type 'auto'. If not, the
+  function will fail gracefully by returning a list of reasons why the data could not be
+  converted to points.
 }
 \examples{
 data('n38_demo')
