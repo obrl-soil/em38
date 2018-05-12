@@ -22,3 +22,4 @@ n38_chunked <- n38_chunk(n38_demo)
 n38_r1 <- em38:::process_reading(n38_chunked[['survey_line_1']][['reading_data']][1, ])
 
 }
+\keyword{Internal}

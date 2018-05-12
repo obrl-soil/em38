@@ -5,10 +5,18 @@
 #' @param block Data frame holding GPS message data, usually a subset of $location_data in a
 #' decoded n38 object
 #' @return data frame with a single row
+#' @keywords Internal
+#' @examples
+#' data('n38_demo')
+#' n38_chunks  <- n38_chunk(n38_demo)
+#' n38_decoded <- n38_decode(n38_chunks)
+#' loc_1 <- em38:::get_loc_data(n38_decoded$survey_line_1$location_data[1:7, ])
 #'
 get_loc_data <- function(block = NULL) {
+
   # all the interesting stuff is in the first one
-  gpgga <- process_gpgga(paste0('$GPGGA,', block$MESSAGE[block$TYPE == 'GPGGA']))
+  gpgga  <- process_gpgga(paste0(block[, c('TYPE', 'MESSAGE')][block$TYPE == 'GPGGA',],
+                                 collapse = ','))
 
   # keeping these for later but no need to decode the entire block just yet
   #gpvtg <- em38:::process_gpvtg(paste0('$GPVTG,', x$MESSAGE[x$TYPE == 'GPVTG']))
@@ -21,12 +29,13 @@ get_loc_data <- function(block = NULL) {
   data.frame('LATITUDE'     = gpgga[['latitude']],
              'LONGITUDE'    = gpgga[['longitude']],
              'HDOP'         = gpgga[['HDOP']],
+             'CHKSUM'       = block$CHKSUM[block$TYPE == 'GPGGA'],
              'timestamp_ms' = block$timestamp_ms[block$TYPE == 'GPGGA'])
   # if this fails, suspect #1 is multiple GPGGA messages in block
   # suspect #2 is a GPS device that doesn't return GPGGA (e.g. GLGPA, or GPRMC)
   # will defo need to add handlers for GLONASS and other systems but need test data
 
-}
+  }
 
 #' Spatialise EM38 data
 #'
@@ -38,7 +47,7 @@ get_loc_data <- function(block = NULL) {
 #' Horizontal data, never both.
 #' @return An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded object
 #'  contains more than one survey line, a list of sf objects is returned - one for each line.
-#' @note Input n38_decoded object should be of survey type 'GPS' and record type 'auto'. If not, the
+#' @note Input n38_decoded object should be of survey type 'GPS'. If not, the
 #'   function will fail gracefully by returning a list of reasons why the data could not be
 #'   converted to points.
 #' @examples
@@ -79,11 +88,9 @@ em38_spatial <- function(n38_decoded = NULL,
       } else {
 
         # pull out location data and group it by repeating sequence of records
-        loc <- n38_decoded[[i]][['location_data']]
-        loc <- dplyr::mutate(loc,
-                             lag_chk = ifelse(.data$TYPE == .data$TYPE[1], T, F),
-                             group   = cumsum(.data$lag_chk)
-                             )
+        loc         <- n38_decoded[[i]][['location_data']]
+        loc$lag_chk <- ifelse(loc$TYPE == loc$TYPE[1], TRUE, FALSE)
+        loc$group   <- cumsum(loc$lag_chk)
         loc_s <- split(loc, loc$group)
         # drop any chunks that don't have a GPGGA message (usually a start/pause error)
         keep <-
@@ -99,6 +106,9 @@ em38_spatial <- function(n38_decoded = NULL,
           get_loc_data(x)
         })
         loc_f <- do.call('rbind', loc_s)
+
+        # remove checksum failures
+        loc_f <- loc_f[loc_f$CHKSUM == TRUE, ]
 
         # filter out low-precision locations and also some dud readings (checksum passed
         # but message still missing essential data)
@@ -139,11 +149,22 @@ em38_spatial <- function(n38_decoded = NULL,
           all_data$timestamp_ms - dplyr::lag(all_data$timestamp_ms)
         all_data$TS_LAG_AD[is.na(all_data$TS_LAG_AD)] <- 0
 
+        # fill a few values in so all instrument readings have a 'from' and 'to' for interpolation
+        all_data <-   tidyr::fill(
+          all_data,
+          .data$LATITUDE,
+          .data$LONGITUDE,
+          .data$LEAD_LAT,
+          .data$LEAD_LONG,
+          .data$TS_LAG,
+          .direction = 'down'
+        )
+
         # group recombined data so that GPS reading(s) and following instrument reading(s) are
         # together
 
         # grouping by sequence is hard and this seems awful but whateverrrrr
-        grp     <- rle(ifelse(is.na(all_data$LATITUDE), 1, 0))$lengths
+        grp     <- rle(ifelse(is.na(all_data$HDOP), 1, 0))$lengths
         grp     <- data.frame('rle' = grp)
         grp$grp <- c(rep(1:(nrow(grp) / 2), each = 2), ceiling(nrow(grp) / 2))
         grp     <- split(grp, grp$grp)
@@ -158,17 +179,6 @@ em38_spatial <- function(n38_decoded = NULL,
           y = grp
         ))
 
-        # fill a few values in so all instrument readings have a 'from' and 'to' for interpolation
-        all_data <-   tidyr::fill(
-          all_data,
-          .data$LATITUDE,
-          .data$LONGITUDE,
-          .data$LEAD_LAT,
-          .data$LEAD_LONG,
-          .data$TS_LAG,
-          .direction = 'down'
-        )
-
         # get cumulative time lag within each group (effectively distance between last gps reading
         # and current instrument reading)
         all_data$ind3 = ifelse(is.na(all_data$HDOP), 1, 0)
@@ -182,16 +192,13 @@ em38_spatial <- function(n38_decoded = NULL,
         # use 2D linear interpolation to get locations for instrument readings
         # no point getting geodetic here, we're generally working at < 1m distances
         # https://math.stackexchange.com/questions/1918743/how-to-interpolate-points-between-2-points#1918765
-        all_data <- dplyr::mutate(
-          all_data,
-          NEW_LAT  = .data$LATITUDE  + (
-            .data$TS_NOW / .data$TS_LAG  *
-              (.data$LEAD_LAT  - .data$LATITUDE)
-          ),
-          NEW_LONG = .data$LONGITUDE + (
-            .data$TS_NOW / .data$TS_LAG  *
-              (.data$LEAD_LONG - .data$LONGITUDE)
-          )
+        all_data$NEW_LAT <- all_data$LATITUDE  + (
+          all_data$TS_NOW / all_data$TS_LAG  *
+            (all_data$LEAD_LAT  - all_data$LATITUDE)
+        )
+        all_data$NEW_LONG <- all_data$LONGITUDE  + (
+          all_data$TS_NOW / all_data$TS_LAG  *
+            (all_data$LEAD_LONG  - all_data$LONGITUDE)
         )
 
         # filter to just keep instrument readings and interpolated locations
@@ -237,7 +244,7 @@ em38_spatial <- function(n38_decoded = NULL,
 #'   Horizontal data, never both.
 #' @return An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded object
 #'   contains more than one survey line, a list of sf objects is returned - one for each line.
-#' @note Input file should be of survey type 'GPS' and record type 'auto'. If not, the
+#' @note Input file should be of survey type 'GPS'. If not, the
 #'   function will fail gracefully by returning reasons why the data could not be
 #'   converted to points.
 #' @examples
@@ -252,5 +259,52 @@ n38_to_points <- function(path = NULL, hdop_filter = 3,
   dec  <- n38_decode(chnk)
 
   em38_spatial(n38_decoded = dec, hdop_filter = hdop_filter, out_mode = out_mode)
+
+}
+
+#' Reconcile locations of paired data
+#'
+#' Where paired horizontal and vertical readings have been taken during a 'manual' mode survey, the
+#' first and second readings at each station should have the same location. The nature of the device
+#' logging generally precludes this from happening by default, especially with high-frequency GPS
+#' recording. This function reconciles the locations of such paired datasets after they have been
+#' generated using \code{\link{em38_spatial}} or \code{\link{n38_to_points}}.
+#' @param horizontal_data spatial point dataframe produced by \code{\link{em38_spatial}}  or
+#'   \code{\link{n38_to_points}} with `out_mode = 'Horizontal`.
+#' @param vertical_data spatial point dataframe produced by \code{\link{em38_spatial}}  or
+#'   \code{\link{n38_to_points}} with `out_mode = 'Vertical`.
+#' @return An sf data frame with sfc_POINT geometry. WGS84 projection. Output locations are averages
+#'   of input locations. Data columns are labelled as horizontal or vertical.
+#' @note Input data should be of survey type 'GPS' and record type 'manual'. Both input datasets
+#'   should have the same number of rows, with row 1 of horizontal_data paired with row_1 of
+#'   vertical_data.
+#' @importFrom purrr map2
+#' @importFrom sf st_crs st_geometry st_point st_set_geometry st_sfc st_sf
+#' @export
+#'
+em38_pair <- function(horizontal_data = NULL, vertical_data = NULL) {
+  # take paired horizontal and vertical em38 readings and reconcile their locations
+  geom_h <- st_geometry(horizontal_data)
+  geom_v <- st_geometry(vertical_data)
+
+  pts <- purrr::map2(.x = geom_h, .y = geom_v, function(.x, .y) {
+    out_long <- mean(c(as.vector(.x)[1],
+                     as.vector(.y)[1]))
+    out_lat  <- mean(c(as.vector(.x)[2],
+                     as.vector(.y)[2]))
+
+    st_point(c(out_long, out_lat))
+  })
+
+  new_geom <- st_sfc(pts, crs = st_crs(geom_h)$proj4string)
+
+  # combine in output
+  hdata <- st_set_geometry(horizontal_data, NULL)
+  names(hdata) <- paste0('H_', names(hdata))
+  vdata <- st_set_geometry(vertical_data, NULL)
+  names(vdata) <- paste0('V_', names(vdata))
+  all_data <- cbind(hdata, vdata)
+
+  st_sf(all_data, 'geometry' = new_geom)
 
 }

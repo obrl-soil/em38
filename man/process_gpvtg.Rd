@@ -18,7 +18,7 @@ This function pulls out track made good and speed over ground data from NMEA-018
 and dumps it into a list.
 }
 \examples{
-# first GPGVTG msg from decoded demo dataset
+# first GPGVTG msg from data('n38_demo')
 msg_1   <- "$GPVTG,208.02,T,,M,0.32,N,0.59,K,A*38"
 gpvtg_1 <- em38:::process_gpvtg(string = msg_1)
 }

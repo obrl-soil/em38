@@ -27,7 +27,7 @@ This is a wrapper function that processes a raw on-disk N38 file into an sf poin
 dataset.
 }
 \note{
-Input file should be of survey type 'GPS' and record type 'auto'. If not, the
+Input file should be of survey type 'GPS'. If not, the
   function will fail gracefully by returning reasons why the data could not be
   converted to points.
 }

@@ -1,3 +1,31 @@
+#' Calculate NMEA-0183 XOR checksum
+#'
+#' This function calculates the checksum for NMEA-0183 GPGGA strings.
+#' @param string A string with valid NMEA-0183 GPGGA structure.
+#' @return Logical; TRUE if checksum is correct.
+#' @examples
+#' # first GPGGA msg from data('n38_demo')
+#' msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
+#' msg_2   <- "$GPG5808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
+#' chk_1     <- em38:::nmea_check(string = msg_1)
+#' chk_2     <- em38:::nmea_check(string = msg_2)
+#'
+nmea_check <- function(string = NULL) {
+  prs <- unlist(strsplit(string, '\\*'))[1]
+  chk <- unlist(strsplit(string, '\\*'))[2]
+  # fn still works if starting $ missing already
+  prs <- gsub('^\\$', '', prs)
+  prs <- sapply(unlist(strsplit(prs, '*')), charToRaw)
+  # lower case required for comparison
+  chk <- tolower(unlist(strsplit(string, '\\*'))[2])
+
+  prs_chksum <- base::Reduce(xor, prs)
+
+  # good ol' coercion rules, see ?base::Comparison
+  if(prs_chksum == chk) { TRUE } else { FALSE }
+}
+
+
 #' Process NMEA-0183 GPGGA messages
 #'
 #' This function pulls out position fix data from NMEA-0183 GPGGA strings and dumps it into a list.
@@ -6,7 +34,7 @@
 #' are given appropriate data types. NB UTC time is returned as POSIXlt, so Sys.date() comes along
 #' for the ride.
 #' @examples
-#' # first GPGGA msg from decoded demo dataset
+#' # first GPGGA msg from data('n38_demo')
 #' msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
 #' gpgga_1 <- em38:::process_gpgga(string = msg_1)
 #' @importFrom units ud_units
@@ -48,7 +76,7 @@ process_gpgga <- function(string = NULL) {
   # sentence between – but not including – the $ and the * character."
   # https://rietman.wordpress.com/2008/09/25/how-to-calculate-the-nmea-checksum/
   out[['checksum']] <- gsub('^[^\\*]*', '', gga_reading[15])
-  # todo: implement validation
+  # validated later
   out
 }
 
@@ -60,7 +88,7 @@ process_gpgga <- function(string = NULL) {
 #' @return A list containing 6 data elements recorded in NMEA-0183 GPVTG data chunks. Elements
 #' are given appropriate data types.
 #' @examples
-#' # first GPGVTG msg from decoded demo dataset
+#' # first GPGVTG msg from data('n38_demo')
 #' msg_1   <- "$GPVTG,208.02,T,,M,0.32,N,0.59,K,A*38"
 #' gpvtg_1 <- em38:::process_gpvtg(string = msg_1)
 #' @importFrom units ud_units
@@ -92,7 +120,7 @@ process_gpvtg <- function(string = NULL) {
 #' @return A list containing 9 data elements recorded in NMEA-0183 GPRMC data chunks. Elements
 #' are given appropriate data types.
 #' @examples
-#' # first GPRMC msg from decoded demo dataset
+#' # first GPRMC msg from data('n38_demo')
 #' msg_1   <- "$GPRMC,015808.00,A,2726.53758,S,15126.05255,E,0.32,208.02,160318,,,A*48"
 #' gprmc_1 <- em38:::process_gprmc(string = msg_1)
 #'
@@ -134,7 +162,7 @@ process_gprmc <- function(string = NULL) {
 #' @return A list containing n data elements recorded in NMEA-0183 GPGSA data chunks. Elements
 #' are given appropriate data types.
 #' @examples
-#' # first GPGSA msg from decoded demo dataset
+#' # first GPGSA msg from data('n38_demo')
 #' msg_1   <- "$GPGSA,M,3,05,10,15,16,20,21,26,29,,,,,1.6,1.0,1.2*32"
 #' gpgsa_1 <- em38:::process_gpgsa(string = msg_1)
 #'
@@ -178,7 +206,7 @@ process_gpgsa <- function(string = NULL) {
 #' Note also that SNR is receiver-dependant and should only be considered relative to other
 #' readings in the same dataset.
 #' @examples
-#' # first GPGSV msg from decoded demo dataset
+#' # first GPGSV msg from data('n38_demo')
 #' msg_1   <- "$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76"
 #' gpgsv_1 <- em38:::process_gpgsv(string = msg_1)
 #'

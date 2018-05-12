@@ -22,7 +22,7 @@ This function pulls out satellites in view data from NMEA-0183 GPGSV strings
 and dumps it into a list.
 }
 \examples{
-# first GPGSV msg from decoded demo dataset
+# first GPGSV msg from data('n38_demo')
 msg_1   <- "$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76"
 gpgsv_1 <- em38:::process_gpgsv(string = msg_1)
 

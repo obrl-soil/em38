@@ -24,7 +24,7 @@ An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded o
 This function processes a decoded N38 record into a point spatial dataset.
 }
 \note{
-Input n38_decoded object should be of survey type 'GPS' and record type 'auto'. If not, the
+Input n38_decoded object should be of survey type 'GPS'. If not, the
   function will fail gracefully by returning a list of reasons why the data could not be
   converted to points.
 }

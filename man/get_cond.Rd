@@ -24,3 +24,4 @@ channel_2 <- em38:::get_cond(30456) * 0.00720475
 channel_4 <- em38:::get_cond(30456) * 0.028819
 
 }
+\keyword{Internal}

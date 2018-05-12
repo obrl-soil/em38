@@ -1,7 +1,7 @@
 Package: em38
 Type: Package
 Title: Process N38 binary files from EM38-MK2 sensors
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: person("Lauren", "O'Brien", email = "obrlsoilau@gmail.com", role = c('aut', 'cre'))
 Description: Interprets and decodes the '.N38' file format used by the 
     Geonics EM38-MK2 ground conductivity meter, as described in its 

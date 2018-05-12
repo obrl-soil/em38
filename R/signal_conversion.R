@@ -6,6 +6,7 @@
 #'  isolation.
 #' @param signal Integer.
 #' @return Numeric; uncalibrated instrument reading.
+#' @keywords Internal
 #' @examples
 #' channel_1_or_3 <- em38:::get_cond(30456)
 #' channel_2 <- em38:::get_cond(30456) * 0.00720475
@@ -20,6 +21,7 @@ get_cond <- function(signal = NULL) {
 #' This function calculates temperature from an EM38-MK2 signal recieved on Channel 5 or 6.
 #' @param signal Integer.
 #' @return Temperature in degrees C
+#' @keywords Internal
 #' @examples
 #' channel_5 <- em38:::get_temp(30456)
 #'
@@ -38,6 +40,7 @@ get_temp <- function(signal = NULL) {
 #' @return Numeric, latitude in decimal degrees.
 #' @note Inputting a numeric to lat will give incorrect results for latitude -10 < x < 10 due to
 #' loss of leading zero(s).
+#' @keywords Internal
 #' @examples
 #' lat <- em38:::gpgga_lat('2729.10198', 'S')
 #'
@@ -67,6 +70,7 @@ gpgga_lat <- function(lat = NULL, dir = NULL) {
 #' @return Numeric, longitude in decimal degrees.
 #' @note Inputting a numeric to long will give incorrect results for longitude -100 < x < 100 due to
 #' loss of leading zero(s).
+#' @keywords Internal
 #' @examples
 #' lat <- em38:::gpgga_long('15257.5556', 'E')
 #'

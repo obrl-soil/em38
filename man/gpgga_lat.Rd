@@ -27,3 +27,4 @@ loss of leading zero(s).
 lat <- em38:::gpgga_lat('2729.10198', 'S')
 
 }
+\keyword{Internal}

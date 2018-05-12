@@ -4,6 +4,7 @@
 #' internal function with no wider use case.
 #' @param file_header A matrix with 2 rows and 25 columns, produced by \code{\link{n38_import}}.
 #' @return A list containing 9 information elements recorded in N38 file headers.
+#' @keywords Internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -53,6 +54,7 @@ process_fheader <- function(file_header = NULL) {
 #'  This is an internal function with no wider use case.
 #' @param survline_header A matrix with 4 rows and 25 columns, produced by \code{\link{n38_import}}.
 #' @return A list containing 5 information elements recorded in N38 survey line headers.
+#' @keywords Internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -82,6 +84,7 @@ process_slheader <- function(survline_header = NULL) {
 #'  This is an internal function with no wider use case.
 #' @param cal_row A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
 #' @return A list containing 3 information elements recorded in N38 calibration rows.
+#' @keywords Internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -104,6 +107,7 @@ process_cal <- function(cal_row = NULL) {
 #' @param timer_rel A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
 #' @return A list containing 2 information elements recorded in N38 timer relation rows. Note that
 #' time will be returned in the local timezone.
+#' @keywords Internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -126,6 +130,7 @@ process_timer <- function(timer_rel = NULL) {
 #' is an internal function with no wider use case.
 #' @param reading A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
 #' @return A list containing 10 data elements recorded in N38 instrument reading rows.
+#' @keywords Internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -180,6 +185,7 @@ process_reading <- function(reading = NULL) {
 #'  This is an internal function with no wider use case.
 #' @param comment A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
 #' @return A list containing 2 data elements recorded in N38 comment rows.
+#' @keywords Internal
 #' @examples \dontrun{
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -201,6 +207,7 @@ process_comment <- function(comment = NULL) {
 #'  This is an internal function with no wider use case.
 #' @param nstat A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
 #' @return A list containing 2 data elements recorded in N38 new station rows.
+#' @keywords Internal
 #' @examples \dontrun{
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)

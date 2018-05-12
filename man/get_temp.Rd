@@ -19,3 +19,4 @@ This function calculates temperature from an EM38-MK2 signal recieved on Channel
 channel_5 <- em38:::get_temp(30456)
 
 }
+\keyword{Internal}

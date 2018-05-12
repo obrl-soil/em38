@@ -1,8 +1,15 @@
+# v 0.0.0.9002
+
+  * Who's got two thumbs and forgot about `@keywords Internal`? \*gestures at self\*
+  * Function `em38_pair()` added - combines data from manual-mode surveys where horizontal and vertical readings have been taken at each station
+  * Checksums on NMEA-0183 sentences are evaluated for $GPGGA type, failures are dropped.
+
 # v. 0.0.0.9001
 
-  * wrapper function added - `n38_to_points()` goes from on-disk file to spatial points in one line.
-  * rebuilt demo data to match demo extdata
-  * variable name fix in `n38_import()`
+  * Wrapper function added - `n38_to_points()` goes from on-disk file to spatial points in one hit.
+  * Rrebuilt demo data to match demo extdata
+  * Variable name fix in `n38_import()`
+  * Constrain out_mode better in `em38_spatialise()`
 
 # v. 0.0.0.9000
 

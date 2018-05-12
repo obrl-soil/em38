@@ -22,3 +22,4 @@ n38_chunked <- n38_chunk(n38_demo)
 n38_slh <- em38:::process_slheader(n38_chunked[['survey_line_1']][['sl_header']])
 
 }
+\keyword{Internal}

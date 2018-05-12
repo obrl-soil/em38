@@ -25,3 +25,4 @@ n38_ns1 <- em38:::process_nstat(n38_chunked[['survey_line_1']][['new_stations']]
 }
 
 }
+\keyword{Internal}

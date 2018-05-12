@@ -18,7 +18,7 @@ This function pulls out GPS DOP and active satellites data from NMEA-0183 GPGSA 
 and dumps it into a list.
 }
 \examples{
-# first GPGSA msg from decoded demo dataset
+# first GPGSA msg from data('n38_demo')
 msg_1   <- "$GPGSA,M,3,05,10,15,16,20,21,26,29,,,,,1.6,1.0,1.2*32"
 gpgsa_1 <- em38:::process_gpgsa(string = msg_1)
 

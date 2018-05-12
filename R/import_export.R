@@ -206,14 +206,14 @@ n38_decode <- function(chunks = NULL) {
     # ditch the `#` newline signifiers and whitespace, convert to string
     locs <- lapply(locs, function(x) {
       x[x == '#'] <- NA
-      x[x == ' ']  <- NA
+      x[x == ' '] <- NA
       paste0(na.omit(x), collapse = '')
     })
 
-    # The following ditches checksum fails - these start with ? not @ and use " instead of # as an
-    # internal newline signifier. Also handled are cases where GPS messages can occasionally get cut
-    # off after the message comes through but before the timestamp does (this where someone hits
-    # pause at the wrong time)
+    # The following ditches checksum fails that have already been flagged by GPS software. These
+    # start with ? not @ and use " instead of # as an internal newline signifier. Also handled are
+    # cases where GPS messages can occasionally get cut off after the message comes through but
+    # before the timestamp does (this where someone hits pause at the wrong time)
     keep <- purrr::map_lgl(locs, function(x) grepl('^@.+\\!', x))
     locs <- locs[keep]
 
@@ -224,8 +224,14 @@ n38_decode <- function(chunks = NULL) {
          type <- substr(x, 3, 7)
          bang <- as.integer(gregexpr('!', x))
          msg  <- substr(x, 9, bang - 1)
-         ts   <-  as.integer(substr(x, bang + 1, nchar(x)))
-         list('TYPE' = type, 'MESSAGE' = msg, 'timestamp_ms' = ts)
+         # only checking GPGGA messages to save time
+         chks <- if(type == 'GPGGA') {
+           nmea_check(substr(x, 2, bang - 1))
+         } else {
+           NA
+         }
+         ts   <- as.integer(substr(x, bang + 1, nchar(x)))
+         list('TYPE' = type, 'MESSAGE' = msg, 'CHKSUM' = chks, 'timestamp_ms' = ts)
        })
 
     out <- purrr::transpose(out)

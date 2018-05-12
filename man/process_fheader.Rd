@@ -22,3 +22,4 @@ n38_chunked <- n38_chunk(n38_demo)
 n38_fh <- em38:::process_fheader(n38_chunked[['file_header']])
 
 }
+\keyword{Internal}

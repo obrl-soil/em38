@@ -23,3 +23,4 @@ n38_chunked <- n38_chunk(n38_demo)
 n38_t <- em38:::process_timer(n38_chunked[['survey_line_1']][['timer_data']])
 
 }
+\keyword{Internal}

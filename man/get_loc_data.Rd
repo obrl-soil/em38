@@ -17,3 +17,11 @@ data frame with a single row
 This function decodes GPS data for use in em38_spatial and returns it along with its timestamp
 data.
 }
+\examples{
+data('n38_demo')
+n38_chunks  <- n38_chunk(n38_demo)
+n38_decoded <- n38_decode(n38_chunks)
+loc_1 <- em38:::get_loc_data(n38_decoded$survey_line_1$location_data[1:7, ])
+
+}
+\keyword{Internal}
