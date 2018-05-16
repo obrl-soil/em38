@@ -12,12 +12,13 @@
 #'
 nmea_check <- function(string = NULL) {
   prs <- unlist(strsplit(string, '\\*'))[1]
-  chk <- unlist(strsplit(string, '\\*'))[2]
+  # lower case required for comparison
+  chk <- tolower(unlist(strsplit(string, '\\*'))[2])
+  # if the checksum signifier * is missing, that's a fail anyway
+  if(is.na(chk)) { return(FALSE) }
   # fn still works if starting $ missing already
   prs <- gsub('^\\$', '', prs)
   prs <- sapply(unlist(strsplit(prs, '*')), charToRaw)
-  # lower case required for comparison
-  chk <- tolower(unlist(strsplit(string, '\\*'))[2])
 
   prs_chksum <- base::Reduce(xor, prs)
 

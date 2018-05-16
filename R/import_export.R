@@ -16,8 +16,7 @@ n38_import <- function(path = NULL) {
 
   n38_mat <- matrix(n38_raw, ncol = 26, byrow = TRUE)
   # chuck the line end column
-  n38_mat <- n38_mat[, -26]
-  n38_mat
+  n38_mat[, -26]
 }
 
 #' Separate message types
@@ -41,7 +40,7 @@ n38_chunk <- function(n38_mat = NULL) {
   # count total number of survey lines in file
   slines <- length(which(rids == 'L'))
 
-  # establish a list with one file header entry and n sline entries
+  # establish a list with one file header entry and n survey line entries
   out_list <- vector('list', length = 1 + slines)
   names(out_list) <- c('file_header', paste0('survey_line_', 1:slines))
 
@@ -120,7 +119,6 @@ n38_chunk <- function(n38_mat = NULL) {
 #' n38_chunks <- n38_chunk(n38_demo)
 #' n38_decoded <- n38_decode(n38_chunks)
 #' @importFrom purrr map map_lgl transpose
-#' @importFrom stats na.omit
 #' @export
 #'
 n38_decode <- function(chunks = NULL) {
@@ -205,39 +203,31 @@ n38_decode <- function(chunks = NULL) {
 
     # ditch the `#` newline signifiers and whitespace, convert to string
     locs <- lapply(locs, function(x) {
-      x[x == '#'] <- NA
-      x[x == ' '] <- NA
-      paste0(na.omit(x), collapse = '')
+      paste0(x[- which(x %in% c('#', ' '))], collapse = '')
     })
 
     # The following ditches checksum fails that have already been flagged by GPS software. These
     # start with ? not @ and use " instead of # as an internal newline signifier. Also handled are
     # cases where GPS messages can occasionally get cut off after the message comes through but
-    # before the timestamp does (this where someone hits pause at the wrong time)
+    # before the timestamp does (where someone hits pause at the wrong time)
     keep <- purrr::map_lgl(locs, function(x) grepl('^@.+\\!', x))
     locs <- locs[keep]
 
     # split up string into main components (decode happens later)
     # note that only TYPE = 'GPGGA' is used in final output
-    out <-
-      purrr::map(locs, function(x) {
-         type <- substr(x, 3, 7)
-         bang <- as.integer(gregexpr('!', x))
-         msg  <- substr(x, 9, bang - 1)
-         # only checking GPGGA messages to save time
-         chks <- if(type == 'GPGGA') {
-           nmea_check(substr(x, 2, bang - 1))
-         } else {
-           NA
-         }
-         ts   <- as.integer(substr(x, bang + 1, nchar(x)))
-         list('TYPE' = type, 'MESSAGE' = msg, 'CHKSUM' = chks, 'timestamp_ms' = ts)
-       })
-
-    out <- purrr::transpose(out)
-    out <- lapply(out, function(x) {
-        unlist(x, recursive = FALSE)
-        })
+    # will probs have to change to %in% c('GPGGA', 'GLGGA') soon
+    bang <- as.integer(gregexpr('!', locs))
+    type <- substr(locs, 3, 7)
+    out  <- list('TYPE'         = type,
+                 'MESSAGE'      = substr(locs, 9, bang - 1),
+                 # NB this only works if a checksum failure does not involve
+                 # scrambling/loss of the message type - check is skipped if GPGGA is
+                 # scrambled to e.g. GPGA,. Such failures are still never decoded down
+                 # the track so not a big deal
+                 'CHKSUM'       = ifelse(type == 'GPGGA',
+                                         nmea_check(substr(locs, 2, bang - 1)),
+                                         NA),
+                 'timestamp_ms' = as.integer(substr(locs, bang + 1, nchar(locs))))
     as.data.frame(out, col.names = names(out), stringsAsFactors = FALSE)
     }
 
