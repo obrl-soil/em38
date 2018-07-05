@@ -4,6 +4,7 @@
     improvement.
   * More unit tests.
   * Package-level metadata.
+  * Travis-CI integration
 
 # v 0.0.0.9002
 
