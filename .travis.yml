@@ -1,2 +1,14 @@
 language: r
+r:
+  - oldrel
+  - release
+  - devel
 cache: packages
+
+sudo: false
+
+# for units .: for sf
+addons:
+  apt:
+    packages:
+      - libudunits2-dev
