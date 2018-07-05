@@ -3,9 +3,12 @@ r:
 #  - oldrel
   - release
 #  - devel
-#cache: packages
+cache: packages
 
 sudo: false
+
+r_packages:
+  - sf
 
 # for units .: for sf
 addons:
