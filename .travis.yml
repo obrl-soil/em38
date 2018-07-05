@@ -1,9 +1,9 @@
 language: r
 r:
-  - oldrel
+#  - oldrel
   - release
-  - devel
-cache: packages
+#  - devel
+#cache: packages
 
 sudo: false
 
@@ -12,3 +12,4 @@ addons:
   apt:
     packages:
       - libudunits2-dev
+      
