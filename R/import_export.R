@@ -7,7 +7,7 @@
 #'   datalogger (and optionally, a GPS device).
 #' @return A matrix with n rows and 25 columns, containing raw bytes.
 #' @examples
-#' n38_mat <- n38_import(system.file("extdata", "em38_demo.N38", package = "em38"))
+#' n38_mat <- n38_import(system.file("extdata", "em38_demo.N38", package = "em38", mustWork = TRUE))
 #' @export
 #'
 n38_import <- function(path = NULL) {
