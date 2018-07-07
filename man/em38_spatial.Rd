@@ -10,23 +10,25 @@ em38_spatial(n38_decoded = NULL, hdop_filter = 3, out_mode = c("Vertical",
 \arguments{
 \item{n38_decoded}{Nested list output by n38_decode}
 
-\item{hdop_filter}{Numeric, discard GPS data where the Horizontal Dilution of Precision is
-greater than this number. Defaults to 3 metres. Set to NULL to keep all readings.}
+\item{hdop_filter}{Numeric, discard GPS data where the Horizontal Dilution of
+Precision is greater than this number. Defaults to 3 metres. Set to NULL to
+keep all readings.}
 
-\item{out_mode}{Character, em38 dipole mode. Output dataset can only contain Vertical or
-Horizontal data, never both.}
+\item{out_mode}{Character, em38 dipole mode. Output dataset can only contain
+Vertical or Horizontal data, never both.}
 }
 \value{
-An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded object
- contains more than one survey line, a list of sf objects is returned - one for each line.
+An sf data frame with sfc_POINT geometry. WGS84 projection. If the
+  n38_decoded object contains more than one survey line, a list of sf objects
+  is returned - one for each line.
 }
 \description{
 This function processes a decoded N38 record into a point spatial dataset.
 }
 \note{
 Input n38_decoded object should be of survey type 'GPS'. If not, the
-  function will fail gracefully by returning a list of reasons why the data could not be
-  converted to points.
+  function will fail gracefully by returning a list of reasons why the data
+  could not be converted to points.
 }
 \examples{
 data('n38_demo')

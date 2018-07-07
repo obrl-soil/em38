@@ -8,28 +8,30 @@ n38_to_points(path = NULL, hdop_filter = 3, out_mode = c("Vertical",
   "Horizontal"))
 }
 \arguments{
-\item{path}{A file path pointing to a valid *.N38 file, produced by a Geonics EM38-MK2
-conductivity sensor connected to an Allegra CX or Archer datalogger (and optionally, a GPS
-device).}
+\item{path}{A file path pointing to a valid *.N38 file, produced by a Geonics
+EM38-MK2 conductivity sensor connected to an Allegra CX or Archer
+datalogger (and optionally, a GPS device).}
 
-\item{hdop_filter}{Numeric, discard GPS data where the Horizontal Dilution of Precision is
-greater than this number. Defaults to 3 metres. Set to NULL to keep all readings.}
+\item{hdop_filter}{Numeric, discard GPS data where the Horizontal Dilution of
+Precision is greater than this number. Defaults to 3 metres. Set to NULL to
+keep all readings.}
 
-\item{out_mode}{Character, em38 dipole mode. Output dataset can only contain Vertical or
-Horizontal data, never both.}
+\item{out_mode}{Character, em38 dipole mode. Output dataset can only contain
+Vertical or Horizontal data, never both.}
 }
 \value{
-An sf data frame with sfc_POINT geometry. WGS84 projection. If the n38_decoded object
-  contains more than one survey line, a list of sf objects is returned - one for each line.
+An sf data frame with sfc_POINT geometry. WGS84 projection. If the
+  n38_decoded object contains more than one survey line, a list of sf objects
+  is returned - one for each line.
 }
 \description{
-This is a wrapper function that processes a raw on-disk N38 file into an sf point spatial
-dataset.
+This is a wrapper function that processes a raw on-disk N38 file into an sf
+point spatial dataset.
 }
 \note{
-Input file should be of survey type 'GPS'. If not, the
-  function will fail gracefully by returning reasons why the data could not be
-  converted to points.
+Input file should be of survey type 'GPS'. If not, the function will
+  fail gracefully by returning reasons why the data could not be converted to
+  points.
 }
 \examples{
 vert_points <-

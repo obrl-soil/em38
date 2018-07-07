@@ -7,22 +7,27 @@
 n38_decode(chunks = NULL)
 }
 \arguments{
-\item{chunks}{The nested list of raw matrices output by \code{\link{n38_chunk}}.}
+\item{chunks}{The nested list of raw matrices output by
+\code{\link{n38_chunk}}.}
 }
 \value{
-A nested list containing decoded n38 data with the following structure:
-  - file header information (list)
-  - survey line
-    - header information (list)
-    - calibration data (data frame)
-    - timer data (list)
-    - instrument readings (timestamped data frame, calibrated)
-    - location data (timestamped data frame of NMEA-0138 message strings)
-    - new station data (timestamped data frame)
-    - comments (timestamped data frame)
+A nested list containing decoded n38 data with the following
+  structure:
+  \itemize{
+  \item file header information (list)
+  \item survey line
+  \item header information (list)
+  \item calibration data (data frame)
+  \item timer data (list)
+  \item instrument readings (timestamped data frame, calibrated)
+  \item location data (timestamped data frame of NMEA-0138 message strings)
+  \item new station data (timestamped data frame)
+  \item comments (timestamped data frame)
+  }
 }
 \description{
-This function decodes n38 data according to the specifications provided by the EM38-MKII manual.
+This function decodes n38 data according to the specifications provided by
+the EM38-MKII manual.
 }
 \examples{
 data('n38_demo')

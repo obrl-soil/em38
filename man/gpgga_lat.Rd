@@ -7,11 +7,12 @@
 gpgga_lat(lat = NULL, dir = NULL)
 }
 \arguments{
-\item{lat}{String containing latitude information. GPGGA strings are comma-separated, latitude
-is in the second delimited position}
+\item{lat}{String containing latitude information. GPGGA strings are
+comma-separated, latitude is in the second delimited position}
 
-\item{dir}{String determining whether latitude is N or S of the equator. GPGGA strings are
-comma-separated, NS status is in the third delimited position}
+\item{dir}{String determining whether latitude is N or S of the equator.
+GPGGA strings are comma-separated, NS status is in the third delimited
+position}
 }
 \value{
 Numeric, latitude in decimal degrees.
@@ -20,8 +21,8 @@ Numeric, latitude in decimal degrees.
 This function retrieves latitude position information from a GPGGA string.
 }
 \note{
-Inputting a numeric to lat will give incorrect results for latitude -10 < x < 10 due to
-loss of leading zero(s).
+Inputting a numeric to lat will give incorrect results for latitude -10
+  < x < 10 due to loss of leading zero(s).
 }
 \examples{
 lat <- em38:::gpgga_lat('2729.10198', 'S')

@@ -10,18 +10,19 @@ n38_to_m38(n38_decoded = NULL)
 \item{n38_decoded}{Nested list output by n38_decode}
 }
 \value{
-Large character; combination of location data and calibrated instrument
-readings. Note that record timestamps won't always agree with an 'official' m38 file at the
-microsecond level.
+Large character; combination of location data and calibrated
+  instrument readings. Note that record timestamps won't always agree with an
+  'official' m38 file at the microsecond level.
 }
 \description{
-This function processes decoded n38 data into the m38 format used by Geonics. Its a bit
-useless from an R perspective, but users may wish to compare outputs with Geonics' own conversion
-software or process it further with the DAT38MK2 application.
+This function processes decoded n38 data into the m38 format used by Geonics.
+Its a bit useless from an R perspective, but users may wish to compare
+outputs with Geonics' own conversion software or process it further with the
+DAT38MK2 application.
 }
 \note{
-Write output to file in working directory with
- e.g. `write(m38_example, paste0('m38_from_R_', Sys.Date(), '.m38'))`
+Write output to file in working directory with e.g. `write(m38_example,
+  paste0('m38_from_R_', Sys.Date(), '.m38'))`
 }
 \examples{
 data('n38_demo')

@@ -10,14 +10,15 @@ n38_chunk(n38_mat = NULL)
 \item{n38_mat}{The binary matrix output by  \code{\link{n38_import}}.}
 }
 \value{
-A nested list containing binary matrices encoding a) file header information and b) each
-survey line in the input file. For each survey line, a list of matrices with survey line data
-separated by type - header and calibration data, instrument readings, position information, and
-comments.
+A nested list containing binary matrices encoding a) file header
+  information and b) each survey line in the input file. For each survey
+  line, a list of matrices with survey line data separated by type - header
+  and calibration data, instrument readings, position information, and
+  comments.
 }
 \description{
-This function chunks imported n38 binary matrices into a list, grouping file header and
-survey line information for further processing.
+This function chunks imported n38 binary matrices into a list, grouping file
+header and survey line information for further processing.
 }
 \examples{
 data('n38_demo')

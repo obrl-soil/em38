@@ -7,15 +7,17 @@
 n38_import(path = NULL)
 }
 \arguments{
-\item{path}{A file path pointing to a valid *.N38 file, produced by a Geonics EM38-MK2 conductivity
-sensor connected to an Allegra CX or Archer datalogger (and optionally, a GPS device).}
+\item{path}{A file path pointing to a valid *.N38 file, produced by a Geonics
+EM38-MK2 conductivity sensor connected to an Allegra CX or Archer
+datalogger (and optionally, a GPS device).}
 }
 \value{
 A matrix with n rows and 25 columns, containing raw bytes.
 }
 \description{
-This function reads N38 binary files into R and does some minimal pre-processing.
+This function reads N38 binary files into R and does some minimal
+pre-processing.
 }
 \examples{
-n38_mat <- n38_import(system.file("extdata", "em38_demo.n38", package = "em38"))
+n38_mat <- n38_import(system.file("extdata", "em38_demo.N38", package = "em38", mustWork = TRUE))
 }

@@ -7,25 +7,30 @@
 em38_pair(horizontal_data = NULL, vertical_data = NULL)
 }
 \arguments{
-\item{horizontal_data}{spatial point dataframe produced by \code{\link{em38_spatial}}  or
-\code{\link{n38_to_points}} with `out_mode = 'Horizontal`.}
+\item{horizontal_data}{spatial point dataframe produced by
+\code{\link{em38_spatial}}  or \code{\link{n38_to_points}} with `out_mode =
+'Horizontal`.}
 
-\item{vertical_data}{spatial point dataframe produced by \code{\link{em38_spatial}}  or
-\code{\link{n38_to_points}} with `out_mode = 'Vertical`.}
+\item{vertical_data}{spatial point dataframe produced by
+\code{\link{em38_spatial}}  or \code{\link{n38_to_points}} with `out_mode =
+'Vertical`.}
 }
 \value{
-An sf data frame with sfc_POINT geometry. WGS84 projection. Output locations are averages
-  of input locations. Data columns are labelled as horizontal or vertical.
+An sf data frame with sfc_POINT geometry. WGS84 projection. Output
+  locations are averages of input locations. Data columns are labelled as
+  horizontal or vertical.
 }
 \description{
-Where paired horizontal and vertical readings have been taken during a 'manual' mode survey, the
-first and second readings at each station should have the same location. The nature of the device
-logging generally precludes this from happening by default, especially with high-frequency GPS
-recording. This function reconciles the locations of such paired datasets after they have been
-generated using \code{\link{em38_spatial}} or \code{\link{n38_to_points}}.
+Where paired horizontal and vertical readings have been taken during a
+'manual' mode survey, the first and second readings at each station should
+have the same location. The nature of the device logging generally precludes
+this from happening by default, especially with high-frequency GPS recording.
+This function reconciles the locations of such paired datasets after they
+have been generated using \code{\link{em38_spatial}} or
+\code{\link{n38_to_points}}.
 }
 \note{
-Input data should be of survey type 'GPS' and record type 'manual'. Both input datasets
-  should have the same number of rows, with row 1 of horizontal_data paired with row_1 of
-  vertical_data.
+Input data should be of survey type 'GPS' and record type 'manual'.
+  Both input datasets should have the same number of rows, with row 1 of
+  horizontal_data paired with row_1 of vertical_data.
 }

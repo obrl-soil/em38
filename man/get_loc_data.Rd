@@ -7,15 +7,15 @@
 get_loc_data(block = NULL)
 }
 \arguments{
-\item{block}{Data frame holding GPS message data, usually a subset of $location_data in a
-decoded n38 object}
+\item{block}{Data frame holding GPS message data, usually a subset of
+$location_data in a decoded n38 object}
 }
 \value{
 data frame with a single row
 }
 \description{
-This function decodes GPS data for use in em38_spatial and returns it along with its timestamp
-data.
+This function decodes GPS data for use in em38_spatial and returns it along
+with its timestamp data.
 }
 \examples{
 data('n38_demo')

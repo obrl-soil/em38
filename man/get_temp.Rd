@@ -13,7 +13,8 @@ get_temp(signal = NULL)
 Temperature in degrees C
 }
 \description{
-This function calculates temperature from an EM38-MK2 signal recieved on Channel 5 or 6.
+This function calculates temperature from an EM38-MK2 signal recieved on
+Channel 5 or 6.
 }
 \examples{
 channel_5 <- em38:::get_temp(30456)
