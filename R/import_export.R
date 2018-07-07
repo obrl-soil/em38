@@ -1,8 +1,10 @@
 #' Import EM38 data
 #'
-#' This function reads N38 binary files into R and does some minimal pre-processing.
-#' @param path A file path pointing to a valid *.N38 file, produced by a Geonics EM38-MK2 conductivity
-#' sensor connected to an Allegra CX or Archer datalogger (and optionally, a GPS device).
+#' This function reads N38 binary files into R and does some minimal
+#' pre-processing.
+#' @param path A file path pointing to a valid *.N38 file, produced by a Geonics
+#'   EM38-MK2 conductivity sensor connected to an Allegra CX or Archer
+#'   datalogger (and optionally, a GPS device).
 #' @return A matrix with n rows and 25 columns, containing raw bytes.
 #' @examples
 #' n38_mat <- n38_import(system.file("extdata", "em38_demo.N38", package = "em38"))
@@ -21,13 +23,14 @@ n38_import <- function(path = NULL) {
 
 #' Separate message types
 #'
-#' This function chunks imported n38 binary matrices into a list, grouping file header and
-#' survey line information for further processing.
+#' This function chunks imported n38 binary matrices into a list, grouping file
+#' header and survey line information for further processing.
 #' @param n38_mat The binary matrix output by  \code{\link{n38_import}}.
-#' @return A nested list containing binary matrices encoding a) file header information and b) each
-#' survey line in the input file. For each survey line, a list of matrices with survey line data
-#' separated by type - header and calibration data, instrument readings, position information, and
-#' comments.
+#' @return A nested list containing binary matrices encoding a) file header
+#'   information and b) each survey line in the input file. For each survey
+#'   line, a list of matrices with survey line data separated by type - header
+#'   and calibration data, instrument readings, position information, and
+#'   comments.
 #' @examples
 #' data('n38_demo')
 #' n38_chunks <- n38_chunk(n38_demo)
@@ -65,7 +68,8 @@ n38_chunk <- function(n38_mat = NULL) {
     # separate the record types within each survey line
     sline_list <- vector('list', length = 7)
     names(sline_list) <- c('sl_header', 'cal_data', 'timer_data',
-                           'reading_data', 'location_data', 'new_station', 'comments')
+                           'reading_data', 'location_data', 'new_station',
+                           'comments')
 
     # get the row indices for each category in sline_list
     sl_rids <- rids[sl_starts[i - 1]:sl_ends[i - 1]]
@@ -82,9 +86,10 @@ n38_chunk <- function(n38_mat = NULL) {
     # instrument readings
     sline_list[['reading_data']] <- sl_x[which(sl_rids %in% c('T', 't', '2')), ]
 
-    # location data (note readings that fail the checksum still come through here and are
-    # handled later)
-    gps <- which(!(sl_rids %in% c('L', 'B', 'A', 'Z','O', '*', 'T', 't', '2', 'C', 'S', 'X')))
+    # location data (note readings that fail the checksum still come through
+    # here and are handled later)
+    gps <- which(!(sl_rids %in% c('L', 'B', 'A', 'Z','O', '*', 'T', 't', '2',
+                                  'C', 'S', 'X')))
     sline_list[['location_data']] <- sl_x[gps, ]
 
     # new station (nb often null, for when no GPS in use???)
@@ -101,18 +106,23 @@ n38_chunk <- function(n38_mat = NULL) {
 
 #' process chunked n38 data
 #'
-#' This function decodes n38 data according to the specifications provided by the EM38-MKII manual.
-#' @param chunks The nested list of raw matrices output by \code{\link{n38_chunk}}.
-#' @return A nested list containing decoded n38 data with the following structure:
-#'   - file header information (list)
-#'   - survey line
-#'     - header information (list)
-#'     - calibration data (data frame)
-#'     - timer data (list)
-#'     - instrument readings (timestamped data frame, calibrated)
-#'     - location data (timestamped data frame of NMEA-0138 message strings)
-#'     - new station data (timestamped data frame)
-#'     - comments (timestamped data frame)
+#' This function decodes n38 data according to the specifications provided by
+#' the EM38-MKII manual.
+#' @param chunks The nested list of raw matrices output by
+#'   \code{\link{n38_chunk}}.
+#' @return A nested list containing decoded n38 data with the following
+#'   structure:
+#'   \itemize{
+#'   \item file header information (list)
+#'   \item survey line
+#'   \item header information (list)
+#'   \item calibration data (data frame)
+#'   \item timer data (list)
+#'   \item instrument readings (timestamped data frame, calibrated)
+#'   \item location data (timestamped data frame of NMEA-0138 message strings)
+#'   \item new station data (timestamped data frame)
+#'   \item comments (timestamped data frame)
+#'   }
 #'
 #' @examples
 #' data('n38_demo')
@@ -153,8 +163,10 @@ n38_decode <- function(chunks = NULL) {
     chunks[[i]][['reading_data']] <- apply(chunks[[i]][['reading_data']],
                                            MARGIN = 1,
                                            FUN = function(x) process_reading(x))
-    chunks[[i]][['reading_data']] <- purrr::transpose(chunks[[i]][['reading_data']])
-    chunks[[i]][['reading_data']] <- lapply(chunks[[i]][['reading_data']], function(x) {
+    chunks[[i]][['reading_data']] <-
+      purrr::transpose(chunks[[i]][['reading_data']])
+    chunks[[i]][['reading_data']] <-
+      lapply(chunks[[i]][['reading_data']], function(x) {
       unlist(x, recursive = FALSE)
     })
     chunks[[i]][['reading_data']] <-
@@ -192,24 +204,27 @@ n38_decode <- function(chunks = NULL) {
     reading = chunks[[i]][['reading_data']]$IP_1)
 
     # location data
-    # each reading starts with @, different types are different lengths, and there
-    # are variable stretches of whitespace plus multiline signifiers to deal with,
-    # what a fun time this was
-    chunks[[i]][['location_data']] <- if(nrow(chunks[[i]][['location_data']]) == 0) {
-      NA
-    } else {
-    loc  <- rawToChar(unlist(t(chunks[[i]][['location_data']])), multiple = TRUE)
-    locs <- split(loc, cumsum(loc %in% c('@', '?')))
+    # Each reading starts with @, different types are different
+    # lengths, and there are variable stretches of whitespace plus multiline
+    # signifiers to deal with, what a fun time this was
+    chunks[[i]][['location_data']] <-
+      if(nrow(chunks[[i]][['location_data']]) == 0) {
+        NA
+        } else {
+          loc  <- rawToChar(unlist(t(chunks[[i]][['location_data']])),
+                            multiple = TRUE)
+          locs <- split(loc, cumsum(loc %in% c('@', '?')))
 
     # ditch the `#` newline signifiers and whitespace, convert to string
     locs <- lapply(locs, function(x) {
       paste0(x[- which(x %in% c('#', ' '))], collapse = '')
     })
 
-    # The following ditches checksum fails that have already been flagged by GPS software. These
-    # start with ? not @ and use " instead of # as an internal newline signifier. Also handled are
-    # cases where GPS messages can occasionally get cut off after the message comes through but
-    # before the timestamp does (where someone hits pause at the wrong time)
+    # The following ditches checksum fails that have already been flagged by GPS
+    # software. These start with ? not @ and use " instead of # as an internal
+    # newline signifier. Also handled are cases where GPS messages can
+    # occasionally get cut off after the message comes through but before the
+    # timestamp does (where someone hits pause at the wrong time)
     keep <- purrr::map_lgl(locs, function(x) grepl('^@.+\\!', x))
     locs <- locs[keep]
 
@@ -221,21 +236,23 @@ n38_decode <- function(chunks = NULL) {
     out  <- list('TYPE'         = type,
                  'MESSAGE'      = substr(locs, 9, bang - 1),
                  # NB this only works if a checksum failure does not involve
-                 # scrambling/loss of the message type - check is skipped if GPGGA is
-                 # scrambled to e.g. GPGA,. Such failures are still never decoded down
-                 # the track so not a big deal
+                 # scrambling/loss of the message type - check is skipped if
+                 # GPGGA is scrambled to e.g. GPGA,. Such failures are still
+                 # never decoded down the track so not a big deal
                  'CHKSUM'       = ifelse(type == 'GPGGA',
                                          nmea_check(substr(locs, 2, bang - 1)),
                                          NA),
-                 'timestamp_ms' = as.integer(substr(locs, bang + 1, nchar(locs))))
+                 'timestamp_ms' =
+                   as.integer(substr(locs, bang + 1, nchar(locs))))
     as.data.frame(out, col.names = names(out), stringsAsFactors = FALSE)
     }
 
-    chunks[[i]][['new_station']] <- if(nrow(chunks[[i]][['new_station']]) == 0) {
-      NA
-    } else {
-      process_nstat(chunks[[i]][['new_station']])
-    }
+    chunks[[i]][['new_station']] <-
+      if(nrow(chunks[[i]][['new_station']]) == 0) {
+        NA
+        } else {
+          process_nstat(chunks[[i]][['new_station']])
+        }
 
     chunks[[i]][['comments']] <- if(nrow(chunks[[i]][['comments']]) == 0) {
       NA
@@ -252,15 +269,16 @@ n38_decode <- function(chunks = NULL) {
 
 #' output m38
 #'
-#' This function processes decoded n38 data into the m38 format used by Geonics. Its a bit
-#' useless from an R perspective, but users may wish to compare outputs with Geonics' own conversion
-#' software or process it further with the DAT38MK2 application.
+#' This function processes decoded n38 data into the m38 format used by Geonics.
+#' Its a bit useless from an R perspective, but users may wish to compare
+#' outputs with Geonics' own conversion software or process it further with the
+#' DAT38MK2 application.
 #' @param n38_decoded Nested list output by n38_decode
-#' @return Large character; combination of location data and calibrated instrument
-#' readings. Note that record timestamps won't always agree with an 'official' m38 file at the
-#' microsecond level.
-#' @note Write output to file in working directory with
-#'  e.g. `write(m38_example, paste0('m38_from_R_', Sys.Date(), '.m38'))`
+#' @return Large character; combination of location data and calibrated
+#'   instrument readings. Note that record timestamps won't always agree with an
+#'   'official' m38 file at the microsecond level.
+#' @note Write output to file in working directory with e.g. `write(m38_example,
+#'   paste0('m38_from_R_', Sys.Date(), '.m38'))`
 #' @examples
 #' data('n38_demo')
 #' n38_chunks <- n38_chunk(n38_demo)
