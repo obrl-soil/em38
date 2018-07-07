@@ -6,6 +6,9 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+[![Build Status](https://travis-ci.com/obrl-soil/em38.svg?branch=master)](https://travis-ci.com/obrl-soil/em38)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
