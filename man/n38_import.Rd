@@ -19,5 +19,5 @@ This function reads N38 binary files into R and does some minimal
 pre-processing.
 }
 \examples{
-n38_mat <- n38_import(system.file("extdata", "em38_demo.N38", package = "em38", mustWork = TRUE))
+n38_mat <- n38_import(system.file("extdata", "em38_demo.N38", package = "em38"))
 }

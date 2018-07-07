@@ -257,7 +257,7 @@ em38_spatial <- function(n38_decoded = NULL,
 #'   points.
 #' @examples
 #' vert_points <-
-#' n38_to_points(path = system.file("extdata", "em38_demo.n38", package = "em38", mustWork = TRUE),
+#' n38_to_points(path = system.file("extdata", "em38_demo.N38", package = "em38"),
 #'               hdop_filter = 3, out_mode = 'Vertical')
 #' @export
 n38_to_points <- function(path = NULL, hdop_filter = 3,

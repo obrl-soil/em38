@@ -35,6 +35,6 @@ Input file should be of survey type 'GPS'. If not, the function will
 }
 \examples{
 vert_points <-
-n38_to_points(path = system.file("extdata", "em38_demo.n38", package = "em38", mustWork = TRUE),
+n38_to_points(path = system.file("extdata", "em38_demo.N38", package = "em38"),
               hdop_filter = 3, out_mode = 'Vertical')
 }
