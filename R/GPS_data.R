@@ -5,10 +5,10 @@
 #' @return Logical; TRUE if checksum is correct.
 #' @examples
 #' # first GPGGA msg from data('n38_demo')
-#' msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
-#' msg_2   <- "$GPG5808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
-#' chk_1     <- em38:::nmea_check(string = msg_1)
-#' chk_2     <- em38:::nmea_check(string = msg_2)
+#' msg_1 <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
+#' msg_2 <- "$GPG5808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
+#' chk_1 <- em38:::nmea_check(string = msg_1)
+#' chk_2 <- em38:::nmea_check(string = msg_2)
 #'
 nmea_check <- function(string = NULL) {
   prs <- unlist(strsplit(string, '\\*'))[1]
