@@ -309,9 +309,20 @@ n38_to_m38 <- function(n38_decoded = NULL) {
     } else {
       'V'
     }
-    slunits <- if(n38_decoded$file_header$unit_type == 'meters') {0} else {1}
-    slmode <- if(n38_decoded$file_header$survey_mode == 'Auto') { 'A'} else {'M'}
-    datetime <- as.character(n38_decoded[[i]]$sl_header$timestamp, format = '%d/%m/%Y %H:%M:%S')
+    slunits <-
+      if (n38_decoded$file_header$unit_type == 'meters') {
+        0
+      } else {
+        1
+      }
+    slmode <-
+      if (n38_decoded$file_header$survey_mode == 'Auto') {
+        'A'
+      } else {
+        'M'
+      }
+    datetime <- as.character(n38_decoded[[i]]$sl_header$timestamp,
+                             format = '%d/%m/%Y %H:%M:%S')
 
     sl_header <- paste0('L', paste0(rep.int(' ', times = 3), collapse = ''),
            n38_decoded[[i]]$sl_header$line_name, ' ',

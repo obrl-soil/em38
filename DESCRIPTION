@@ -22,6 +22,7 @@ Imports:
 	sf,
 	tidyr,
     units
-Suggests: 
-    testthat
+Suggests:
+    testthat,
+    covr
 RoxygenNote: 6.0.1

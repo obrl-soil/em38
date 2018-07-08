@@ -10,12 +10,12 @@ process_gprmc(string = NULL)
 \item{string}{A string with valid NMEA-0183 GPRMC structure.}
 }
 \value{
-A list containing 9 data elements recorded in NMEA-0183 GPRMC data chunks. Elements
-are given appropriate data types.
+A list containing 9 data elements recorded in NMEA-0183 GPRMC data
+  chunks. Elements are given appropriate data types.
 }
 \description{
-This function pulls out reccommended minimum sentence data from NMEA-0183 GPRMC strings
-and dumps it into a list.
+This function pulls out reccommended minimum sentence data from NMEA-0183
+GPRMC strings and dumps it into a list.
 }
 \examples{
 # first GPRMC msg from data('n38_demo')

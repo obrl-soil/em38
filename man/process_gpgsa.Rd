@@ -10,12 +10,12 @@ process_gpgsa(string = NULL)
 \item{string}{A string with valid NMEA-0183 GPGSA structure.}
 }
 \value{
-A list containing n data elements recorded in NMEA-0183 GPGSA data chunks. Elements
-are given appropriate data types.
+A list containing n data elements recorded in NMEA-0183 GPGSA data
+  chunks. Elements are given appropriate data types.
 }
 \description{
-This function pulls out GPS DOP and active satellites data from NMEA-0183 GPGSA strings
-and dumps it into a list.
+This function pulls out GPS DOP and active satellites data from NMEA-0183
+GPGSA strings and dumps it into a list.
 }
 \examples{
 # first GPGSA msg from data('n38_demo')

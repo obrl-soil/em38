@@ -80,11 +80,13 @@ em38_spatial <- function(n38_decoded = NULL,
       readings <- n38_decoded[[i]][['reading_data']]
 
       # filter readings to chosen dipole mode
-      readings <- if(out_mode %in% c('Vertical', 'Horizontal')) {
+      readings <- if(length(out_mode) != 1) { # :/
+        return("Please specify `out_mode`.")
+      } else if(out_mode %in% c('Vertical', 'Horizontal')) {
         readings[readings$mode == out_mode, ]
-      } else {
-        return('Please check the value of out_mode.')
-      }
+        } else {
+          return("Please check the value of `out_mode`.")
+        }
 
       # if no readings of the chosen out_mode exist in this sl,
       if(nrow(readings) == 0) {
@@ -129,7 +131,7 @@ em38_spatial <- function(n38_decoded = NULL,
 
         # if all the locations were still borked,
         if(nrow(loc_f) == 0) {
-          return('No usable location data could be retrieved from this survey line')
+          return('No readings with acceptable HDOP could be retrieved from this survey line.')
         } else {
 
         # add lead(lat) and lead(long) for interpolation, plus time lag between

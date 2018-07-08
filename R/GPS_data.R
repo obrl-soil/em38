@@ -26,14 +26,14 @@ nmea_check <- function(string = NULL) {
   if(prs_chksum == chk) { TRUE } else { FALSE }
 }
 
-
 #' Process NMEA-0183 GPGGA messages
 #'
-#' This function pulls out position fix data from NMEA-0183 GPGGA strings and dumps it into a list.
+#' This function pulls out position fix data from NMEA-0183 GPGGA strings and
+#' dumps it into a list.
 #' @param string A string with valid NMEA-0183 GPGGA structure.
-#' @return A list containing 15 data elements recorded in NMEA-0183 GPGGA data chunks. Elements
-#' are given appropriate data types. NB UTC time is returned as POSIXlt, so Sys.date() comes along
-#' for the ride.
+#' @return A list containing 15 data elements recorded in NMEA-0183 GPGGA data
+#'   chunks. Elements are given appropriate data types. NB UTC time is returned
+#'   as POSIXlt, so Sys.date() comes along for the ride.
 #' @examples
 #' # first GPGGA msg from data('n38_demo')
 #' msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
@@ -44,11 +44,13 @@ process_gpgga <- function(string = NULL) {
   gga_reading <- unlist(strsplit(string, split = c(',')))
 
   out <- vector('list', length = 11)
-  names(out) <- c('UTC_time', 'latitude', 'longitude', 'quality', 'n_sats', 'HDOP', 'antenna_alt',
-                  'geoid_sep', 'difcor_age_s', 'base_stn', 'checksum')
+  names(out) <- c('UTC_time', 'latitude', 'longitude', 'quality', 'n_sats',
+                  'HDOP', 'antenna_alt', 'geoid_sep', 'difcor_age_s',
+                  'base_stn', 'checksum')
 
   # ignore date, time itself is fine
-  out[['UTC_time']]  <- as.POSIXlt(gga_reading[2], format = '%H%M%OS', tz = 'UTC')
+  out[['UTC_time']]  <- as.POSIXlt(gga_reading[2], format = '%H%M%OS',
+                                   tz = 'UTC')
 
   # see signal_conversion.R for lat/long retrieval. inputs shld be WGS84
   out[['latitude']]  <- gpgga_lat(gga_reading[3],gga_reading[4])
@@ -62,7 +64,8 @@ process_gpgga <- function(string = NULL) {
   out[['geoid_sep']] <- as.numeric(gga_reading[12])
   # same here
   units(out[['geoid_sep']]) <- with(units::ud_units, m)
-  # only in use if differential gps is (quality == '2', possibly some other vals as well)
+  # only in use if differential gps is (quality == '2', possibly some other vals
+  # as well)
   out[['difcor_age_s']] <-  as.numeric(gga_reading[14])
   # only in use if differential GPS is
   # and it isn't properly comma delimited jfc whyyyyyy >:-(
@@ -73,8 +76,9 @@ process_gpgga <- function(string = NULL) {
     gsub('\\*.*', '', gga_reading[15])
   }
   # checksum
-  # "It is the representation of two hexadecimal characters of an XOR of all characters in the
-  # sentence between – but not including – the $ and the * character."
+  # "It is the representation of two hexadecimal characters of an XOR of all
+  # characters in the sentence between – but not including – the $ and the *
+  # character."
   # https://rietman.wordpress.com/2008/09/25/how-to-calculate-the-nmea-checksum/
   out[['checksum']] <- gsub('^[^\\*]*', '', gga_reading[15])
   # validated later
@@ -83,11 +87,11 @@ process_gpgga <- function(string = NULL) {
 
 #' Process NMEA-0183 GPVTG messages
 #'
-#' This function pulls out track made good and speed over ground data from NMEA-0183 GPVTG strings
-#' and dumps it into a list.
+#' This function pulls out track made good and speed over ground data from
+#' NMEA-0183 GPVTG strings and dumps it into a list.
 #' @param string A string with valid NMEA-0183 GPVTG structure.
-#' @return A list containing 6 data elements recorded in NMEA-0183 GPVTG data chunks. Elements
-#' are given appropriate data types.
+#' @return A list containing 6 data elements recorded in NMEA-0183 GPVTG data
+#'   chunks. Elements are given appropriate data types.
 #' @examples
 #' # first GPGVTG msg from data('n38_demo')
 #' msg_1   <- "$GPVTG,208.02,T,,M,0.32,N,0.59,K,A*38"
@@ -98,7 +102,8 @@ process_gpvtg <- function(string = NULL) {
   vtg_reading <- unlist(strsplit(string, split = c(',')))
 
   out <- vector('list', length = 6)
-  names(out) <- c('TMG_Mag', 'TMG_True', 'speed_knots', 'speed_kmh', 'fix_type', 'checksum')
+  names(out) <- c('TMG_Mag', 'TMG_True', 'speed_knots', 'speed_kmh', 'fix_type',
+                  'checksum')
 
   # not sure how to best units the first three
   out[['TMG_Mag']] <- as.numeric(vtg_reading[2])
@@ -107,7 +112,8 @@ process_gpvtg <- function(string = NULL) {
   out[['speed_kmh']] <- as.numeric(vtg_reading[8])
   units(out[['speed_kmh']]) <- with(units::ud_units, km/h)
   # http://www.gpsinformation.org/dale/nmea.htm#2.3
-  # fix type: A = autonomous, D = differential, E = Estimated, N = not valid, S = Simulator
+  # fix type: A = autonomous, D = differential, E = Estimated, N = not valid,
+  # S = Simulator
   out[['fix_type']] <- gsub('\\*.*', '', vtg_reading[10])
   out[['checksum']] <- gsub('^[^\\*]*', '', vtg_reading[10])
   out
@@ -115,11 +121,11 @@ process_gpvtg <- function(string = NULL) {
 
 #' Process NMEA-0183 GPRMC messages
 #'
-#' This function pulls out reccommended minimum sentence data from NMEA-0183 GPRMC strings
-#' and dumps it into a list.
+#' This function pulls out reccommended minimum sentence data from NMEA-0183
+#' GPRMC strings and dumps it into a list.
 #' @param string A string with valid NMEA-0183 GPRMC structure.
-#' @return A list containing 9 data elements recorded in NMEA-0183 GPRMC data chunks. Elements
-#' are given appropriate data types.
+#' @return A list containing 9 data elements recorded in NMEA-0183 GPRMC data
+#'   chunks. Elements are given appropriate data types.
 #' @examples
 #' # first GPRMC msg from data('n38_demo')
 #' msg_1   <- "$GPRMC,015808.00,A,2726.53758,S,15126.05255,E,0.32,208.02,160318,,,A*48"
@@ -128,13 +134,16 @@ process_gpvtg <- function(string = NULL) {
 process_gprmc <- function(string = NULL) {
   rmc_reading <- unlist(strsplit(string, split = c(',')))
 
-  out <- vector('list', length = 9)
-  names(out) <- c('UTC_date_time', 'status', 'latitude', 'longitude', 'speed_knots', 'TMG_Mag',
-                  'mag_var', 'fix_type', 'checksum')
+  out <- vector('list', length = 10)
+  # http://aprs.gids.nl/nmea/#rmc
+  names(out) <- c('UTC_date_time', 'validity', 'latitude', 'longitude',
+                  'speed_knots', 'TMG_Mag', 'mag_var', 'mag_var_dir',
+                  'fix_type', 'checksum')
 
-  out[['UTC_date_time']] <- as.POSIXlt(rmc_reading[2], format = '%H%M%OS', tz = 'UTC')
-  # amend date, WARNING not sure about timezone effects here, not sure if date is supplied in UTC
-  # as time is, or if its locale-dependant.
+  out[['UTC_date_time']] <- as.POSIXlt(rmc_reading[2], format = '%H%M%OS',
+                                       tz = 'UTC')
+  # amend date, WARNING not sure about timezone effects here, not sure if date
+  # is supplied in UTC as time is, or if its locale-dependant.
   date <- as.POSIXlt(rmc_reading[10], format = '%d%m%y')
   out[['UTC_date_time']]$mday <- date$mday
   out[['UTC_date_time']]$mon  <- date$mon
@@ -142,14 +151,16 @@ process_gprmc <- function(string = NULL) {
   out[['UTC_date_time']]$wday <- date$wday
   out[['UTC_date_time']]$yday <- date$yday
 
-  out[['status']]   <- rmc_reading[3]
+  out[['validity']] <- switch(rmc_reading[3],
+                              "A" = "ok",
+                              "V" = "invalid")
   # see signal_conversion.R for lat/long retrieval. inputs shld be WGS84
   out[['latitude']]  <- gpgga_lat(rmc_reading[4],rmc_reading[5])
   out[['longitude']] <- gpgga_long(rmc_reading[6],rmc_reading[7])
   out[['speed_knots']] <- as.numeric(rmc_reading[8])
   out[['TMG_Mag']] <- as.numeric(rmc_reading[9])
-
   out[['mag_var']] <- as.numeric(rmc_reading[11])
+  out[['mag_var_dir']] <- as.character(rmc_reading[12])
   out[['fix_type']] <- gsub('\\*.*', '', rmc_reading[13])
   out[['checksum']] <- gsub('^[^\\*]*', '', rmc_reading[13])
   out
@@ -157,11 +168,11 @@ process_gprmc <- function(string = NULL) {
 
 #' Process NMEA-0183 GPGSA messages
 #'
-#' This function pulls out GPS DOP and active satellites data from NMEA-0183 GPGSA strings
-#' and dumps it into a list.
+#' This function pulls out GPS DOP and active satellites data from NMEA-0183
+#' GPGSA strings and dumps it into a list.
 #' @param string A string with valid NMEA-0183 GPGSA structure.
-#' @return A list containing n data elements recorded in NMEA-0183 GPGSA data chunks. Elements
-#' are given appropriate data types.
+#' @return A list containing n data elements recorded in NMEA-0183 GPGSA data
+#'   chunks. Elements are given appropriate data types.
 #' @examples
 #' # first GPGSA msg from data('n38_demo')
 #' msg_1   <- "$GPGSA,M,3,05,10,15,16,20,21,26,29,,,,,1.6,1.0,1.2*32"
@@ -181,7 +192,7 @@ process_gpgsa <- function(string = NULL) {
                               '1' = 'no fix',
                               '2' = '2D',
                               '3' = '3D')
-  # https://www.trimble.com/OEM_ReceiverHelp/V4.44/en/NMEA-0183messages_GSA.html:
+  # https://www.trimble.com/OEM_ReceiverHelp/V4.44/en/NMEA-0183messages_GSA.html
   # PRN number, 01 through 32 for GPS, 33 through 64 for SBAS, 64+ for GLONASS
   out[['sats_used']] <- as.numeric(gsa_reading[4:15])[!is.na(as.numeric(gsa_reading[4:15]))]
   # saves having to check other message types
@@ -200,12 +211,12 @@ process_gpgsa <- function(string = NULL) {
 #' This function pulls out satellites in view data from NMEA-0183 GPGSV strings
 #' and dumps it into a list.
 #' @param string A string with valid NMEA-0183 GPGSV structure.
-#' @return A list containing 15 data elements recorded in NMEA-0183 GPGSV data chunks. Elements
-#' are given appropriate data types.
-#' Note that depending on the number of satellites in view, up to three of these messages may
-#' exist for every GPS reading. Up to four satellites are reported on per string.
-#' Note also that SNR is receiver-dependant and should only be considered relative to other
-#' readings in the same dataset.
+#' @return A list containing 15 data elements recorded in NMEA-0183 GPGSV data
+#'   chunks. Elements are given appropriate data types. Note that depending on
+#'   the number of satellites in view, up to three of these messages may exist
+#'   for every GPS reading. Up to four satellites are reported on per string.
+#'   Note also that SNR is receiver-dependant and should only be considered
+#'   relative to other readings in the same dataset.
 #' @examples
 #' # first GPGSV msg from data('n38_demo')
 #' msg_1   <- "$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76"

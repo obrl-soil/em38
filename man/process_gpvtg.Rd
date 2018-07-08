@@ -10,12 +10,12 @@ process_gpvtg(string = NULL)
 \item{string}{A string with valid NMEA-0183 GPVTG structure.}
 }
 \value{
-A list containing 6 data elements recorded in NMEA-0183 GPVTG data chunks. Elements
-are given appropriate data types.
+A list containing 6 data elements recorded in NMEA-0183 GPVTG data
+  chunks. Elements are given appropriate data types.
 }
 \description{
-This function pulls out track made good and speed over ground data from NMEA-0183 GPVTG strings
-and dumps it into a list.
+This function pulls out track made good and speed over ground data from
+NMEA-0183 GPVTG strings and dumps it into a list.
 }
 \examples{
 # first GPGVTG msg from data('n38_demo')

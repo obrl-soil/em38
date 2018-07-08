@@ -23,8 +23,9 @@ get_cond <- function(signal = NULL) {
 #' @param signal Integer.
 #' @return Temperature in degrees C
 #' @keywords Internal
+#' @note The device's effective reporting resolution is ~0.32 degrees C.
 #' @examples
-#' channel_5 <- em38:::get_temp(30456)
+#' channel_5 <- em38:::get_temp(227)
 #'
 get_temp <- function(signal = NULL) {
   # J. Pawlowski (Geonics, Geomar), pers. comm. 2018-03-28

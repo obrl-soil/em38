@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Build Status](https://travis-ci.com/obrl-soil/em38.svg?branch=master)](https://travis-ci.com/obrl-soil/em38) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/obrl-soil/em38.svg?branch=master)](https://travis-ci.com/obrl-soil/em38) [![Coverage Status](https://img.shields.io/codecov/c/github/obrl-soil/em38/master.svg)](https://codecov.io/github/obrl-soil/em38?branch=master) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 em38
 ====

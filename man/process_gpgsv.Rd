@@ -10,12 +10,12 @@ process_gpgsv(string = NULL)
 \item{string}{A string with valid NMEA-0183 GPGSV structure.}
 }
 \value{
-A list containing 15 data elements recorded in NMEA-0183 GPGSV data chunks. Elements
-are given appropriate data types.
-Note that depending on the number of satellites in view, up to three of these messages may
-exist for every GPS reading. Up to four satellites are reported on per string.
-Note also that SNR is receiver-dependant and should only be considered relative to other
-readings in the same dataset.
+A list containing 15 data elements recorded in NMEA-0183 GPGSV data
+  chunks. Elements are given appropriate data types. Note that depending on
+  the number of satellites in view, up to three of these messages may exist
+  for every GPS reading. Up to four satellites are reported on per string.
+  Note also that SNR is receiver-dependant and should only be considered
+  relative to other readings in the same dataset.
 }
 \description{
 This function pulls out satellites in view data from NMEA-0183 GPGSV strings

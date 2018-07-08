@@ -16,8 +16,11 @@ Temperature in degrees C
 This function calculates temperature from an EM38-MK2 signal recieved on
 Channel 5 or 6.
 }
+\note{
+The device's effective reporting resolution is ~0.32 degrees C.
+}
 \examples{
-channel_5 <- em38:::get_temp(30456)
+channel_5 <- em38:::get_temp(227)
 
 }
 \keyword{Internal}
