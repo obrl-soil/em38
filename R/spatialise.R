@@ -89,7 +89,7 @@ em38_spatial <- function(n38_decoded = NULL,
         }
 
       # if no readings of the chosen out_mode exist in this sl,
-      if(nrow(readings) == 0) {
+      if(dim(readings)[1] == 0) {
         return(paste0('No readings were recorded with ', out_mode,
                       ' dipole mode on this survey line.'))
       } else {
@@ -130,7 +130,7 @@ em38_spatial <- function(n38_decoded = NULL,
         }
 
         # if all the locations were still borked,
-        if(nrow(loc_f) == 0) {
+        if(dim(loc_f)[1] == 0) {
           return('No readings with acceptable HDOP could be retrieved from this survey line.')
         } else {
 
@@ -144,7 +144,7 @@ em38_spatial <- function(n38_decoded = NULL,
         # remove readings outside first and last gps reading
         readings_in <-
           readings[readings$timestamp_ms > loc_f$timestamp_ms[1] &
-                     readings$timestamp_ms < loc_f$timestamp_ms[nrow(loc_f)], ]
+                     readings$timestamp_ms < loc_f$timestamp_ms[dim(loc_f)[1]], ]
 
         # nb might be able to add them back in later (not yet impemented)
         #readings_out <-
@@ -175,7 +175,8 @@ em38_spatial <- function(n38_decoded = NULL,
         # grouping by sequence is hard and this seems awful but whateverrrrr
         grp     <- rle(ifelse(is.na(all_data$HDOP), 1, 0))$lengths
         grp     <- data.frame('rle' = grp)
-        grp$grp <- c(rep(1:(nrow(grp) / 2), each = 2), ceiling(nrow(grp) / 2))
+        #grp$grp <- c(rep(1:(nrow(grp) / 2), each = 2), ceiling(nrow(grp) / 2))
+        grp$grp <- c(rep(seq.int(dim(grp)[1] / 2), each = 2), ceiling(dim(grp)[1] / 2))
         grp     <- split(grp, grp$grp)
         grp     <-
           sapply(grp, function(x) {

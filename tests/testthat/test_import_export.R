@@ -9,8 +9,8 @@ test_that(
     n38_mat <- n38_import(system.file("extdata", "em38_demo.N38", package = "em38")),
     expect_is(n38_mat, 'matrix'),
     expect_type(n38_mat, 'raw'),
-    expect_equal(ncol(n38_mat), 25L),
-    expect_equal(nrow(n38_mat), 20028L),
+    expect_equal(dim(n38_mat)[2], 25L),
+    expect_equal(dim(n38_mat)[1], 20028L),
     expect_equal(rawToChar(n38_mat[1,1]), "E"),
     expect_equal(rawToBits(n38_mat[1,1]), as.raw(c(1, 0, 1, 0, 0, 0, 1, 0)))
   )
@@ -26,8 +26,8 @@ test_that(
     expect_equal(length(n38_chunks), 2L),
     expect_is(n38_chunks[[1]], 'matrix'),
     expect_type(n38_chunks[[1]], 'raw'),
-    expect_equal(ncol(n38_chunks[[1]]), 25L),
-    expect_equal(nrow(n38_chunks[[1]]), 2L),
+    expect_equal(dim(n38_chunks[[1]])[2], 25L),
+    expect_equal(dim(n38_chunks[[1]])[1], 2L),
     expect_is(n38_chunks[[2]], 'list'),
     expect_equal(length(n38_chunks[[2]]), 7L)
   )
@@ -53,8 +53,8 @@ test_that(
     expect_equal(length(n38_decoded[[2]][[1]]), 5L),
     # sl1 cal_data
     expect_is(n38_decoded[[2]][[2]], 'data.frame'),
-    expect_equal(nrow(n38_decoded[[2]][[2]]), 6L),
-    expect_equal(ncol(n38_decoded[[2]][[2]]), 3L),
+    expect_equal(dim(n38_decoded[[2]][[2]])[1], 6L),
+    expect_equal(dim(n38_decoded[[2]][[2]])[2], 3L),
     # sl1 timer data
     expect_is(n38_decoded[[2]][[3]], 'list'),
     expect_equal(length(n38_decoded[[2]][[3]]), 2L),
@@ -62,14 +62,14 @@ test_that(
                  n38_decoded[[2]][[3]]$computer_time),
     # reading data
     expect_is(n38_decoded[[2]][[4]], 'data.frame'),
-    expect_equal(nrow(n38_decoded[[2]][[4]]), 3164L),
-    expect_equal(ncol(n38_decoded[[2]][[4]]), 10L),
+    expect_equal(dim(n38_decoded[[2]][[4]])[1], 3164L),
+    expect_equal(dim(n38_decoded[[2]][[4]])[2], 10L),
     expect_equal(n38_decoded[[2]][[4]]$marker[1], 'no marker'),
     expect_equal(n38_decoded[[2]][[4]]$mode[1], 'Vertical'),
     # location data
     expect_is(n38_decoded[[2]][[5]], 'data.frame'),
-    expect_equal(nrow(n38_decoded[[2]][[5]]), 4214L),
-    expect_equal(ncol(n38_decoded[[2]][[5]]), 4L),
+    expect_equal(dim(n38_decoded[[2]][[5]])[1], 4214L),
+    expect_equal(dim(n38_decoded[[2]][[5]])[2], 4L),
     # and the rest
     expect_is(n38_decoded[[2]][[6]], 'logical'),
     expect_is(n38_decoded[[2]][[7]], 'logical')

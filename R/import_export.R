@@ -56,9 +56,9 @@ n38_chunk <- function(n38_mat = NULL) {
   # get each survey line start and end row numbers into two vectors
   sl_starts <- which(rids == 'L')
   sl_ends   <- if(length(sl_starts) == 1) {
-    nrow(n38_mat)
+    dim(n38_mat)[1]
   } else {
-    c(sl_starts[2:length(sl_starts)] - 1, nrow(n38_mat))
+    c(sl_starts[2:length(sl_starts)] - 1, dim(n38_mat)[1])
   }
 
   out_list[2:length(out_list)] <- lapply(2:length(out_list), function(i) {
@@ -208,7 +208,7 @@ n38_decode <- function(chunks = NULL) {
     # lengths, and there are variable stretches of whitespace plus multiline
     # signifiers to deal with, what a fun time this was
     chunks[[i]][['location_data']] <-
-      if(nrow(chunks[[i]][['location_data']]) == 0) {
+      if(dim(chunks[[i]][['location_data']])[1] == 0) {
         NA
         } else {
           loc  <- rawToChar(unlist(t(chunks[[i]][['location_data']])),
@@ -248,13 +248,13 @@ n38_decode <- function(chunks = NULL) {
     }
 
     chunks[[i]][['new_station']] <-
-      if(nrow(chunks[[i]][['new_station']]) == 0) {
+      if(dim(chunks[[i]][['new_station']])[1] == 0) {
         NA
         } else {
           process_nstat(chunks[[i]][['new_station']])
         }
 
-    chunks[[i]][['comments']] <- if(nrow(chunks[[i]][['comments']]) == 0) {
+    chunks[[i]][['comments']] <- if(dim(chunks[[i]][['comments']])[1] == 0) {
       NA
       } else {
         process_comment(chunks[[i]][['comments']])
@@ -337,16 +337,17 @@ n38_to_m38 <- function(n38_decoded = NULL) {
     # must make it easier to recombine back-and-forth tracks
     n38_decoded[[i]]$reading_data$station <- if(n38_decoded[[i]]$sl_header$station_increment > 0) {
      seq(from = n38_decoded[[i]]$sl_header$start_station,
-         to = nrow(n38_decoded[[i]]$reading_data),
+         to = dim(n38_decoded[[i]]$reading_data)[1],
          by = n38_decoded[[i]]$sl_header$station_increment)
     } else {
       seq(from = n38_decoded[[i]]$sl_header$start_station,
-          to = n38_decoded[[i]]$sl_header$start_station - (nrow(n38_decoded[[i]]$reading_data) - 1),
+          to = n38_decoded[[i]]$sl_header$start_station - (dim(n38_decoded[[i]]$reading_data)[1] - 1),
           by = n38_decoded[[i]]$sl_header$station_increment)
     }
 
 
-    reading_split <- split(n38_decoded[[i]]$reading_data, 1:nrow(n38_decoded[[i]]$reading_data))
+    reading_split <- split(n38_decoded[[i]]$reading_data,
+                           seq.int(dim(n38_decoded[[i]]$reading_data)[1]))
     # slow :/
     readings <- purrr::map_chr(reading_split, function(row) {
 

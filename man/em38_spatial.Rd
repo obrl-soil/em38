@@ -4,8 +4,8 @@
 \alias{em38_spatial}
 \title{Spatialise EM38 data}
 \usage{
-em38_spatial(n38_decoded = NULL, hdop_filter = 3, out_mode = c("Vertical",
-  "Horizontal"))
+em38_spatial(n38_decoded = NULL, hdop_filter = 3,
+  out_mode = c("Vertical", "Horizontal"))
 }
 \arguments{
 \item{n38_decoded}{Nested list output by n38_decode}
