@@ -7,15 +7,19 @@
 process_timer(timer_rel = NULL)
 }
 \arguments{
-\item{timer_rel}{A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.}
+\item{timer_rel}{A matrix with 1 row and 25 columns, produced by
+\code{\link{n38_import}}.}
 }
 \value{
-A list containing 2 information elements recorded in N38 timer relation rows. Note that
-time will be returned in the local timezone.
+A list containing 2 information elements recorded in N38 timer
+  relation rows.
 }
 \description{
-This function pulls out timer relation data from N38 binaries and dumps it into a list.
- This is an internal function with no wider use case.
+This function pulls out timer relation data from N38 binaries and dumps it
+into a list. This is an internal function with no wider use case.
+}
+\note{
+Time will be returned in the local timezone.
 }
 \examples{
 data('n38_demo')

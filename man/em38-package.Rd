@@ -6,12 +6,13 @@
 \alias{em38-package}
 \title{em38: Process N38 binary files from EM38-MK2 sensors}
 \description{
-Interprets and decodes the '.N38' file format used by the Geonics EM38-MK2 ground conductivity
-meter, as described in its manual. Conversion to '.M38' format or an 'sf' point dataset is
-supported. This package offers an alternative to the existing format conversion software, which
-lacks a command-line interface and thus cannot be easily used in a reproducible workflow. Note
-that only a limited subset of the functionality available in the existing software has been
-replicated.
+Interprets and decodes the '.N38' file format used by the Geonics EM38-MK2
+ground conductivity meter, as described in its manual. Conversion to '.M38'
+format or an 'sf' point dataset is supported. This package offers an
+alternative to the existing format conversion software, which lacks a
+command-line interface and thus cannot be easily used in a reproducible
+workflow. Note that only a limited subset of the functionality available in
+the existing software has been replicated.
 }
 \references{
 Geonics Ltd. (2011)
@@ -19,6 +20,6 @@ Geonics Ltd. (2011)
   Computer Program Manual (Survey Data Reduction Manual)}. v 1.12, June 2011.
 }
 \author{
-\strong{Maintainer}: Lauren O'Brien \email{obrlsoilau@gmail.com}
+\strong{Maintainer}: Lauren O'Brien \email{obrlsoilau@gmail.com} (0000-0002-7336-2171)
 
 }

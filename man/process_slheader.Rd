@@ -7,14 +7,16 @@
 process_slheader(survline_header = NULL)
 }
 \arguments{
-\item{survline_header}{A matrix with 4 rows and 25 columns, produced by \code{\link{n38_import}}.}
+\item{survline_header}{A matrix with 4 rows and 25 columns, produced by
+\code{\link{n38_import}}.}
 }
 \value{
-A list containing 5 information elements recorded in N38 survey line headers.
+A list containing 5 information elements recorded in N38 survey line
+  headers.
 }
 \description{
-This function pulls out survey line header data from N38 binaries and dumps them into a list.
- This is an internal function with no wider use case.
+This function pulls out survey line header data from N38 binaries and dumps
+them into a list. This is an internal function with no wider use case.
 }
 \examples{
 data('n38_demo')

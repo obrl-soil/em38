@@ -1,9 +1,11 @@
 #' Process file header
 #'
-#' This function pulls out file header data from N38 binaries and dumps them in a list. This is an
-#' internal function with no wider use case.
-#' @param file_header A matrix with 2 rows and 25 columns, produced by \code{\link{n38_import}}.
-#' @return A list containing 9 information elements recorded in N38 file headers.
+#' This function pulls out file header data from N38 binaries and dumps them in
+#' a list. This is an internal function with no wider use case.
+#' @param file_header A matrix with 2 rows and 25 columns, produced by
+#'   \code{\link{n38_import}}.
+#' @return A list containing 9 information elements recorded in N38 file
+#'   headers.
 #' @keywords Internal
 #' @examples
 #' data('n38_demo')
@@ -11,7 +13,8 @@
 #' n38_fh <- em38:::process_fheader(n38_chunked[['file_header']])
 #'
 process_fheader <- function(file_header = NULL) {
-        out  <- vector('list', length = 9)
+
+  out        <- vector('list', length = 9)
   names(out) <- c(   'prog_file_id',  'version_no',  'survey_type',
                         'unit_type', 'dipole_mode',  'survey_mode',
                   'instrument_type',   'file_name', 'time_samples')
@@ -32,9 +35,7 @@ process_fheader <- function(file_header = NULL) {
   out[['instrument_type']] <- switch(rawToChar(file_header[1, 20]),
                                      '1' = 'EM38-MK2-1',
                                      '2' = 'EM38-MK2-2')
-
   out[['file_name']]       <- trimws(rawToChar(file_header[2, 3:10]))
-
   out[['time_samples']]    <- if(out[['survey_mode']] == 'Auto') {
     x <- as.numeric(rawToChar(file_header[2, 12:18]))
     attr(x, 'measurement_unit') <- 'Sample frequency in seconds'
@@ -50,10 +51,12 @@ process_fheader <- function(file_header = NULL) {
 
 #' Process survey line header
 #'
-#' This function pulls out survey line header data from N38 binaries and dumps them into a list.
-#'  This is an internal function with no wider use case.
-#' @param survline_header A matrix with 4 rows and 25 columns, produced by \code{\link{n38_import}}.
-#' @return A list containing 5 information elements recorded in N38 survey line headers.
+#' This function pulls out survey line header data from N38 binaries and dumps
+#' them into a list. This is an internal function with no wider use case.
+#' @param survline_header A matrix with 4 rows and 25 columns, produced by
+#'   \code{\link{n38_import}}.
+#' @return A list containing 5 information elements recorded in N38 survey line
+#'   headers.
 #' @keywords Internal
 #' @examples
 #' data('n38_demo')
@@ -61,9 +64,10 @@ process_fheader <- function(file_header = NULL) {
 #' n38_slh <- em38:::process_slheader(n38_chunked[['survey_line_1']][['sl_header']])
 #'
 process_slheader <- function(survline_header = NULL) {
-        out  <- vector('list', length = 5)
+
+  out        <- vector('list', length = 5)
   names(out) <- c('line_name', 'start_station', 'direction',
-                  'station_increment',     'timestamp')
+                  'station_increment', 'timestamp')
 
   out[['line_name']]         <-  trimws(rawToChar(survline_header[1, 2:9]))
   out[['start_station']]     <-  as.numeric(rawToChar(survline_header[2, 2:12]))
@@ -80,10 +84,12 @@ process_slheader <- function(survline_header = NULL) {
 
 #' Process calibration data
 #'
-#' This function pulls out calibration data from N38 binaries and dumps it into a list.
-#'  This is an internal function with no wider use case.
-#' @param cal_row A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
-#' @return A list containing 3 information elements recorded in N38 calibration rows.
+#' This function pulls out calibration data from N38 binaries and dumps it into
+#' a list. This is an internal function with no wider use case.
+#' @param cal_row A matrix with 1 row and 25 columns, produced by
+#'   \code{\link{n38_import}}.
+#' @return A list containing 3 information elements recorded in N38 calibration
+#'   rows.
 #' @keywords Internal
 #' @examples
 #' data('n38_demo')
@@ -91,8 +97,10 @@ process_slheader <- function(survline_header = NULL) {
 #' n38_cal1 <- em38:::process_cal(n38_chunked[['survey_line_1']][['cal_data']][1, ])
 #'
 process_cal <- function(cal_row = NULL) {
-        out     <- vector('list', length = 3)
-  names(out)    <- c('channel', 'cal_current', 'cal_former')
+
+  out        <- vector('list', length = 3)
+  names(out) <- c('channel', 'cal_current', 'cal_former')
+
   out[['channel']]     <- rawToChar(cal_row[2])
   out[['cal_current']] <- as.numeric(rawToChar(cal_row[3:12]))
   out[['cal_former']]  <- as.numeric(rawToChar(cal_row[14:23]))
@@ -102,11 +110,13 @@ process_cal <- function(cal_row = NULL) {
 
 #' Process timer relation data
 #'
-#' This function pulls out timer relation data from N38 binaries and dumps it into a list.
-#'  This is an internal function with no wider use case.
-#' @param timer_rel A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
-#' @return A list containing 2 information elements recorded in N38 timer relation rows. Note that
-#' time will be returned in the local timezone.
+#' This function pulls out timer relation data from N38 binaries and dumps it
+#' into a list. This is an internal function with no wider use case.
+#' @param timer_rel A matrix with 1 row and 25 columns, produced by
+#'   \code{\link{n38_import}}.
+#' @return A list containing 2 information elements recorded in N38 timer
+#'   relation rows.
+#' @note Time will be returned in the local timezone.
 #' @keywords Internal
 #' @examples
 #' data('n38_demo')
@@ -126,10 +136,12 @@ process_timer <- function(timer_rel = NULL) {
 
 #' Process instrument reading data
 #'
-#' This function pulls out instrument reading data from N38 binaries and dumps it into a list. This
-#' is an internal function with no wider use case.
-#' @param reading A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
-#' @return A list containing 10 data elements recorded in N38 instrument reading rows.
+#' This function pulls out instrument reading data from N38 binaries and dumps
+#' it into a list. This is an internal function with no wider use case.
+#' @param reading A matrix with 1 row and 25 columns, produced by
+#'   \code{\link{n38_import}}.
+#' @return A list containing 10 data elements recorded in N38 instrument reading
+#'   rows.
 #' @keywords Internal
 #' @examples
 #' data('n38_demo')
@@ -137,7 +149,8 @@ process_timer <- function(timer_rel = NULL) {
 #' n38_r1 <- em38:::process_reading(n38_chunked[['survey_line_1']][['reading_data']][1, ])
 #'
 process_reading <- function(reading = NULL) {
-        out  <- vector('list', length = 10)
+
+  out        <- vector('list', length = 10)
   names(out) <- c('indicator',  'marker', 'mode', 'cond_05', 'cond_1',
                   'IP_05', 'IP_1', 'temp_05', 'temp_1', 'timestamp_ms')
 
@@ -181,9 +194,10 @@ process_reading <- function(reading = NULL) {
 
 #' Process comment data
 #'
-#' This function pulls out comment data from N38 binaries and dumps it into a list.
-#'  This is an internal function with no wider use case.
-#' @param comment A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
+#' This function pulls out comment data from N38 binaries and dumps it into a
+#' list. This is an internal function with no wider use case.
+#' @param comment A matrix with 1 row and 25 columns, produced by
+#'   \code{\link{n38_import}}.
 #' @return A list containing 2 data elements recorded in N38 comment rows.
 #' @keywords Internal
 #' @examples \dontrun{
@@ -194,18 +208,22 @@ process_reading <- function(reading = NULL) {
 #' }
 #'
 process_comment <- function(comment = NULL) {
-        out  <- vector('list', length = 2)
+
+  out        <- vector('list', length = 2)
   names(out) <- c('comment', 'timestamp_ms')
 
   out[['comment']]       <- rawToChar(comment[2:12])
   out[['timestamp_ms']]  <- as.integer(rawToChar(comment[16:25]))
+
+  out
 }
 
 #' Process new station data
 #'
-#' This function pulls out new station data from N38 binaries and dumps it into a list.
-#'  This is an internal function with no wider use case.
-#' @param nstat A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.
+#' This function pulls out new station data from N38 binaries and dumps it into
+#' a list. This is an internal function with no wider use case.
+#' @param nstat A matrix with 1 row and 25 columns, produced by
+#'   \code{\link{n38_import}}.
 #' @return A list containing 2 data elements recorded in N38 new station rows.
 #' @keywords Internal
 #' @examples \dontrun{
@@ -216,9 +234,12 @@ process_comment <- function(comment = NULL) {
 #' }
 #'
 process_nstat <- function(nstat = NULL) {
-        out  <- vector('list', length = 2)
+
+  out        <- vector('list', length = 2)
   names(out) <- c('new_station', 'timestamp_ms')
 
   out[['new_station']]  <- as.integer(rawToChar(nstat[2:12]))
   out[['timestamp_ms']] <- as.integer(rawToChar(nstat[16:25]))
+
+  out
 }

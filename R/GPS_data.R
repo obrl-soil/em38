@@ -43,7 +43,7 @@ nmea_check <- function(string = NULL) {
 process_gpgga <- function(string = NULL) {
   gga_reading <- unlist(strsplit(string, split = c(',')))
 
-  out <- vector('list', length = 11)
+  out        <- vector('list', length = 11)
   names(out) <- c('UTC_time', 'latitude', 'longitude', 'quality', 'n_sats',
                   'HDOP', 'antenna_alt', 'geoid_sep', 'difcor_age_s',
                   'base_stn', 'checksum')
@@ -101,7 +101,7 @@ process_gpgga <- function(string = NULL) {
 process_gpvtg <- function(string = NULL) {
   vtg_reading <- unlist(strsplit(string, split = c(',')))
 
-  out <- vector('list', length = 6)
+  out        <- vector('list', length = 6)
   names(out) <- c('TMG_Mag', 'TMG_True', 'speed_knots', 'speed_kmh', 'fix_type',
                   'checksum')
 
@@ -134,7 +134,7 @@ process_gpvtg <- function(string = NULL) {
 process_gprmc <- function(string = NULL) {
   rmc_reading <- unlist(strsplit(string, split = c(',')))
 
-  out <- vector('list', length = 10)
+  out        <- vector('list', length = 10)
   # http://aprs.gids.nl/nmea/#rmc
   names(out) <- c('UTC_date_time', 'validity', 'latitude', 'longitude',
                   'speed_knots', 'TMG_Mag', 'mag_var', 'mag_var_dir',
@@ -181,7 +181,7 @@ process_gprmc <- function(string = NULL) {
 process_gpgsa <- function(string = NULL) {
   gsa_reading <- unlist(strsplit(string, split = c(',')))
 
-  out <- vector('list', length = 8)
+  out        <- vector('list', length = 8)
   names(out) <- c('fix_selection_mode', 'fix_type', 'sats_used', 'n_sats',
                   'PDOP', 'HDOP', 'VDOP', 'checksum')
 
@@ -225,7 +225,7 @@ process_gpgsa <- function(string = NULL) {
 process_gpgsv <- function(string = NULL) {
   gsv_reading <- unlist(strsplit(string, split = c(',')))
 
-  out <- vector('list', length = 19)
+  out        <- vector('list', length = 19)
   names(out) <- c('sentence_x_of_y', 'n_sats_in_view',
                   'sat_1_PRN', 'sat_1_elevation', 'sat_1_azimuth', 'sat_1_SNR',
                   'sat_2_PRN', 'sat_2_elevation', 'sat_2_azimuth', 'sat_2_SNR',

@@ -7,14 +7,16 @@
 process_reading(reading = NULL)
 }
 \arguments{
-\item{reading}{A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.}
+\item{reading}{A matrix with 1 row and 25 columns, produced by
+\code{\link{n38_import}}.}
 }
 \value{
-A list containing 10 data elements recorded in N38 instrument reading rows.
+A list containing 10 data elements recorded in N38 instrument reading
+  rows.
 }
 \description{
-This function pulls out instrument reading data from N38 binaries and dumps it into a list. This
-is an internal function with no wider use case.
+This function pulls out instrument reading data from N38 binaries and dumps
+it into a list. This is an internal function with no wider use case.
 }
 \examples{
 data('n38_demo')

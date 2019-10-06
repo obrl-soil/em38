@@ -7,7 +7,8 @@
 #'   datalogger (and optionally, a GPS device).
 #' @return A matrix with n rows and 25 columns, containing raw bytes.
 #' @examples
-#' n38_mat <- n38_import(system.file("extdata", "em38_demo.N38", package = "em38"))
+#' n38_mat <-
+#'   n38_import(system.file("extdata", "em38_demo.N38", package = "em38"))
 #' @export
 #'
 n38_import <- function(path = NULL) {
@@ -75,7 +76,8 @@ n38_chunk <- function(n38_mat = NULL) {
     sl_rids <- rids[sl_starts[i - 1]:sl_ends[i - 1]]
 
     # survey line header
-    sline_list[['sl_header']] <- sl_x[which(sl_rids %in% c('L', 'B', 'A', 'Z')), ]
+    sline_list[['sl_header']] <-
+      sl_x[which(sl_rids %in% c('L', 'B', 'A', 'Z')), ]
 
     # calibration data
     sline_list[['cal_data']] <- sl_x[which(sl_rids == 'O'), ]
@@ -143,8 +145,9 @@ n38_decode <- function(chunks = NULL) {
                                        MARGIN = 1,
                                        FUN = function(x) process_cal(x))
     chunks[[i]][['cal_data']] <- purrr::transpose(chunks[[i]][['cal_data']])
-    chunks[[i]][['cal_data']] <- as.data.frame(lapply(chunks[[i]][['cal_data']], unlist),
-                                               stringsAsFactors = FALSE)
+    chunks[[i]][['cal_data']] <-
+      as.data.frame(lapply(chunks[[i]][['cal_data']], unlist),
+                    stringsAsFactors = FALSE)
 
     chunks[[i]][['timer_data']] <- process_timer(chunks[[i]][['timer_data']])
     # adjust date to that given by survey line header
@@ -335,7 +338,8 @@ n38_to_m38 <- function(n38_decoded = NULL) {
     # add station data to readings
     # increment is -ve when GPS not in use and GRD dir is South or West
     # must make it easier to recombine back-and-forth tracks
-    n38_decoded[[i]]$reading_data$station <- if(n38_decoded[[i]]$sl_header$station_increment > 0) {
+    n38_decoded[[i]]$reading_data$station <-
+      if(n38_decoded[[i]]$sl_header$station_increment > 0) {
      seq(from = n38_decoded[[i]]$sl_header$start_station,
          to = dim(n38_decoded[[i]]$reading_data)[1],
          by = n38_decoded[[i]]$sl_header$station_increment)
@@ -410,8 +414,9 @@ n38_to_m38 <- function(n38_decoded = NULL) {
   }
 
   # only some location messages are output
-  loc_subset <- n38_decoded[[i]]$location_data[n38_decoded[[i]]$location_data$TYPE %in%
-                                                 c('GPGGA', 'GPGSA') , ]
+  loc_subset <-
+    n38_decoded[[i]]$location_data[n38_decoded[[i]]$location_data$TYPE %in%
+                                     c('GPGGA', 'GPGSA') , ]
 
   locations <- apply(loc_subset, MARGIN = 1, FUN = function(row) {
       sentence <- paste0('$', row['TYPE'], ',', row['MESSAGE'], ',')
@@ -420,14 +425,16 @@ n38_to_m38 <- function(n38_decoded = NULL) {
                        (as.numeric(row['timestamp_ms']) -
                           n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
                      format = '%H:%M:%OS')
-      padding <- paste0(rep.int(' ', times = 103 - (nchar(sentence) + nchar(timestamp))),
-                        collapse = '')
+      padding <-
+        paste0(rep.int(' ', times = 103 - (nchar(sentence) + nchar(timestamp))),
+               collapse = '')
       paste0(sentence, padding, timestamp)
     })
 
-  readings_done  <- data.frame('DATA' = readings,
-                               'TIME' = n38_decoded[[i]]$reading_data$timestamp_ms,
-                               stringsAsFactors = FALSE)
+  readings_done <-
+    data.frame('DATA' = readings,
+               'TIME' = n38_decoded[[i]]$reading_data$timestamp_ms,
+               stringsAsFactors = FALSE)
 
   nstat_done  <- if(!is.na(n38_decoded[[i]]$new_station)) {
     data.frame('DATA' = new_stations,
@@ -455,7 +462,8 @@ n38_to_m38 <- function(n38_decoded = NULL) {
                                stringsAsFactors = FALSE)
 
   all_sl_readings <-
-    do.call('rbind', list(readings_done, nstat_done, comments_done, locations_done))
+    do.call('rbind',
+            list(readings_done, nstat_done, comments_done, locations_done))
   all_sl_readings <- all_sl_readings[complete.cases(all_sl_readings), ]
 
   # order by timestamp asc

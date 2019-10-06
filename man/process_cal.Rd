@@ -7,14 +7,16 @@
 process_cal(cal_row = NULL)
 }
 \arguments{
-\item{cal_row}{A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.}
+\item{cal_row}{A matrix with 1 row and 25 columns, produced by
+\code{\link{n38_import}}.}
 }
 \value{
-A list containing 3 information elements recorded in N38 calibration rows.
+A list containing 3 information elements recorded in N38 calibration
+  rows.
 }
 \description{
-This function pulls out calibration data from N38 binaries and dumps it into a list.
- This is an internal function with no wider use case.
+This function pulls out calibration data from N38 binaries and dumps it into
+a list. This is an internal function with no wider use case.
 }
 \examples{
 data('n38_demo')

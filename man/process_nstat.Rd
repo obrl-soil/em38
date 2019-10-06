@@ -7,14 +7,15 @@
 process_nstat(nstat = NULL)
 }
 \arguments{
-\item{nstat}{A matrix with 1 row and 25 columns, produced by \code{\link{n38_import}}.}
+\item{nstat}{A matrix with 1 row and 25 columns, produced by
+\code{\link{n38_import}}.}
 }
 \value{
 A list containing 2 data elements recorded in N38 new station rows.
 }
 \description{
-This function pulls out new station data from N38 binaries and dumps it into a list.
- This is an internal function with no wider use case.
+This function pulls out new station data from N38 binaries and dumps it into
+a list. This is an internal function with no wider use case.
 }
 \examples{
 \dontrun{

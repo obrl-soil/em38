@@ -7,14 +7,16 @@
 process_fheader(file_header = NULL)
 }
 \arguments{
-\item{file_header}{A matrix with 2 rows and 25 columns, produced by \code{\link{n38_import}}.}
+\item{file_header}{A matrix with 2 rows and 25 columns, produced by
+\code{\link{n38_import}}.}
 }
 \value{
-A list containing 9 information elements recorded in N38 file headers.
+A list containing 9 information elements recorded in N38 file
+  headers.
 }
 \description{
-This function pulls out file header data from N38 binaries and dumps them in a list. This is an
-internal function with no wider use case.
+This function pulls out file header data from N38 binaries and dumps them in
+a list. This is an internal function with no wider use case.
 }
 \examples{
 data('n38_demo')
