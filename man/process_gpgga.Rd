@@ -10,9 +10,8 @@ process_gpgga(string = NULL)
 \item{string}{A string with valid NMEA-0183 GPGGA structure.}
 }
 \value{
-A list containing 15 data elements recorded in NMEA-0183 GPGGA data
-  chunks. Elements are given appropriate data types. NB UTC time is returned
-  as POSIXlt, so Sys.date() comes along for the ride.
+A list containing the data elements recorded in NMEA-0183 GPGGA data
+  chunks. Elements are given appropriate R data types.
 }
 \description{
 This function pulls out position fix data from NMEA-0183 GPGGA strings and

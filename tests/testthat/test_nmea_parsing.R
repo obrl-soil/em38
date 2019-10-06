@@ -22,7 +22,7 @@ test_that(
     msg <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79",
     expect_type(process_gpgga(msg), 'list'),
     expect_length(process_gpgga(msg), 11L),
-    expect_is(process_gpgga(msg)[[1]], class = 'POSIXlt'),
+    expect_is(process_gpgga(msg)[[1]], class = 'POSIXct'),
     expect_equal(process_gpgga(msg)$base_stn, NA)
   )
 )
@@ -46,7 +46,7 @@ test_that(
     msg <- "$GPRMC,015808.00,A,2726.53758,S,15126.05255,E,0.32,208.02,160318,,,A*48",
     expect_type(process_gprmc(msg), 'list'),
     expect_length(process_gprmc(msg), 10L),
-    expect_is(process_gprmc(msg)$UTC_date_time, 'POSIXlt'),
+    expect_is(process_gprmc(msg)$UTC_date_time, 'POSIXct'),
     expect_equal(format(process_gprmc(msg)$UTC_date_time), '2018-03-16 01:58:08'),
     expect_equal(process_gprmc(msg)$fix_type, 'A')
   )

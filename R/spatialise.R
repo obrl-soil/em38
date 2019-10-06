@@ -14,10 +14,9 @@
 #'
 get_loc_data <- function(block = NULL) {
 
-  # all the interesting stuff is in the first one
-  gpgga  <-
-    process_gpgga(paste0(block[, c('TYPE', 'MESSAGE')][block$TYPE == 'GPGGA',],
-                         collapse = ','))
+  # all the interesting stuff is in the GPGGA message
+  gpgga  <- block[block$TYPE == 'GPGGA', ]
+  gpgga  <- process_gpgga(toString(paste0(gpgga[[1]][1], ',', gpgga[[2]][1])))
 
   ## keeping these for later but no need to decode the entire block just yet
   #gpvtg <- em38:::process_gpvtg(paste0('$GPVTG,', x$MESSAGE[x$TYPE == 'GPVTG']))
@@ -32,7 +31,7 @@ get_loc_data <- function(block = NULL) {
              'HDOP'         = gpgga[['HDOP']],
              'CHKSUM'       = block$CHKSUM[block$TYPE == 'GPGGA'],
              'timestamp_ms' = block$timestamp_ms[block$TYPE == 'GPGGA'])
-  # if this fails, suspect #1 is multiple GPGGA messages in block suspect #2 is
+  # if this fails it'll likely be that messages are coming from
   # a GPS device that doesn't return GPGGA (e.g. GLGPA, or GPRMC)
   # will defo need to add handlers for GLONASS and other systems but need test
   # data
@@ -74,6 +73,11 @@ em38_spatial <- function(n38_decoded = NULL,
       return('This survey line contains no embedded location data.')
     }
 
+    # if input had no readings recorded
+    if(all(is.na(n38_decoded[[i]][['reading_data']]))) {
+      return('This survey line contains no data.')
+    }
+
     ### get reading data and tidy it up
     readings <- n38_decoded[[i]][['reading_data']]
 
@@ -84,7 +88,7 @@ em38_spatial <- function(n38_decoded = NULL,
     loc_s <- split(loc, loc$group)
     # drop any chunks that don't have a GPGGA message (usually a start/pause
     # error)
-    keep <-sapply(loc_s, function(x) {
+    keep <- sapply(loc_s, function(x) {
       if(any(x$TYPE %in% 'GPGGA')) { TRUE } else { FALSE }
       })
     loc_s <- loc_s[keep]

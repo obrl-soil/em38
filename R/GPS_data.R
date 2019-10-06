@@ -31,9 +31,8 @@ nmea_check <- function(string = NULL) {
 #' This function pulls out position fix data from NMEA-0183 GPGGA strings and
 #' dumps it into a list.
 #' @param string A string with valid NMEA-0183 GPGGA structure.
-#' @return A list containing 15 data elements recorded in NMEA-0183 GPGGA data
-#'   chunks. Elements are given appropriate data types. NB UTC time is returned
-#'   as POSIXlt, so Sys.date() comes along for the ride.
+#' @return A list containing the data elements recorded in NMEA-0183 GPGGA data
+#'   chunks. Elements are given appropriate R data types.
 #' @examples
 #' # first GPGGA msg from data('n38_demo')
 #' msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
@@ -44,18 +43,18 @@ process_gpgga <- function(string = NULL) {
   gga_reading <- unlist(strsplit(string, split = c(',')))
 
   out        <- vector('list', length = 11)
-  names(out) <- c('UTC_time', 'latitude', 'longitude', 'quality', 'n_sats',
+  names(out) <- c('UTC_time', 'latitude', 'longitude', 'fix_quality', 'n_sats',
                   'HDOP', 'antenna_alt', 'geoid_sep', 'difcor_age_s',
                   'base_stn', 'checksum')
 
-  # ignore date, time itself is fine
-  out[['UTC_time']]  <- as.POSIXlt(gga_reading[2], format = '%H%M%OS',
+  # ignore date, time itself is fine. don't need lt either
+  out[['UTC_time']]  <- as.POSIXct(gga_reading[2], format = '%H%M%OS',
                                    tz = 'UTC')
 
   # see signal_conversion.R for lat/long retrieval. inputs shld be WGS84
   out[['latitude']]  <- gpgga_lat(gga_reading[3],gga_reading[4])
   out[['longitude']] <- gpgga_long(gga_reading[5],gga_reading[6])
-  out[['quality']]   <- gga_reading[7]
+  out[['fix_quality']]   <- gga_reading[7] # allowed: 0-9
   out[['n_sats']]    <- as.integer(gga_reading[8])
   out[['HDOP']]      <- as.numeric(gga_reading[9])
   out[['antenna_alt']] <- as.numeric(gga_reading[10])
@@ -64,8 +63,8 @@ process_gpgga <- function(string = NULL) {
   out[['geoid_sep']] <- as.numeric(gga_reading[12])
   # same here
   units(out[['geoid_sep']]) <- with(units::ud_units, m)
-  # only in use if differential gps is (quality == '2', possibly some other vals
-  # as well)
+  # only in use if differential gps is (fix_quality == '2', possibly some other
+  # vals as well)
   out[['difcor_age_s']] <-  as.numeric(gga_reading[14])
   # only in use if differential GPS is
   # and it isn't properly comma delimited jfc whyyyyyy >:-(
@@ -150,6 +149,7 @@ process_gprmc <- function(string = NULL) {
   out[['UTC_date_time']]$year <- date$year
   out[['UTC_date_time']]$wday <- date$wday
   out[['UTC_date_time']]$yday <- date$yday
+  out[['UTC_date_time']] <- as.POSIXct(out[['UTC_date_time']])
 
   out[['validity']] <- switch(rmc_reading[3],
                               "A" = "ok",
