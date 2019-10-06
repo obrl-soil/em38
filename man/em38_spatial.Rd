@@ -4,8 +4,7 @@
 \alias{em38_spatial}
 \title{Spatialise EM38 data}
 \usage{
-em38_spatial(n38_decoded = NULL, hdop_filter = 3,
-  out_mode = c("Vertical", "Horizontal"))
+em38_spatial(n38_decoded = NULL, hdop_filter = 3)
 }
 \arguments{
 \item{n38_decoded}{Nested list output by n38_decode}
@@ -13,9 +12,6 @@ em38_spatial(n38_decoded = NULL, hdop_filter = 3,
 \item{hdop_filter}{Numeric, discard GPS data where the Horizontal Dilution of
 Precision is greater than this number. Defaults to 3 metres. Set to NULL to
 keep all readings.}
-
-\item{out_mode}{Character, em38 dipole mode. Output dataset can only contain
-Vertical or Horizontal data, never both.}
 }
 \value{
 An sf data frame with sfc_POINT geometry. WGS84 projection. If the
@@ -34,6 +30,6 @@ Input n38_decoded object should be of survey type 'GPS'. If not, the
 data('n38_demo')
 n38_chunks  <- n38_chunk(n38_demo)
 n38_decoded <- n38_decode(n38_chunks)
-em38_points <- em38_spatial(n38_decoded, 3, 'Vertical')
+em38_points <- em38_spatial(n38_decoded, 3)
 
 }

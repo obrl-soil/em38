@@ -30,32 +30,20 @@ test_that(
     data('n38_demo'),
     n38_chunks  <- n38_chunk(n38_demo),
     n38_decoded <- n38_decode(n38_chunks),
-    n38_sf <- em38_spatial(n38_decoded, 3, 'Vertical'),
+    n38_sf <- em38_spatial(n38_decoded, 3),
     expect_is(n38_sf, 'sf'),
-    expect_equal(dim(n38_sf)[1], 3162),
-    expect_equal(dim(n38_sf)[2], 7),
+    expect_equal(dim(n38_sf)[1], 3164L),
+    expect_equal(dim(n38_sf)[2], 9L),
     expect_equal(sf::st_crs(n38_sf)$proj4string,
                  "+proj=longlat +datum=WGS84 +no_defs"),
-    expect_equal(as.numeric(sf::st_bbox(n38_sf)[1]), 151.434158912587),
+    expect_equal(sf::st_bbox(n38_sf)[[1]], 151.4341589),
     # test missing loc data
     n38_noloc <- n38_decoded,
     n38_noloc$survey_line_1$location_data <- NA,
     expect_equal(em38_spatial(n38_noloc),
                  'This survey line contains no embedded location data.'),
-    # test poorly defined out_mode
-    expect_equal(em38_spatial(n38_decoded, 3, 'vertical'),
-                 "Please check the value of `out_mode`."),
-    expect_equal(em38_spatial(n38_decoded, 3),
-                 "Please specify `out_mode`."),
-    # test no readings of out_mode in this dataset
-    n38_nov <- n38_decoded,
-    n38_nov$survey_line_1$reading_data <-
-      n38_nov$survey_line_1$reading_data[
-        n38_nov$survey_line_1$reading_data$mode == 'Horizontal', ],
-    expect_equal(em38_spatial(n38_nov, 3, 'Vertical'),
-                 'No readings were recorded with Vertical dipole mode on this survey line.'),
     # test no good HDOP
-    expect_equal(em38_spatial(n38_decoded, 0.1, 'Vertical'),
+    expect_equal(em38_spatial(n38_decoded, 0.1),
                  'No readings with acceptable HDOP could be retrieved from this survey line.')
   )
 )
@@ -66,26 +54,17 @@ test_that(
   c(
     n38_sf <-
       n38_to_points(path = system.file("extdata", "em38_demo.N38",
-                                       package = "em38"),
-                    hdop_filter = 3, out_mode = 'Vertical'),
+                                       package = "em38"), hdop_filter = 3),
     expect_is(n38_sf, 'sf'),
-    expect_equal(dim(n38_sf)[1], 3162),
-    expect_equal(dim(n38_sf)[2], 7),
+    expect_equal(dim(n38_sf)[1], 3164),
+    expect_equal(dim(n38_sf)[2], 9),
     expect_equal(sf::st_crs(n38_sf)$proj4string,
                  "+proj=longlat +datum=WGS84 +no_defs"),
-    expect_equal(as.numeric(sf::st_bbox(n38_sf)[1]), 151.434158912587),
-    expect_equal(n38_to_points(path = system.file("extdata", "em38_demo.N38",
-                                                  package = "em38"),
-                               hdop_filter = 3, out_mode = 'vertical'),
-                 "Please check the value of `out_mode`."),
-    expect_equal(n38_to_points(path = system.file("extdata", "em38_demo.N38",
-                                                  package = "em38"),
-                               hdop_filter = 3),
-                 "Please specify `out_mode`."),
+    expect_equal(sf::st_bbox(n38_sf)[[1]], 151.4341589),
     # test no good HDOP
     expect_equal(n38_to_points(path = system.file("extdata", "em38_demo.N38",
                                                   package = "em38"),
-                               hdop_filter = 0.1, out_mode = 'Vertical'),
+                               hdop_filter = 0.1),
                  'No readings with acceptable HDOP could be retrieved from this survey line.')
   )
 )

@@ -42,11 +42,12 @@ library(em38)
 
 # all-in-one wrapper function:
 em38_sf  <- n38_to_points(path = system.file("extdata", "em38_demo.n38", package = "em38"),
-                          hdop_filter = 3, out_mode = 'Vertical')
+                          hdop_filter = 3)
 
 
 # Plot spatialised output (calibrated conductivity for coil separation 0.5m)
-plot(em38_sf['cond_05'], pch = 20)
+plot(em38_sf[em38_sf$mode == 'Vertical', 'cond_05'], pch = 20, 
+     main = 'Conductivity, Vertical Dipole Mode, Coil Separation 1.0m')
 ```
 
 Its surprisingly difficult to walk in a straight line across a paddock :no_mouth:
@@ -65,7 +66,7 @@ m38_example <- n38_to_m38(n38_decoded)
 # write to file as e.g. write(m38_example, paste0('m38_from_R_', Sys.Date(), '.m38'))
 
 # spatialise the decoded data
-em38_sf  <- em38_spatial(n38_decoded, hdop_filter = 3, out_mode = 'Vertical')
+em38_sf  <- em38_spatial(n38_decoded, hdop_filter = 3)
 
 ```
 

@@ -46,8 +46,6 @@ get_loc_data <- function(block = NULL) {
 #' @param hdop_filter Numeric, discard GPS data where the Horizontal Dilution of
 #'   Precision is greater than this number. Defaults to 3 metres. Set to NULL to
 #'   keep all readings.
-#' @param out_mode Character, em38 dipole mode. Output dataset can only contain
-#'   Vertical or Horizontal data, never both.
 #' @return An sf data frame with sfc_POINT geometry. WGS84 projection. If the
 #'   n38_decoded object contains more than one survey line, a list of sf objects
 #'   is returned - one for each line.
@@ -58,7 +56,7 @@ get_loc_data <- function(block = NULL) {
 #' data('n38_demo')
 #' n38_chunks  <- n38_chunk(n38_demo)
 #' n38_decoded <- n38_decode(n38_chunks)
-#' em38_points <- em38_spatial(n38_decoded, 3, 'Vertical')
+#' em38_points <- em38_spatial(n38_decoded, 3)
 #'
 #' @importFrom dplyr bind_rows group_by lead lag mutate ungroup
 #' @importFrom sf st_as_sf
@@ -66,169 +64,138 @@ get_loc_data <- function(block = NULL) {
 #' @importFrom rlang .data
 #' @export
 em38_spatial <- function(n38_decoded = NULL,
-                         hdop_filter = 3,
-                         out_mode = c('Vertical', 'Horizontal')) {
+                         hdop_filter = 3) {
   out <- lapply(2:length(n38_decoded), function(i) {
-    # stop if input had no embedded GPS data
+
+    # if input had no embedded GPS data
     if(all(is.na(n38_decoded[[i]][['location_data']]))) {
       # better way? this will handle where some survey lines are ok and others
       # not at least
       return('This survey line contains no embedded location data.')
-    } else {
+    }
 
-      ### get reading data and tidy it up
-      readings <- n38_decoded[[i]][['reading_data']]
+    ### get reading data and tidy it up
+    readings <- n38_decoded[[i]][['reading_data']]
 
-      # filter readings to chosen dipole mode
-      readings <- if(length(out_mode) != 1) { # :/
-        return("Please specify `out_mode`.")
-      } else if(out_mode %in% c('Vertical', 'Horizontal')) {
-        readings[readings$mode == out_mode, ]
-        } else {
-          return("Please check the value of `out_mode`.")
-        }
+    # pull out location data and group it by repeating sequence of records
+    loc         <- n38_decoded[[i]][['location_data']]
+    loc$lag_chk <- ifelse(loc$TYPE == loc$TYPE[1], TRUE, FALSE)
+    loc$group   <- cumsum(loc$lag_chk) # can't use CHKSUM bc NA stuffs grouping
+    loc_s <- split(loc, loc$group)
+    # drop any chunks that don't have a GPGGA message (usually a start/pause
+    # error)
+    keep <-sapply(loc_s, function(x) {
+      if(any(x$TYPE %in% 'GPGGA')) { TRUE } else { FALSE }
+      })
+    loc_s <- loc_s[keep]
+    # decode messages and keep only the essential data
+    loc_s <- lapply(loc_s, function(x) {
+      get_loc_data(x)
+      })
+    loc_f <- do.call('rbind', loc_s)
 
-      # if no readings of the chosen out_mode exist in this sl,
-      if(dim(readings)[1] == 0) {
-        return(paste0('No readings were recorded with ', out_mode,
-                      ' dipole mode on this survey line.'))
+    # remove checksum failures
+    loc_f <- loc_f[loc_f$CHKSUM == TRUE, ]
+
+    # filter out low-precision locations and also some dud readings
+    # (checksum passed but message still missing essential data)
+    # note that this is not done by the nmea parser on purpose - prefer
+    # record sequence intact for grouping above
+    loc_f <- if(!is.null(hdop_filter)) {
+      x <- loc_f[loc_f$HDOP < hdop_filter,]
+      x[!is.na(x$HDOP), ]
       } else {
+        loc_f[!is.na(loc_f$HDOP), ]
+      }
 
-        # pull out location data and group it by repeating sequence of records
-        loc         <- n38_decoded[[i]][['location_data']]
-        loc$lag_chk <- ifelse(loc$TYPE == loc$TYPE[1], TRUE, FALSE)
-        loc$group   <- cumsum(loc$lag_chk)
-        loc_s <- split(loc, loc$group)
-        # drop any chunks that don't have a GPGGA message (usually a start/pause
-        # error)
-        keep <-
-          sapply(loc_s, function(x)
-            if (any(x$TYPE %in% 'GPGGA')) {
-              TRUE
-            } else {
-              FALSE
-            })
-        loc_s <- loc_s[keep]
-        # decode messages and keep only the essential data
-        loc_s <- lapply(loc_s, function(x) {
-          get_loc_data(x)
-        })
-        loc_f <- do.call('rbind', loc_s)
+    # if all the locations were still borked,
+    if(dim(loc_f)[1] == 0) {
+      return('No readings with acceptable HDOP could be retrieved from this survey line.')
+      }
 
-        # remove checksum failures
-        loc_f <- loc_f[loc_f$CHKSUM == TRUE, ]
+    # add lead(lat) and lead(long) for interpolation, plus time lag between
+    # readings. Timestamps are proxying for distance fractions later
+    loc_f$LEAD_LAT  <- dplyr::lead(loc_f$LATITUDE)
+    loc_f$LEAD_LONG <- dplyr::lead(loc_f$LONGITUDE)
+    loc_f$TS_LAG    <- dplyr::lead(loc_f$timestamp_ms) - loc_f$timestamp_ms
 
-        # filter out low-precision locations and also some dud readings
-        # (checksum passed but message still missing essential data)
-        # note that this is not done by the nmea parser on purpose - prefer
-        # record sequence intact for grouping above
-        loc_f <- if (!is.null(hdop_filter)) {
-          x <- loc_f[loc_f$HDOP < hdop_filter,]
-          x[!is.na(x$HDOP), ]
-        } else {
-          loc_f[!is.na(loc_f$HDOP), ]
-        }
+    # remove readings outside first and last gps reading
+    readings_in <-
+      readings[readings$timestamp_ms > loc_f$timestamp_ms[1] &
+                 readings$timestamp_ms < loc_f$timestamp_ms[dim(loc_f)[1]], ]
 
-        # if all the locations were still borked,
-        if(dim(loc_f)[1] == 0) {
-          return('No readings with acceptable HDOP could be retrieved from this survey line.')
-        } else {
+    # nb might be able to add them back in later (not yet impemented)
+    #readings_out <-
+    #  readings[!(readings$timestamp_ms %in% readings_in$timestamp_ms), ]
 
-        # add lead(lat) and lead(long) for interpolation, plus time lag between
-        # readings. Timestamps are proxying for distance fractions later
-        loc_f$LEAD_LAT  <- dplyr::lead(loc_f$LATITUDE)
-        loc_f$LEAD_LONG <- dplyr::lead(loc_f$LONGITUDE)
-        loc_f$TS_LAG    <-
-          dplyr::lead(loc_f$timestamp_ms) - loc_f$timestamp_ms
+    all_data <- dplyr::bind_rows(loc_f, readings_in)
+    all_data <-
+      all_data[with(all_data, order(all_data$timestamp_ms)), ]
+    all_data$TS_LAG_AD <-
+      all_data$timestamp_ms - dplyr::lag(all_data$timestamp_ms)
+    all_data$TS_LAG_AD[is.na(all_data$TS_LAG_AD)] <- 0
 
-        # remove readings outside first and last gps reading
-        readings_in <-
-          readings[readings$timestamp_ms > loc_f$timestamp_ms[1] &
-                     readings$timestamp_ms < loc_f$timestamp_ms[dim(loc_f)[1]], ]
+    # fill a few values in so all instrument readings have a 'from' and 'to'
+    # for interpolation
+    all_data <-
+      tidyr::fill(all_data,
+                  .data$LATITUDE, .data$LONGITUDE,
+                  .data$LEAD_LAT, .data$LEAD_LONG,
+                  .data$TS_LAG,
+                  .direction = 'down'
+                  )
+    # group recombined data so that GPS reading(s) and following instrument
+    # reading(s) are together
 
-        # nb might be able to add them back in later (not yet impemented)
-        #readings_out <-
-        #  readings[!(readings$timestamp_ms %in% readings_in$timestamp_ms), ]
+    # grouping by sequence is hard and this seems awful but whateverrrrr
+    grp <-
+      data.frame('rle' = rle(ifelse(is.na(all_data$HDOP), 1, 0))$lengths)
+    grp$grp <- c(rep(seq.int(dim(grp)[1] / 2), each = 2),
+                 ceiling(dim(grp)[1] / 2))
+    grp     <- split(grp, grp$grp)
+    grp     <- sapply(grp, function(x) { sum(x$rle) })
 
-        all_data <- dplyr::bind_rows(loc_f, readings_in)
-        all_data <-
-          all_data[with(all_data, order(all_data$timestamp_ms)), ]
-        all_data$TS_LAG_AD <-
-          all_data$timestamp_ms - dplyr::lag(all_data$timestamp_ms)
-        all_data$TS_LAG_AD[is.na(all_data$TS_LAG_AD)] <- 0
+    all_data$GROUP <- unlist(mapply(function(x, y) { rep(x, times = y) },
+                                    x = as.integer(names(grp)), y = grp
+                                    )
+                             )
 
-        # fill a few values in so all instrument readings have a 'from' and 'to'
-        # for interpolation
-        all_data <-   tidyr::fill(
-          all_data,
-          .data$LATITUDE,
-          .data$LONGITUDE,
-          .data$LEAD_LAT,
-          .data$LEAD_LONG,
-          .data$TS_LAG,
-          .direction = 'down'
+    # get cumulative time lag within each group (effectively distance
+    # between last gps reading and current instrument reading)
+    all_data$ind3 = ifelse(is.na(all_data$HDOP), 1, 0)
+    all_data <- dplyr::group_by(all_data, .data$GROUP, .data$ind3)
+    all_data <- dplyr::mutate(all_data, TS_NOW = cumsum(.data$TS_LAG_AD))
+    all_data <- dplyr::ungroup(all_data)
+    all_data$TS_NOW <- ifelse(!is.na(all_data$HDOP), 0 , all_data$TS_NOW)
+
+    # use 2D linear interpolation to get locations for instrument readings
+    # no point getting geodetic here, we're generally working at very short
+    # distances
+    # https://math.stackexchange.com/questions/1918743/how-to-interpolate-points-between-2-points#1918765
+    all_data$NEW_LAT <- all_data$LATITUDE  + (
+      all_data$TS_NOW / all_data$TS_LAG  *
+        (all_data$LEAD_LAT  - all_data$LATITUDE)
+      )
+    all_data$NEW_LONG <- all_data$LONGITUDE  + (
+      all_data$TS_NOW / all_data$TS_LAG  *
+        (all_data$LEAD_LONG  - all_data$LONGITUDE)
         )
-
-        # group recombined data so that GPS reading(s) and following instrument
-        # reading(s) are together
-
-        # grouping by sequence is hard and this seems awful but whateverrrrr
-        grp     <- rle(ifelse(is.na(all_data$HDOP), 1, 0))$lengths
-        grp     <- data.frame('rle' = grp)
-        #grp$grp <- c(rep(1:(nrow(grp) / 2), each = 2), ceiling(nrow(grp) / 2))
-        grp$grp <- c(rep(seq.int(dim(grp)[1] / 2), each = 2), ceiling(dim(grp)[1] / 2))
-        grp     <- split(grp, grp$grp)
-        grp     <-
-          sapply(grp, function(x) {
-            sum(x$rle)
-          })
-        all_data$GROUP <- unlist(mapply(
-          function(x, y)
-            rep(x, times = y),
-          x = as.integer(names(grp)),
-          y = grp
-        ))
-
-        # get cumulative time lag within each group (effectively distance
-        # between last gps reading and current instrument reading)
-        all_data$ind3 = ifelse(is.na(all_data$HDOP), 1, 0)
-        all_data <- dplyr::group_by(all_data, .data$GROUP, .data$ind3)
-        all_data <-
-          dplyr::mutate(all_data, TS_NOW = cumsum(.data$TS_LAG_AD))
-        all_data <- dplyr::ungroup(all_data)
-        all_data$TS_NOW <-
-          ifelse(!is.na(all_data$HDOP), 0 , all_data$TS_NOW)
-
-        # use 2D linear interpolation to get locations for instrument readings
-        # no point getting geodetic here, we're generally working at < 1m
-        # distances
-        # https://math.stackexchange.com/questions/1918743/how-to-interpolate-points-between-2-points#1918765
-        all_data$NEW_LAT <- all_data$LATITUDE  + (
-          all_data$TS_NOW / all_data$TS_LAG  *
-            (all_data$LEAD_LAT  - all_data$LATITUDE)
-        )
-        all_data$NEW_LONG <- all_data$LONGITUDE  + (
-          all_data$TS_NOW / all_data$TS_LAG  *
-            (all_data$LEAD_LONG  - all_data$LONGITUDE)
-        )
+    # 7 dp = 1cm
+    all_data$NEW_LAT <- round(all_data$NEW_LAT, 7)
+    all_data$NEW_LONG <- round(all_data$NEW_LONG, 7)
 
         # filter to just keep instrument readings and interpolated locations
-        out_data <-
-          all_data[, c('cond_05',
-                       'cond_1',
-                       'IP_05',
-                       'IP_1',
-                       'temp_05',
-                       'temp_1',
-                       'NEW_LAT',
-                       'NEW_LONG')]
+    out_data <-
+        all_data[, c('cond_05', 'cond_1', 'IP_05', 'IP_1', 'temp_05', 'temp_1',
+                     'mode', 'NEW_LAT', 'NEW_LONG')]
         out_data <- out_data[complete.cases(out_data),]
+        out_data <- cbind('ID' = seq(nrow(out_data)), out_data)
 
         # spatialise output and return
         sf::st_as_sf(out_data,
                      coords = c('NEW_LONG', 'NEW_LAT'),
                      crs = 4326)
-  }}}})
+        })
 
   # return each survey line separately, let the user combine later
   # consider a helper function for this - can build in point filtering etc
@@ -250,8 +217,6 @@ em38_spatial <- function(n38_decoded = NULL,
 #' @param hdop_filter Numeric, discard GPS data where the Horizontal Dilution of
 #'   Precision is greater than this number. Defaults to 3 metres. Set to NULL to
 #'   keep all readings.
-#' @param out_mode Character, em38 dipole mode. Output dataset can only contain
-#'   Vertical or Horizontal data, never both.
 #' @return An sf data frame with sfc_POINT geometry. WGS84 projection. If the
 #'   n38_decoded object contains more than one survey line, a list of sf objects
 #'   is returned - one for each line.
@@ -261,15 +226,14 @@ em38_spatial <- function(n38_decoded = NULL,
 #' @examples
 #' vert_points <-
 #' n38_to_points(path = system.file("extdata", "em38_demo.N38", package = "em38"),
-#'               hdop_filter = 3, out_mode = 'Vertical')
+#'               hdop_filter = 3)
 #' @export
-n38_to_points <- function(path = NULL, hdop_filter = 3,
-                          out_mode = c('Vertical', 'Horizontal')) {
+n38_to_points <- function(path = NULL, hdop_filter = 3) {
   mat  <- n38_import(path)
   chnk <- n38_chunk(mat)
   dec  <- n38_decode(chnk)
 
-  em38_spatial(n38_decoded = dec, hdop_filter = hdop_filter, out_mode = out_mode)
+  em38_spatial(n38_decoded = dec, hdop_filter = hdop_filter)
 
 }
 

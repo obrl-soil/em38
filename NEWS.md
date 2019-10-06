@@ -1,3 +1,10 @@
+# v 0.0.1
+
+  * Refactor `em38_spatial()` 
+  * `n38_to_points()` and `em38_spatial()` no longer filter on dipole mode
+  * Columns containing dipole mode and a sequential ID added to outputs of `n38_to_points()` and `em38_spatial()`
+
+
 # v 0.0.0.9003
 
   * `n38_decode()` better living through proper vectorisation - speed 

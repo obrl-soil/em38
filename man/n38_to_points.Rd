@@ -4,8 +4,7 @@
 \alias{n38_to_points}
 \title{Import and convert N38 logfiles to points}
 \usage{
-n38_to_points(path = NULL, hdop_filter = 3, out_mode = c("Vertical",
-  "Horizontal"))
+n38_to_points(path = NULL, hdop_filter = 3)
 }
 \arguments{
 \item{path}{A file path pointing to a valid *.N38 file, produced by a Geonics
@@ -15,9 +14,6 @@ datalogger (and optionally, a GPS device).}
 \item{hdop_filter}{Numeric, discard GPS data where the Horizontal Dilution of
 Precision is greater than this number. Defaults to 3 metres. Set to NULL to
 keep all readings.}
-
-\item{out_mode}{Character, em38 dipole mode. Output dataset can only contain
-Vertical or Horizontal data, never both.}
 }
 \value{
 An sf data frame with sfc_POINT geometry. WGS84 projection. If the
@@ -36,5 +32,5 @@ Input file should be of survey type 'GPS'. If not, the function will
 \examples{
 vert_points <-
 n38_to_points(path = system.file("extdata", "em38_demo.N38", package = "em38"),
-              hdop_filter = 3, out_mode = 'Vertical')
+              hdop_filter = 3)
 }
