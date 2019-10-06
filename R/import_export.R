@@ -77,28 +77,29 @@ n38_chunk <- function(n38_mat = NULL) {
 
     # survey line header
     sline_list[['sl_header']] <-
-      sl_x[which(sl_rids %in% c('L', 'B', 'A', 'Z')), ]
+      sl_x[which(sl_rids %in% c('L', 'B', 'A', 'Z')), , drop = FALSE]
 
     # calibration data
-    sline_list[['cal_data']] <- sl_x[which(sl_rids == 'O'), ]
+    sline_list[['cal_data']] <- sl_x[which(sl_rids == 'O'), , drop = FALSE]
 
     # timer data
     sline_list[['timer_data']]   <- sl_x[which(sl_rids == '*'), ]
 
     # instrument readings
-    sline_list[['reading_data']] <- sl_x[which(sl_rids %in% c('T', 't', '2')), ]
+    sline_list[['reading_data']] <-
+      sl_x[which(sl_rids %in% c('T', 't', '2')), , drop = FALSE]
 
     # location data (note readings that fail the checksum still come through
     # here and are handled later)
     gps <- which(!(sl_rids %in% c('L', 'B', 'A', 'Z','O', '*', 'T', 't', '2',
                                   'C', 'S', 'X')))
-    sline_list[['location_data']] <- sl_x[gps, ]
+    sline_list[['location_data']] <- sl_x[gps, , drop = FALSE]
 
     # new station (nb often null, for when no GPS in use???)
-    sline_list[['new_station']] <- sl_x[which(sl_rids == 'S'), ]
+    sline_list[['new_station']] <- sl_x[which(sl_rids == 'S'), , drop = FALSE]
 
     # comments (nb often null bc who has the time really)
-    sline_list[['comments']] <- sl_x[which(sl_rids == 'C'), ]
+    sline_list[['comments']] <- sl_x[which(sl_rids == 'C'), , drop = FALSE]
 
     sline_list
   })
