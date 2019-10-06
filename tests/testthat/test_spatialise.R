@@ -42,6 +42,11 @@ test_that(
     n38_noloc$survey_line_1$location_data <- NA,
     expect_equal(em38_spatial(n38_noloc),
                  'This survey line contains no embedded location data.'),
+    # test missing reading data
+    n38_nodat <- n38_decoded,
+    n38_nodat$survey_line_1$reading_data <- NA,
+    expect_equal(em38_spatial(n38_nodat),
+                 'This survey line contains no data.'),
     # test no good HDOP
     expect_equal(em38_spatial(n38_decoded, 0.1),
                  'No readings with acceptable HDOP could be retrieved from this survey line.')
