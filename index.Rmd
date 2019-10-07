@@ -14,7 +14,8 @@ output:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "README-",
+  eval = FALSE
 )
 ```
 
@@ -37,7 +38,7 @@ This package is in early development phase. Improving its reliability requires a
 
 em38 is accompanied by a demo dataset gathered during a training exercise:
 
-```{r 'example', message=FALSE, results = 'hold'}
+```{r 'example', message=FALSE, results = 'hide'}
 library(em38)
 
 # all-in-one wrapper function:

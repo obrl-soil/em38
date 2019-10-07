@@ -214,9 +214,8 @@ em38_surveyline <- function(survey_line = NULL,
   grp     <- sapply(grp, function(x) { sum(x$rle) })
 
   all_data$GROUP <- unlist(mapply(function(x, y) { rep(x, times = y) },
-                                  x = as.integer(names(grp)), y = grp
-  )
-  )
+                                  x = as.integer(names(grp)), y = grp,
+                                  SIMPLIFY = FALSE))
 
   # get cumulative time lag within each group (effectively distance
   # between last gps reading and current instrument reading)
