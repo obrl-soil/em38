@@ -108,6 +108,9 @@ em38_from_file." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/index.html">UNKNOWN TITLE</a>
+    </li>
+    <li>
       <a href="../articles/Using_em38.html">Introduction to em38</a>
     </li>
   </ul>
@@ -146,35 +149,32 @@ have been generated using <code><a href='em38_decode.html'>em38_decode</a></code
 <code><a href='em38_from_file.html'>em38_from_file</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>em38_pair</span>(<span class='kw'>horizontal_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>vertical_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>em38_pair</span>(<span class='kw'>decode</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time_filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>horizontal_data</th>
-      <td><p>spatial point dataframe produced by
-<code><a href='em38_decode.html'>em38_decode</a></code>  or <code><a href='em38_from_file.html'>em38_from_file</a></code> with `out_mode =
-'Horizontal`.</p></td>
+      <th>decode</th>
+      <td><p>spatial point dataframe for a survey line produced by
+<code><a href='em38_decode.html'>em38_decode</a></code> or <code><a href='em38_from_file.html'>em38_from_file</a></code>.</p></td>
     </tr>
     <tr>
-      <th>vertical_data</th>
-      <td><p>spatial point dataframe produced by
-<code><a href='em38_decode.html'>em38_decode</a></code>  or <code><a href='em38_from_file.html'>em38_from_file</a></code> with `out_mode =
-'Vertical`.</p></td>
+      <th>time_filter</th>
+      <td><p>removes point pairs that are close together but that were
+sampled more than n seconds apart.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An sf data frame with sfc_POINT geometry. WGS84 projection. Output
-  locations are averages of input locations. Data columns are labelled as
-  horizontal or vertical.</p>
+  locations are averages of input horizontal/vertical paired locations.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Input data should be of survey type 'GPS' and record type 'manual'.
-  Both input datasets should have the same number of rows, with row 1 of
-  horizontal_data paired with row_1 of vertical_data.</p>
+    <p>Input survey should be of survey type 'GPS' and record type 'manual'.
+  Both input datasets should ideally have the same number of rows, with row 1
+  of horizontal_data paired with row 1 of vertical_data.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

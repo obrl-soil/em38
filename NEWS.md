@@ -1,7 +1,7 @@
 # v 0.0.1
 
   * Major refactor - process survey lines separately, cope with missing/bad GPS
-    data
+    data, better paired data handling
   * Added `em38_surveyline()` which will process data from an individual survey 
     line output by `n38_decode()`.
   * Survey line decodes can now be `sf` or `data.frame` and include both 

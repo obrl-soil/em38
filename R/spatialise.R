@@ -94,15 +94,19 @@ em38_surveyline <- function(survey_line = NULL,
   loc <- survey_line[['location_data']]
 
   # quality checks
-  if(all(dim(rdg)[1] == 0, dim(loc)[1] == 0)) {
+  if(all(dim(rdg)[1] == 0, any(dim(loc)[1] == 0, is.null(dim(loc))))) {
     return('This survey line contains no readings or location data.')
   }
-  if(dim(rdg)[1] == 0) { return('This survey line contains no readings.') }
+  if(any(dim(rdg)[1] == 0, is.null(dim(rdg)))) {
+    return('This survey line contains no readings.')
+    }
   # note that calibration data, if present, is applied by n38_decode()
-  if(dim(cal)[1] == 0) { warning("Survey line is uncalibrated") }
+  if(any(dim(cal)[1] == 0, is.null(dim(cal)))) {
+    warning("Survey line is uncalibrated")
+    }
 
   # if input had readings but no GPS data recorded, process as non-spatial
-  if(dim(loc)[1] == 0) {
+  if(any(dim(loc)[1] == 0, is.null(dim(loc)))) {
     return(cbind('ID' = seq(nrow(rdg)), rdg[, !names(rdg) %in% 'timestamp_ms'],
                  "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
                                           rdg$timestamp_ms)
@@ -377,46 +381,70 @@ em38_from_file <- function(path = NULL, hdop_filter = 3,
 #' This function reconciles the locations of such paired datasets after they
 #' have been generated using \code{\link{em38_decode}} or
 #' \code{\link{em38_from_file}}.
-#' @param horizontal_data spatial point dataframe produced by
-#'   \code{\link{em38_decode}}  or \code{\link{em38_from_file}} with `out_mode =
-#'   'Horizontal`.
-#' @param vertical_data spatial point dataframe produced by
-#'   \code{\link{em38_decode}}  or \code{\link{em38_from_file}} with `out_mode =
-#'   'Vertical`.
+#' @param decode spatial point dataframe for a survey line produced by
+#'   \code{\link{em38_decode}} or \code{\link{em38_from_file}}.
+#' @param time_filter removes point pairs that are close together but that were
+#'   sampled more than n seconds apart.
 #' @return An sf data frame with sfc_POINT geometry. WGS84 projection. Output
-#'   locations are averages of input locations. Data columns are labelled as
-#'   horizontal or vertical.
-#' @note Input data should be of survey type 'GPS' and record type 'manual'.
-#'   Both input datasets should have the same number of rows, with row 1 of
-#'   horizontal_data paired with row_1 of vertical_data.
+#'   locations are averages of input horizontal/vertical paired locations.
+#' @note Input survey should be of survey type 'GPS' and record type 'manual'.
+#'   Both input datasets should ideally have the same number of rows, with row 1
+#'   of horizontal_data paired with row 1 of vertical_data.
 #' @importFrom purrr map2
-#' @importFrom sf st_crs st_geometry st_point st_set_geometry st_sfc st_sf
+#' @import sf
 #' @export
 #'
-em38_pair <- function(horizontal_data = NULL, vertical_data = NULL) {
+em38_pair <- function(decode = NULL, time_filter = NULL) {
+
+  # which orientation has the fewest readings?
+  n_v <- length(which(decode[['mode']] == 'Vertical'))
+  n_h <- length(which(decode[['mode']] == 'Horizontal'))
+  min_mode <- which(c(n_v, n_h) == min(c(n_v, n_h)))
+
+  if(min_mode == 1) {
+    anchor <- decode[which(decode[['mode']] == 'Vertical'), ]
+    target <- decode[which(decode[['mode']] == 'Horizontal'), ]
+  } else {
+    anchor <- decode[which(decode[['mode']] == 'Horizontal'), ]
+    target <- decode[which(decode[['mode']] == 'Vertical'), ]
+  }
+
+  # find the nearest target to each anchor
+  closest <- sf::st_nearest_feature(anchor, target)
+  target <- target[closest, ]
+
   # take paired horizontal and vertical em38 readings and reconcile their
   # locations
-  geom_h <- st_geometry(horizontal_data)
-  geom_v <- st_geometry(vertical_data)
-
-  pts <- purrr::map2(.x = geom_h, .y = geom_v, function(.x, .y) {
+  pts <- purrr::map2(.x = sf::st_geometry(anchor),
+                     .y = sf::st_geometry(target), function(.x, .y) {
     out_long <- mean(c(as.vector(.x)[1],
                      as.vector(.y)[1]))
     out_lat  <- mean(c(as.vector(.x)[2],
                      as.vector(.y)[2]))
 
-    st_point(c(out_long, out_lat))
+    sf::st_point(c(out_long, out_lat))
   })
 
-  new_geom <- st_sfc(pts, crs = st_crs(geom_h)$proj4string)
+  # interleave filtered data
+  anchor$ID <- seq(nrow(anchor) * 2)[c(TRUE, FALSE)]
+  anchor$GRP <- seq(nrow(anchor))
+  target$ID <- seq(nrow(target) * 2)[c(FALSE, TRUE)]
+  target$GRP <- seq(nrow(target))
+  both <- rbind(sf::st_set_geometry(anchor, NULL),
+                sf::st_set_geometry(target, NULL))
+  both <- both[order(both$ID), ]
 
-  # combine in output
-  hdata <- st_set_geometry(horizontal_data, NULL)
-  names(hdata) <- paste0('H_', names(hdata))
-  vdata <- st_set_geometry(vertical_data, NULL)
-  names(vdata) <- paste0('V_', names(vdata))
-  all_data <- cbind(hdata, vdata)
+  out <- sf::st_as_sf(both, geometry = pts, crs = 4326)
 
-  st_sf(all_data, 'geometry' = new_geom)
+  if(!is.null(time_filter)) {
+    del <- split(out$date_time, out$GRP)
+    del <- sapply(del, function(x) {
+      abs(as.numeric(difftime(x[2], x[1], units = 'secs')))
+    })
+    keep <- which(del <= time_filter)
+    out <- out[out$GRP %in% keep, ]
+  }
+
+  out
 
 }

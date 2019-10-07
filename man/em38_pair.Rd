@@ -4,21 +4,18 @@
 \alias{em38_pair}
 \title{Reconcile locations of paired data}
 \usage{
-em38_pair(horizontal_data = NULL, vertical_data = NULL)
+em38_pair(decode = NULL, time_filter = NULL)
 }
 \arguments{
-\item{horizontal_data}{spatial point dataframe produced by
-\code{\link{em38_decode}}  or \code{\link{em38_from_file}} with `out_mode =
-'Horizontal`.}
+\item{decode}{spatial point dataframe for a survey line produced by
+\code{\link{em38_decode}} or \code{\link{em38_from_file}}.}
 
-\item{vertical_data}{spatial point dataframe produced by
-\code{\link{em38_decode}}  or \code{\link{em38_from_file}} with `out_mode =
-'Vertical`.}
+\item{time_filter}{removes point pairs that are close together but that were
+sampled more than n seconds apart.}
 }
 \value{
 An sf data frame with sfc_POINT geometry. WGS84 projection. Output
-  locations are averages of input locations. Data columns are labelled as
-  horizontal or vertical.
+  locations are averages of input horizontal/vertical paired locations.
 }
 \description{
 Where paired horizontal and vertical readings have been taken during a
@@ -30,7 +27,7 @@ have been generated using \code{\link{em38_decode}} or
 \code{\link{em38_from_file}}.
 }
 \note{
-Input data should be of survey type 'GPS' and record type 'manual'.
-  Both input datasets should have the same number of rows, with row 1 of
-  horizontal_data paired with row_1 of vertical_data.
+Input survey should be of survey type 'GPS' and record type 'manual'.
+  Both input datasets should ideally have the same number of rows, with row 1
+  of horizontal_data paired with row 1 of vertical_data.
 }

@@ -2,6 +2,7 @@ pandoc: '2.6'
 pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
+  index: index.html
   Using_em38: Using_em38.html
 urls:
   reference: https://obrl-soil.github.io/em38//reference

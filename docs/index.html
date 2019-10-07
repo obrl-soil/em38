@@ -65,6 +65,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/index.html">UNKNOWN TITLE</a>
+    </li>
+    <li>
       <a href="articles/Using_em38.html">Introduction to em38</a>
     </li>
   </ul>
@@ -108,8 +111,15 @@
 <a class="sourceLine" id="cb2-3" title="3"><span class="co"># all-in-one wrapper function:</span></a>
 <a class="sourceLine" id="cb2-4" title="4">demo_survey  &lt;-<span class="st"> </span><span class="kw"><a href="reference/em38_from_file.html">em38_from_file</a></span>(<span class="dt">path =</span> <span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"em38_demo.n38"</span>, </a>
 <a class="sourceLine" id="cb2-5" title="5">                                                  <span class="dt">package =</span> <span class="st">"em38"</span>),</a>
-<a class="sourceLine" id="cb2-6" title="6">                               <span class="dt">hdop_filter =</span> <span class="dv">3</span>)</a></code></pre></div>
-<p><a href="https://obrl-soil.github.io/em38"><img src="reference/figures/README-example-1.png" alt="2d_plot"></a></p>
+<a class="sourceLine" id="cb2-6" title="6">                               <span class="dt">hdop_filter =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8"></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="co"># Plot spatialised output of survey line 1 (calibrated conductivity for coil</span></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="co"># separation 0.5m)</span></a>
+<a class="sourceLine" id="cb2-11" title="11">sl1 &lt;-<span class="st"> </span>demo_survey<span class="op">$</span>survey_lines[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(sl1[sl1<span class="op">$</span>mode <span class="op">==</span><span class="st"> 'Vertical'</span>, <span class="st">'cond_05'</span>], <span class="dt">pch =</span> <span class="dv">20</span>, </a>
+<a class="sourceLine" id="cb2-13" title="13">     <span class="dt">main =</span> <span class="st">'Conductivity, Vertical Dipole Mode, Coil Separation 0.5m'</span>)</a></code></pre></div>
+<p><img src="README-example-1.png"></p>
 <p>Its surprisingly difficult to walk in a straight line across a paddock :no_mouth:</p>
 <p>If you want to look at the intermediate data more closely,</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># import binary file as raw() type matrix</span></a>
