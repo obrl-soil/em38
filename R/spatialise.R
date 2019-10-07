@@ -28,6 +28,7 @@ get_loc_data <- function(block = NULL) {
   # what actually needs to be output?
   data.frame('LATITUDE'     = gpgga[['latitude']],
              'LONGITUDE'    = gpgga[['longitude']],
+             'FIX'          = gpgga[['fix_quality']],
              'HDOP'         = gpgga[['HDOP']],
              'CHKSUM'       = block$CHKSUM[block$TYPE == 'GPGGA'],
              'timestamp_ms' = block$timestamp_ms[block$TYPE == 'GPGGA'])
@@ -100,6 +101,17 @@ em38_spatial <- function(n38_decoded = NULL,
 
     # remove checksum failures
     loc_f <- loc_f[loc_f$CHKSUM == TRUE, ]
+
+    if(dim(loc_f)[1] == 0) {
+      return('This survey line contained no acceptable location data.')
+    }
+
+    # remove no-fix failures
+    loc_f <- loc_f[loc_f$FIX != 0, ]
+
+    if(dim(loc_f)[1] == 0) {
+      return('This survey line contained no acceptable location data.')
+    }
 
     # filter out low-precision locations and also some dud readings
     # (checksum passed but message still missing essential data)
