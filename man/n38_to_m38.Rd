@@ -21,8 +21,8 @@ outputs with Geonics' own conversion software or process it further with the
 DAT38MK2 application.
 }
 \note{
-Write output to file in working directory with e.g. `write(m38_example,
-  paste0('m38_from_R_', Sys.Date(), '.m38'))`
+Write output to file in working directory with e.g. \code{write(m38_example,
+  paste0('m38_from_R_', Sys.Date(), '.m38'))}
 }
 \examples{
 data('n38_demo')

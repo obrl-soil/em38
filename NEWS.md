@@ -1,9 +1,18 @@
 # v 0.0.1
 
-  * Refactor `em38_spatial()` 
-  * `n38_to_points()` and `em38_spatial()` no longer filter on dipole mode
-  * Columns containing dipole mode and a sequential ID added to outputs of `n38_to_points()` and `em38_spatial()`
-
+  * Major refactor - process survey lines separately, cope with missing/bad GPS
+    data
+  * Added `em38_surveyline()` which will process data from an individual survey 
+    line output by `n38_decode()`.
+  * Survey line decodes can now be `sf` or `data.frame` and include both 
+    timestamps and sequential ID.
+  * renamed `em38_spatial()` to `em38_decode()`, the function now outputs a list 
+    containing file header data and survey lines.
+  * renamed `n38_to_points()` to `em38_from_file()`, the output is identical to 
+    `em38_decode()`  
+  * Survey lines are no longer filtered by dipole mode
+  * Added filters for GPS time delay and signal quality.
+  * Various small bugfixes
 
 # v 0.0.0.9003
 

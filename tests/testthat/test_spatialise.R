@@ -1,10 +1,7 @@
-context('spatialising decoded data')
+context('final processing for decoded data')
 
-# these functions are all in spatialise.R
-
-# 1. get_loc_data
 test_that(
-  'essential location data is extracted correctly',
+  'get_loc_data works correctly',
   c(
     data('n38_demo'),
     n38_chunks  <- n38_chunk(n38_demo),
@@ -24,53 +21,74 @@ test_that(
     )
 )
 
-# 2. em38_spatial
 test_that(
-  'em38 data spatialises correctly',
+  'em38_surveyline works correctly',
   c(
     data('n38_demo'),
     n38_chunks  <- n38_chunk(n38_demo),
     n38_decoded <- n38_decode(n38_chunks),
-    n38_sf <- em38_spatial(n38_decoded, 3),
-    expect_is(n38_sf, 'sf'),
-    expect_equal(dim(n38_sf)[1], 3164L),
-    expect_equal(dim(n38_sf)[2], 9L),
-    expect_equal(sf::st_crs(n38_sf)$proj4string,
+    sl1 <- em38_surveyline(n38_decoded[[2]], 3),
+    expect_is(sl1, 'sf'),
+    expect_equal(dim(sl1)[1], 3164L),
+    expect_equal(dim(sl1)[2], 12L),
+    expect_equal(sf::st_crs(sl1)$proj4string,
                  "+proj=longlat +datum=WGS84 +no_defs"),
-    expect_equal(sf::st_bbox(n38_sf)[[1]], 151.4341589),
-    # test missing loc data
-    n38_noloc <- n38_decoded,
-    n38_noloc$survey_line_1$location_data <- NA,
-    expect_equal(em38_spatial(n38_noloc),
-                 'This survey line contains no embedded location data.'),
-    # test missing reading data
-    n38_nodat <- n38_decoded,
-    n38_nodat$survey_line_1$reading_data <- NA,
-    expect_equal(em38_spatial(n38_nodat),
-                 'This survey line contains no data.'),
+    expect_equal(sf::st_bbox(sl1)[[1]], 151.4341589),
+    # no loc data
+    sl2 <- n38_decoded[[2]],
+    sl2[['location_data']] <- sl2[['location_data']][0, ],
+    sl2 <- em38_surveyline(sl2, 3),
+    expect_is(sl2, 'data.frame'),
+    expect_equal(dim(sl2)[1], 3164L),
+    expect_equal(dim(sl2)[2], 11L),
+    # no reading_data
+    sl3 <- n38_decoded[[2]],
+    sl3[['reading_data']] <- sl3[['reading_data']][0, ],
+    sl3 <- em38_surveyline(sl3, 3),
+    expect_is(sl3, 'character'),
+    expect_equal(sl3, "This survey line contains no readings."),
+    # nuffin
+    sl4 <- n38_decoded[[2]],
+    sl4[['reading_data']] <- sl4[['reading_data']][0, ],
+    sl4[['location_data']] <- sl4[['location_data']][0, ],
+    sl4 <- em38_surveyline(sl4, 3),
+    expect_is(sl4, 'character'),
+    expect_equal(sl4, "This survey line contains no readings or location data."),
+    # warning on no cal,
+    sl5 <- n38_decoded[[2]],
+    sl5[['cal_data']] <- sl5[['cal_data']][0, ],
+    expect_warning(em38_surveyline(sl5, 3)),
     # test no good HDOP
-    expect_equal(em38_spatial(n38_decoded, 0.1),
+    expect_equal(em38_surveyline(n38_decoded[[2]], 0.1),
                  'No readings with acceptable HDOP could be retrieved from this survey line.')
   )
 )
 
-# 3. n38_to_points
 test_that(
-  'em38 data spatialises correctly with wrapper',
+  'em38_decode works correctly',
   c(
-    n38_sf <-
-      n38_to_points(path = system.file("extdata", "em38_demo.N38",
-                                       package = "em38"), hdop_filter = 3),
-    expect_is(n38_sf, 'sf'),
-    expect_equal(dim(n38_sf)[1], 3164),
-    expect_equal(dim(n38_sf)[2], 9),
-    expect_equal(sf::st_crs(n38_sf)$proj4string,
-                 "+proj=longlat +datum=WGS84 +no_defs"),
-    expect_equal(sf::st_bbox(n38_sf)[[1]], 151.4341589),
-    # test no good HDOP
-    expect_equal(n38_to_points(path = system.file("extdata", "em38_demo.N38",
-                                                  package = "em38"),
-                               hdop_filter = 0.1),
-                 'No readings with acceptable HDOP could be retrieved from this survey line.')
+    data('n38_demo'),
+    n38_chunks  <- n38_chunk(n38_demo),
+    n38_decoded <- n38_decode(n38_chunks),
+    survey <- em38_decode(n38_decoded),
+    expect_is(survey, 'list'),
+    expect_length(survey, 2),
+    expect_equal(names(survey), c('file_header', 'survey_lines')),
+    expect_is(survey[[2]], 'list'),
+    expect_equal(names(survey[[2]]), c('1'))
   )
+)
+
+test_that(
+  'em38_from_file works',
+  c(
+    from_file <-
+      em38_from_file(path = system.file("extdata", "em38_demo.N38",
+                                       package = "em38"), hdop_filter = 3),
+    data('n38_demo'),
+    n38_chunks  <- n38_chunk(n38_demo),
+    n38_decoded <- n38_decode(n38_chunks),
+    survey <- em38_decode(n38_decoded),
+    expect_equal(from_file, survey)
+    )
 )

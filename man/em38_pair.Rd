@@ -8,11 +8,11 @@ em38_pair(horizontal_data = NULL, vertical_data = NULL)
 }
 \arguments{
 \item{horizontal_data}{spatial point dataframe produced by
-\code{\link{em38_spatial}}  or \code{\link{n38_to_points}} with `out_mode =
+\code{\link{em38_decode}}  or \code{\link{em38_from_file}} with `out_mode =
 'Horizontal`.}
 
 \item{vertical_data}{spatial point dataframe produced by
-\code{\link{em38_spatial}}  or \code{\link{n38_to_points}} with `out_mode =
+\code{\link{em38_decode}}  or \code{\link{em38_from_file}} with `out_mode =
 'Vertical`.}
 }
 \value{
@@ -26,8 +26,8 @@ Where paired horizontal and vertical readings have been taken during a
 have the same location. The nature of the device logging generally precludes
 this from happening by default, especially with high-frequency GPS recording.
 This function reconciles the locations of such paired datasets after they
-have been generated using \code{\link{em38_spatial}} or
-\code{\link{n38_to_points}}.
+have been generated using \code{\link{em38_decode}} or
+\code{\link{em38_from_file}}.
 }
 \note{
 Input data should be of survey type 'GPS' and record type 'manual'.

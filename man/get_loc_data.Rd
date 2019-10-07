@@ -14,7 +14,7 @@ $location_data in a decoded n38 object}
 data frame with a single row
 }
 \description{
-This function decodes GPS data for use in em38_spatial and returns it along
+This function decodes GPS data for use in em38_decode and returns it along
 with its timestamp data.
 }
 \examples{

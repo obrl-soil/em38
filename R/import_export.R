@@ -281,8 +281,8 @@ n38_decode <- function(chunks = NULL) {
 #' @return Large character; combination of location data and calibrated
 #'   instrument readings. Note that record timestamps won't always agree with an
 #'   'official' m38 file at the microsecond level.
-#' @note Write output to file in working directory with e.g. `write(m38_example,
-#'   paste0('m38_from_R_', Sys.Date(), '.m38'))`
+#' @note Write output to file in working directory with e.g. \code{write(m38_example,
+#'   paste0('m38_from_R_', Sys.Date(), '.m38'))}
 #' @examples
 #' data('n38_demo')
 #' n38_chunks <- n38_chunk(n38_demo)
@@ -387,8 +387,9 @@ n38_to_m38 <- function(n38_decoded = NULL) {
              # timestamp - should be ok but doesn't quite match offical version -
              # some kind of rounding at 3rd dec pl, difference is never more than a couple of ms
              # main thing is that order of records is not affected so all good
-             as.character(n38_decoded[[i]]$timer_data$computer_time +
-                            (row$timestamp_ms - n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
+             as.character(conv_stamp(n38_decoded[[i]]$timer_data$computer_time,
+                                     n38_decoded[[i]]$timer_data$timestamp_ms,
+                                     row$timestamp_ms),
                           format = '%H:%M:%OS') # note options set above
       )
     })
