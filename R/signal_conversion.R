@@ -88,3 +88,18 @@ gpgga_long <- function(long = NULL, dir = NULL) {
     round(degrees + dec_minutes/60, 7)
   }
 }
+
+#' Convert timestamp to date time object
+#'
+#' Converts the timestamp on an \*.n38 record to computer time
+#' @param comp_time POSIXlt object
+#' @param init_stamp state of program timer at comp_time
+#' @param now_stamp current state of program timer
+#' @return POSIXlt with correct date/time
+#' @keywords Internal
+#'
+conv_stamp <- function(comp_time = NULL, init_stamp = NULL, now_stamp) {
+  diff_stamp <- now_stamp - init_stamp
+  diff_seconds <- round(diff_stamp / 1000)
+  comp_time + diff_seconds
+}

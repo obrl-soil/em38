@@ -1,8 +1,5 @@
 context('signal conversions')
 
-# these functions are all in signal_conversion.R
-
-# 1. get_cond
 test_that(
   'raw sensor data is converted to (uncalibrated) conductivity correctly',
   c(
@@ -14,7 +11,6 @@ test_that(
   )
 )
 
-# 2. get_temp
 test_that(
   'raw sensor data is converted to temperature correctly',
   c(
@@ -27,7 +23,6 @@ test_that(
   )
 )
 
-# 3. gpgga_lat
 test_that(
   'latitude is converted to numeric correctly',
   c(
@@ -43,7 +38,6 @@ test_that(
   )
 )
 
-# 4. gpgga_long
 test_that(
   'longitude is converted to numeric correctly',
   c(
@@ -59,3 +53,17 @@ test_that(
   )
 )
 
+test_that(
+  'time stamp converted correctly',
+  c(
+    data('n38_demo'),
+    n38_chunks  <- n38_chunk(n38_demo),
+    n38_decoded <- n38_decode(n38_chunks),
+    sl1 <- n38_decoded[[2]],
+    time <- sl1$timer_data,
+    rd1 <- sl1$reading_data$timestamp[1],
+    val1 <- conv_stamp(time$computer_time, time$timestamp_ms, rd1),
+    expect_is(val1, 'POSIXct'),
+    expect_equal(as.character(val1), "2018-03-16 13:00:23")
+  )
+)
