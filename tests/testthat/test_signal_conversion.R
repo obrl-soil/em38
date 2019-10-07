@@ -64,6 +64,6 @@ test_that(
     rd1 <- sl1$reading_data$timestamp[1],
     val1 <- conv_stamp(time$computer_time, time$timestamp_ms, rd1),
     expect_is(val1, 'POSIXct'),
-    expect_equal(as.character(val1), "2018-03-16 13:00:23")
+    expect_equal(as.character(val1), "2018-03-16 13:00:23.073")
   )
 )

@@ -100,6 +100,6 @@ gpgga_long <- function(long = NULL, dir = NULL) {
 #'
 conv_stamp <- function(comp_time = NULL, init_stamp = NULL, now_stamp) {
   diff_stamp <- now_stamp - init_stamp
-  diff_seconds <- round(diff_stamp / 1000)
+  diff_seconds <- diff_stamp / 1000
   comp_time + diff_seconds
 }
