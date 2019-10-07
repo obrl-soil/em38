@@ -1,0 +1,131 @@
+---
+title: "Introduction to em38"
+author: "Lauren O'Brien"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6, fig.height = 6, fig.align = 'center'
+)
+```
+
+```{r 'pkgs', warning = FALSE, message = FALSE}
+library(em38)
+library(sf)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+options(stringsAsFactors = FALSE)
+```
+
+## General Information
+
+em38 offers an R-based alternative to the 'DAT38MK2' software that accompanies the [Geonics EM38-MKII Ground Conductivity meter](http://www.geonics.com/html/em38.html). The package can take in the \*.n38 binary files produced by the device and its accompanying datalogger and either produce an `sf`-style point dataset or a replicate of the \*.m38 plain-text logfile. The package also contains intermediate functions that step through the process of decoding the \*.n38 binary files, hopefully demystifying the process somewhat.
+
+This package allows users to incorporate EM38-MKII data into a fully reproducible workflow, and also makes it possible for non-Windows users to easily work with an EM38-MKII.
+
+## Usage
+
+`em38` requires only an \*.n38 file as input, and can complete a one-line conversion with `em38_from_file()`. This will return a list containing the file header information, plus a processed list of survey lines. If GPS data is available for a survey line dataset, it will have `sfc_POINT` geometry and can be written to file using a vector spatial file format like GeoPackage. If no GPS data is available, the data can be written to \*.csv.
+
+```{r 'demo1'}
+demo_survey <-
+  em38_from_file(path = system.file("extdata", "em38_demo.N38", 
+                                    package = "em38"),
+                 hdop_filter = 3)
+
+sl1 <- demo_survey$survey_lines[[1]]
+plot(sl1[sl1$mode == 'Vertical', 'cond_05'], pch = 20, 
+     main = 'Conductivity, Vertical Dipole Mode, Coil Separation 1.0m')
+
+head(sf::st_set_geometry(sl1, NULL)[, c('ID', 'cond_05', 'date_time')])
+```
+
+## Visualisation
+
+If you want to visualise your decoded track data in R the same way DAT38MK2 does, some recipes follow using `ggplot2`.
+
+Firstly, a basic graph of all the data. Drop the geometry, condense the dataset into two columns, and then plot with appropriate data grouping settings:
+
+```{r graphing, results = 'as-is'}
+dat <- sf::st_set_geometry(sl1, NULL) %>% 
+  dplyr::select(-indicator, -marker, -date_time) %>% 
+  tidyr::gather('key', 'value', -ID, -mode) %>% 
+  tidyr::unite('key', mode, key)
+
+ggplot(dplyr::filter(dat, between(ID, 0, 500))) +
+  geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
+  ggtitle('Decoded track, first 100 records') +
+  theme_minimal()
+
+# the operator must have put the machine down, because a couple of
+# points are in horizontal mode:
+ggplot(dplyr::filter(dat, between(ID, 1250, 1350))) +
+  geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
+  ggtitle('Decoded track, first 100 records') +
+  theme_minimal()
+```
+
+Since conductivity and temperature readings are on very different scales, it is preferable to facet the plot. Below, an additional 'measurement type' grouping variable is added before plotting, and used to split the data into separate panels.
+
+```{r grpplot}
+# better grouping - split out by measurement type
+dat <- dat %>% 
+  dplyr::mutate(TYPE = 
+                  dplyr::case_when(grepl('cond', key) ~ 'Conductivity',
+                                   grepl('IP', key) ~ 'In Phase',
+                                   grepl('temp', key) ~ 'Temperature'))
+
+ggplot(dplyr::filter(dat, ID <= 500) %>% dplyr::filter(TYPE != 'INPHASE')) +
+  geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
+  facet_wrap(~TYPE, scales = 'free_y') +
+  ggtitle('Decoded track, first 500 records') +
+  theme_minimal()
+```
+
+If you want more control over plot aesthetics, `patchwork` is helpful:
+
+```{r patchy}
+# devtools::install_github("thomasp85/patchwork")
+library(patchwork)
+
+# common plot aesthetics
+thm <- theme_minimal() +
+  theme(legend.position = 'bottom', 
+        legend.title = element_blank(),
+        axis.title.x = element_blank())
+
+cond <- ggplot(dplyr::filter(dat, ID <= 500) %>% 
+                 dplyr::filter(TYPE == 'Conductivity')) +
+  geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
+  scale_y_continuous(limits = c(0, 250)) +
+  thm
+
+temp <- ggplot(dplyr::filter(dat, ID <= 500) %>% 
+                 dplyr::filter(TYPE == 'Temperature')) +
+  geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
+  scale_y_continuous(limits = c(33, 36)) +
+  labs(y = 'Temperature (C)') +
+  thm
+
+cond + temp + plot_annotation(title = 'Decoded track, first 500 records')
+
+```
+
+## Raster interpolation
+
+The raw track of points is generally less useful than a continuous surface of values interpolated from the reocrded points. Below are some methods of performing that interpolation in R.
+
+TBD
+
+
