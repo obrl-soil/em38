@@ -14,7 +14,7 @@ process_nstat(nstat = NULL)
 A list containing 2 data elements recorded in N38 new station rows.
 }
 \description{
-This function pulls out new station data from N38 binaries and dumps it into
+This function pulls out new station data from *.N38 binaries and dumps it into
 a list. This is an internal function with no wider use case.
 }
 \examples{
@@ -26,4 +26,4 @@ n38_ns1 <- em38:::process_nstat(n38_chunked[['survey_line_1']][['new_stations']]
 }
 
 }
-\keyword{Internal}
+\keyword{internal}

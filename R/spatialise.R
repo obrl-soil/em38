@@ -5,7 +5,7 @@
 #' @param block Data frame holding GPS message data, usually a subset of
 #'   $location_data in a decoded n38 object
 #' @return data frame with a single row
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunks  <- n38_chunk(n38_demo)

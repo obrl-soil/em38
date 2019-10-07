@@ -15,7 +15,7 @@ A list containing 2 information elements recorded in N38 timer
   relation rows.
 }
 \description{
-This function pulls out timer relation data from N38 binaries and dumps it
+This function pulls out timer relation data from *.N38 binaries and dumps it
 into a list. This is an internal function with no wider use case.
 }
 \note{
@@ -27,4 +27,4 @@ n38_chunked <- n38_chunk(n38_demo)
 n38_t <- em38:::process_timer(n38_chunked[['survey_line_1']][['timer_data']])
 
 }
-\keyword{Internal}
+\keyword{internal}

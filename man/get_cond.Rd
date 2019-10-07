@@ -13,7 +13,7 @@ get_cond(signal = NULL)
 Numeric; uncalibrated instrument reading.
 }
 \description{
-This function converts an EM38-MK2 signal recieved on any of Channels 1 to 4.
+This function converts an EM38-MKII signal recieved on any of Channels 1 to 4.
 Additional conversion is required for inphase signals, and further
 application of a calibration factor is required to derive the final
 conductivity or resistivity value. Do not use this function in isolation.
@@ -24,4 +24,4 @@ channel_2 <- em38:::get_cond(30456) * 0.00720475
 channel_4 <- em38:::get_cond(30456) * 0.028819
 
 }
-\keyword{Internal}
+\keyword{internal}

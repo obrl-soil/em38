@@ -27,4 +27,4 @@ Inputting a numeric to long will give incorrect results for longitude
 lat <- em38:::gpgga_long('15257.5556', 'E')
 
 }
-\keyword{Internal}
+\keyword{internal}

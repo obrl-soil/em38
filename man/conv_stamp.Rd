@@ -19,4 +19,4 @@ POSIXlt with correct date/time
 \description{
 Converts the timestamp on an \*.n38 record to computer time
 }
-\keyword{Internal}
+\keyword{internal}

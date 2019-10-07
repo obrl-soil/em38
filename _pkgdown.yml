@@ -1,0 +1,6 @@
+destination: docs
+title: em38
+url: https://obrl-soil.github.io/em38/
+template:
+  params:
+    ganalytics: UA-108472319-5

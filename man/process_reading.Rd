@@ -15,7 +15,7 @@ A list containing 10 data elements recorded in N38 instrument reading
   rows.
 }
 \description{
-This function pulls out instrument reading data from N38 binaries and dumps
+This function pulls out instrument reading data from *.N38 binaries and dumps
 it into a list. This is an internal function with no wider use case.
 }
 \examples{
@@ -24,4 +24,4 @@ n38_chunked <- n38_chunk(n38_demo)
 n38_r1 <- em38:::process_reading(n38_chunked[['survey_line_1']][['reading_data']][1, ])
 
 }
-\keyword{Internal}
+\keyword{internal}

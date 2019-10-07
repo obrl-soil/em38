@@ -28,4 +28,4 @@ Inputting a numeric to lat will give incorrect results for latitude -10
 lat <- em38:::gpgga_lat('2729.10198', 'S')
 
 }
-\keyword{Internal}
+\keyword{internal}

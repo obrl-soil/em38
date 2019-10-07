@@ -1,12 +1,12 @@
 #' Signal to conductivity/inphase reading
 #'
-#' This function converts an EM38-MK2 signal recieved on any of Channels 1 to 4.
+#' This function converts an EM38-MKII signal recieved on any of Channels 1 to 4.
 #' Additional conversion is required for inphase signals, and further
 #' application of a calibration factor is required to derive the final
 #' conductivity or resistivity value. Do not use this function in isolation.
 #' @param signal Integer.
 #' @return Numeric; uncalibrated instrument reading.
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' channel_1_or_3 <- em38:::get_cond(30456)
 #' channel_2 <- em38:::get_cond(30456) * 0.00720475
@@ -18,11 +18,11 @@ get_cond <- function(signal = NULL) {
 
 #' Signal to temperature reading
 #'
-#' This function calculates temperature from an EM38-MK2 signal recieved on
+#' This function calculates temperature from an EM38-MKII signal recieved on
 #' Channel 5 or 6.
 #' @param signal Integer.
 #' @return Temperature in degrees C
-#' @keywords Internal
+#' @keywords internal
 #' @note The device's effective reporting resolution is ~0.32 degrees C.
 #' @examples
 #' channel_5 <- em38:::get_temp(227)
@@ -43,7 +43,7 @@ get_temp <- function(signal = NULL) {
 #' @return Numeric, latitude in decimal degrees.
 #' @note Inputting a numeric to lat will give incorrect results for latitude -10
 #'   < x < 10 due to loss of leading zero(s).
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' lat <- em38:::gpgga_lat('2729.10198', 'S')
 #'
@@ -73,7 +73,7 @@ gpgga_lat <- function(lat = NULL, dir = NULL) {
 #' @return Numeric, longitude in decimal degrees.
 #' @note Inputting a numeric to long will give incorrect results for longitude
 #'   -100 < x < 100 due to loss of leading zero(s).
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' lat <- em38:::gpgga_long('15257.5556', 'E')
 #'
@@ -96,7 +96,7 @@ gpgga_long <- function(long = NULL, dir = NULL) {
 #' @param init_stamp state of program timer at comp_time
 #' @param now_stamp current state of program timer
 #' @return POSIXlt with correct date/time
-#' @keywords Internal
+#' @keywords internal
 #'
 conv_stamp <- function(comp_time = NULL, init_stamp = NULL, now_stamp) {
   diff_stamp <- now_stamp - init_stamp

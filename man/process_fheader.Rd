@@ -15,7 +15,7 @@ A list containing 9 information elements recorded in N38 file
   headers.
 }
 \description{
-This function pulls out file header data from N38 binaries and dumps them in
+This function pulls out file header data from *.N38 binaries and dumps them in
 a list. This is an internal function with no wider use case.
 }
 \examples{
@@ -24,4 +24,4 @@ n38_chunked <- n38_chunk(n38_demo)
 n38_fh <- em38:::process_fheader(n38_chunked[['file_header']])
 
 }
-\keyword{Internal}
+\keyword{internal}

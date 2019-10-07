@@ -1,12 +1,12 @@
 #' Process file header
 #'
-#' This function pulls out file header data from N38 binaries and dumps them in
+#' This function pulls out file header data from *.N38 binaries and dumps them in
 #' a list. This is an internal function with no wider use case.
 #' @param file_header A matrix with 2 rows and 25 columns, produced by
 #'   \code{\link{n38_import}}.
 #' @return A list containing 9 information elements recorded in N38 file
 #'   headers.
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -51,13 +51,13 @@ process_fheader <- function(file_header = NULL) {
 
 #' Process survey line header
 #'
-#' This function pulls out survey line header data from N38 binaries and dumps
+#' This function pulls out survey line header data from *.N38 binaries and dumps
 #' them into a list. This is an internal function with no wider use case.
 #' @param survline_header A matrix with 4 rows and 25 columns, produced by
 #'   \code{\link{n38_import}}.
 #' @return A list containing 5 information elements recorded in N38 survey line
 #'   headers.
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -84,13 +84,13 @@ process_slheader <- function(survline_header = NULL) {
 
 #' Process calibration data
 #'
-#' This function pulls out calibration data from N38 binaries and dumps it into
+#' This function pulls out calibration data from *.N38 binaries and dumps it into
 #' a list. This is an internal function with no wider use case.
 #' @param cal_row A matrix with 1 row and 25 columns, produced by
 #'   \code{\link{n38_import}}.
 #' @return A list containing 3 information elements recorded in N38 calibration
 #'   rows.
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -110,14 +110,14 @@ process_cal <- function(cal_row = NULL) {
 
 #' Process timer relation data
 #'
-#' This function pulls out timer relation data from N38 binaries and dumps it
+#' This function pulls out timer relation data from *.N38 binaries and dumps it
 #' into a list. This is an internal function with no wider use case.
 #' @param timer_rel A matrix with 1 row and 25 columns, produced by
 #'   \code{\link{n38_import}}.
 #' @return A list containing 2 information elements recorded in N38 timer
 #'   relation rows.
 #' @note Time will be returned in the local timezone.
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -136,13 +136,13 @@ process_timer <- function(timer_rel = NULL) {
 
 #' Process instrument reading data
 #'
-#' This function pulls out instrument reading data from N38 binaries and dumps
+#' This function pulls out instrument reading data from *.N38 binaries and dumps
 #' it into a list. This is an internal function with no wider use case.
 #' @param reading A matrix with 1 row and 25 columns, produced by
 #'   \code{\link{n38_import}}.
 #' @return A list containing 10 data elements recorded in N38 instrument reading
 #'   rows.
-#' @keywords Internal
+#' @keywords internal
 #' @examples
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -194,12 +194,12 @@ process_reading <- function(reading = NULL) {
 
 #' Process comment data
 #'
-#' This function pulls out comment data from N38 binaries and dumps it into a
+#' This function pulls out comment data from *.N38 binaries and dumps it into a
 #' list. This is an internal function with no wider use case.
 #' @param comment A matrix with 1 row and 25 columns, produced by
 #'   \code{\link{n38_import}}.
 #' @return A list containing 2 data elements recorded in N38 comment rows.
-#' @keywords Internal
+#' @keywords internal
 #' @examples \dontrun{
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)
@@ -220,12 +220,12 @@ process_comment <- function(comment = NULL) {
 
 #' Process new station data
 #'
-#' This function pulls out new station data from N38 binaries and dumps it into
+#' This function pulls out new station data from *.N38 binaries and dumps it into
 #' a list. This is an internal function with no wider use case.
 #' @param nstat A matrix with 1 row and 25 columns, produced by
 #'   \code{\link{n38_import}}.
 #' @return A list containing 2 data elements recorded in N38 new station rows.
-#' @keywords Internal
+#' @keywords internal
 #' @examples \dontrun{
 #' data('n38_demo')
 #' n38_chunked <- n38_chunk(n38_demo)

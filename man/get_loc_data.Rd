@@ -24,4 +24,4 @@ n38_decoded <- n38_decode(n38_chunks)
 loc_1 <- em38:::get_loc_data(n38_decoded$survey_line_1$location_data[1:7, ])
 
 }
-\keyword{Internal}
+\keyword{internal}

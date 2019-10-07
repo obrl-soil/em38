@@ -14,7 +14,7 @@ process_comment(comment = NULL)
 A list containing 2 data elements recorded in N38 comment rows.
 }
 \description{
-This function pulls out comment data from N38 binaries and dumps it into a
+This function pulls out comment data from *.N38 binaries and dumps it into a
 list. This is an internal function with no wider use case.
 }
 \examples{
@@ -26,4 +26,4 @@ n38_c1 <- em38:::process_comment(n38_chunked[['survey_line_1']][['comments']][1,
 }
 
 }
-\keyword{Internal}
+\keyword{internal}

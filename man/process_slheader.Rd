@@ -15,7 +15,7 @@ A list containing 5 information elements recorded in N38 survey line
   headers.
 }
 \description{
-This function pulls out survey line header data from N38 binaries and dumps
+This function pulls out survey line header data from *.N38 binaries and dumps
 them into a list. This is an internal function with no wider use case.
 }
 \examples{
@@ -24,4 +24,4 @@ n38_chunked <- n38_chunk(n38_demo)
 n38_slh <- em38:::process_slheader(n38_chunked[['survey_line_1']][['sl_header']])
 
 }
-\keyword{Internal}
+\keyword{internal}
