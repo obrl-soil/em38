@@ -142,9 +142,8 @@ n38_decode <- function(chunks = NULL) {
 
     chunks[[i]][['sl_header']] <- process_slheader(chunks[[i]][['sl_header']])
 
-    chunks[[i]][['cal_data']] <- apply(chunks[[i]][['cal_data']],
-                                       MARGIN = 1,
-                                       FUN = function(x) process_cal(x))
+    chunks[[i]][['cal_data']] <-
+      apply(chunks[[i]][['cal_data']], MARGIN = 1, FUN = process_cal)
     chunks[[i]][['cal_data']] <- purrr::transpose(chunks[[i]][['cal_data']])
     chunks[[i]][['cal_data']] <-
       as.data.frame(lapply(chunks[[i]][['cal_data']], unlist),
@@ -164,9 +163,8 @@ n38_decode <- function(chunks = NULL) {
       chunks[[i]][['sl_header']][['timestamp']]$yday
 
     # process instrument readings
-    chunks[[i]][['reading_data']] <- apply(chunks[[i]][['reading_data']],
-                                           MARGIN = 1,
-                                           FUN = function(x) process_reading(x))
+    chunks[[i]][['reading_data']] <-
+      apply(chunks[[i]][['reading_data']], MARGIN = 1, FUN = process_reading)
     chunks[[i]][['reading_data']] <-
       purrr::transpose(chunks[[i]][['reading_data']])
     chunks[[i]][['reading_data']] <-
@@ -255,13 +253,24 @@ n38_decode <- function(chunks = NULL) {
       if(dim(chunks[[i]][['new_station']])[1] == 0) {
         NA
         } else {
-          process_nstat(chunks[[i]][['new_station']])
+          chunks[[i]][['new_station']] <-
+            apply(chunks[[i]][['new_station']], MARGIN = 1, FUN = process_nstat)
+          chunks[[i]][['new_station']] <-
+            purrr::transpose(chunks[[i]][['new_station']])
+          chunks[[i]][['new_station']] <-
+            as.data.frame(lapply(chunks[[i]][['new_station']], unlist),
+                          stringsAsFactors = FALSE)
         }
 
     chunks[[i]][['comments']] <- if(dim(chunks[[i]][['comments']])[1] == 0) {
       NA
       } else {
-        process_comment(chunks[[i]][['comments']])
+        chunks[[i]][['comments']] <-
+          apply(chunks[[i]][['comments']], MARGIN = 1, FUN = process_comment)
+        chunks[[i]][['comments']] <- purrr::transpose(chunks[[i]][['comments']])
+        chunks[[i]][['comments']] <-
+          as.data.frame(lapply(chunks[[i]][['comments']], unlist),
+                        stringsAsFactors = FALSE)
       }
 
     chunks[[i]]
@@ -338,28 +347,26 @@ n38_to_m38 <- function(n38_decoded = NULL) {
 
     # add station data to readings
     # increment is -ve when GPS not in use and GRD dir is South or West
+    # allegedly
     # must make it easier to recombine back-and-forth tracks
-    n38_decoded[[i]]$reading_data$station <-
-      if(n38_decoded[[i]]$sl_header$station_increment > 0) {
-     seq(from = n38_decoded[[i]]$sl_header$start_station,
-         to = dim(n38_decoded[[i]]$reading_data)[1],
-         by = n38_decoded[[i]]$sl_header$station_increment)
-    } else {
-      seq(from = n38_decoded[[i]]$sl_header$start_station,
-          to = n38_decoded[[i]]$sl_header$start_station - (dim(n38_decoded[[i]]$reading_data)[1] - 1),
-          by = n38_decoded[[i]]$sl_header$station_increment)
-    }
+    # this probably isn't quite right but unsure of solution at 20191125
+    stn <- rep(seq(n38_decoded[[i]]$sl_header$start_station,
+                   dim(n38_decoded[[i]]$reading_data)[1],
+                   by = n38_decoded[[i]]$sl_header$station_increment),
+               each = n38_decoded[[i]]$sl_header$station_increment)
+    stn <- stn[seq(dim(n38_decoded[[i]]$reading_data)[1])]
 
+    n38_decoded[[i]]$reading_data$station <- stn
 
     reading_split <- split(n38_decoded[[i]]$reading_data,
                            seq.int(dim(n38_decoded[[i]]$reading_data)[1]))
     # slow :/
     readings <- purrr::map_chr(reading_split, function(row) {
 
-      param_1 <- if(grep('first', row['indicator']) == 1)  {'S'} else {'R'}
-      param_2 <- if(row['mode'] == 'Vertical')             {'V'} else {'H'}
-      param_3 <- if(row['marker'] == 'no marker')          { 0 } else { 1 }
-      param_4 <- if(n38_decoded[[1]][[1]] == 'EM38MK2')    { 1 } else { 0 }
+      param_1 <- if(grepl('first', row['indicator']))   {'S'} else {'R'}
+      param_2 <- if(row['mode'] == 'Vertical')          {'V'} else {'H'}
+      param_3 <- if(row['marker'] == 'no marker')       { 0 } else { 1 }
+      param_4 <- if(n38_decoded[[1]][[1]] == 'EM38MK2') { 1 } else { 0 }
 
 
       paste0(param_1, param_2, param_3, param_4, ',',
@@ -394,22 +401,32 @@ n38_to_m38 <- function(n38_decoded = NULL) {
       )
     })
 
-  new_stations <- if(!is.na(n38_decoded[[i]]$new_station)) {
+  new_stations <- if(all(!is.na(n38_decoded[[i]]$new_station))) {
       apply(n38_decoded[[i]]$new_station, MARGIN = 1, FUN = function(row) {
         # haven't seen one of these yet so not sure if this is correct
-        paste0('S', row$new_station,
-               as.character(n38_decoded[[i]]$timer_data$computer_time +
-                              (row$timestamp_ms - n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
-                            format = '%H:%M:%OS'))
-      })} else {NA}
+        sentence <- paste0('S ', row['new_station'])
+        timestamp <- as.character(n38_decoded[[i]]$timer_data$computer_time +
+                                    (as.numeric(row['timestamp_ms']) -
+                                       n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
+                                  format = '%H:%M:%OS')
+        padding <-
+          paste0(rep.int(' ', times = 103 - (nchar(sentence) + nchar(timestamp))),
+                 collapse = '')
+        paste0(sentence, padding, timestamp)
+      })
+    } else { NA }
 
-  comments <- if(!is.na(n38_decoded[[i]]$comments)) {
+  comments <- if(all(!is.na(n38_decoded[[i]]$comments))) {
     apply(n38_decoded[[i]]$comments, MARGIN = 1, FUN = function(row) {
-      # haven't seen one of these yet so not sure if this is correct
-      paste0('C', row$comment,
-             as.character(n38_decoded[[i]]$timer_data$computer_time +
-                            (row$timestamp_ms - n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
-                          format = '%H:%M:%OS'))
+      sentence <- paste0('C ', row['comment'])
+      timestamp <- as.character(n38_decoded[[i]]$timer_data$computer_time +
+                     (as.numeric(row['timestamp_ms']) -
+                        n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
+                   format = '%H:%M:%OS')
+      padding <-
+        paste0(rep.int(' ', times = 103 - (nchar(sentence) + nchar(timestamp))),
+               collapse = '')
+      paste0(sentence, padding, timestamp)
     })
   } else {
       NA
@@ -438,7 +455,7 @@ n38_to_m38 <- function(n38_decoded = NULL) {
                'TIME' = n38_decoded[[i]]$reading_data$timestamp_ms,
                stringsAsFactors = FALSE)
 
-  nstat_done  <- if(!is.na(n38_decoded[[i]]$new_station)) {
+  nstat_done  <- if(all(!is.na(n38_decoded[[i]]$new_station))) {
     data.frame('DATA' = new_stations,
                'TIME' = n38_decoded[[i]]$new_station$timestamp_ms,
                stringsAsFactors = FALSE)
@@ -449,7 +466,7 @@ n38_to_m38 <- function(n38_decoded = NULL) {
                stringsAsFactors = FALSE)
   }
 
-  comments_done  <- if(!is.na(n38_decoded[[i]]$comments)) {
+  comments_done  <- if(all(!is.na(n38_decoded[[i]]$comments))) {
     data.frame('DATA' = comments,
                'TIME' = n38_decoded[[i]]$comments$timestamp_ms,
                stringsAsFactors = FALSE)

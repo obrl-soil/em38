@@ -37,7 +37,7 @@ get_loc_data <- function(block = NULL) {
   # will defo need to add handlers for GLONASS and other systems but need test
   # data
 
-  }
+}
 
 #' Process EM38 Survey line
 #'
@@ -92,6 +92,7 @@ em38_surveyline <- function(survey_line = NULL,
   tim <- survey_line[['timer_data']]
   rdg <- survey_line[['reading_data']]
   loc <- survey_line[['location_data']]
+  com <- survey_line[['comments']]
 
   # quality checks
   if(all(dim(rdg)[1] == 0, any(dim(loc)[1] == 0, is.null(dim(loc))))) {
@@ -107,10 +108,24 @@ em38_surveyline <- function(survey_line = NULL,
 
   # if input had readings but no GPS data recorded, process as non-spatial
   if(any(dim(loc)[1] == 0, is.null(dim(loc)))) {
-    return(cbind('ID' = seq(nrow(rdg)), rdg[, !names(rdg) %in% 'timestamp_ms'],
-                 "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
-                                          rdg$timestamp_ms)
-                 ))
+    out <-
+      cbind('ID' = seq(nrow(rdg)), rdg[, !names(rdg) %in% 'timestamp_ms'],
+            "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
+                                     rdg$timestamp_ms))
+    if(all(!is.na(com))) {
+      cmt <-
+        cbind('ID' = seq(nrow(com)),
+              com[, !names(com) %in% 'timestamp_ms', drop = FALSE],
+              "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
+                                       com$timestamp_ms))
+      out <- dplyr::bind_rows(out, cmt)
+      out <- out[,c(names(out)[names(out)!='date_time'],'date_time')]
+      out <- out[order(out$date_time), ]
+      return(out)
+    } else {
+      return(out)
+    }
+
   }
 
   ### location data processing
@@ -134,20 +149,46 @@ em38_surveyline <- function(survey_line = NULL,
   loc_f <- loc_f[loc_f$CHKSUM == TRUE, ]
 
   if(dim(loc_f)[1] == 0) { # no unscrambled gps data (unlikely)
-    return(cbind('ID' = seq(nrow(rdg)), rdg[, !names(rdg) %in% 'timestamp_ms'],
-                 "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
-                                          rdg$timestamp_ms)
-    ))
+    out <-
+      cbind('ID' = seq(nrow(rdg)), rdg[, !names(rdg) %in% 'timestamp_ms'],
+            "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
+                                     rdg$timestamp_ms))
+    if(all(!is.na(com))) {
+      cmt <-
+        cbind('ID' = seq(nrow(com)),
+              com[, !names(com) %in% 'timestamp_ms', drop = FALSE],
+              "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
+                                       com$timestamp_ms))
+      out <- dplyr::bind_rows(out, cmt)
+      out <- out[,c(names(out)[names(out)!='date_time'],'date_time')]
+      out <- out[order(out$date_time), ]
+      return(out)
+    } else {
+      return(out)
+    }
   }
 
   # remove no-fix failures
   loc_f <- loc_f[loc_f$FIX != 0, ]
 
   if(dim(loc_f)[1] == 0) { # gps data but no signal fix achieved
-    return(cbind('ID' = seq(nrow(rdg)), rdg[, !names(rdg) %in% 'timestamp_ms'],
-                 "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
-                                          rdg$timestamp_ms))
-    )
+    out <-
+      cbind('ID' = seq(nrow(rdg)), rdg[, !names(rdg) %in% 'timestamp_ms'],
+            "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
+                                     rdg$timestamp_ms))
+    if(all(!is.na(com))) {
+      cmt <-
+        cbind('ID' = seq(nrow(com)),
+              com[, !names(com) %in% 'timestamp_ms', drop = FALSE],
+              "date_time" = conv_stamp(tim$computer_time, tim$timestamp_ms,
+                                       com$timestamp_ms))
+      out <- dplyr::bind_rows(out, cmt)
+      out <- out[,c(names(out)[names(out)!='date_time'],'date_time')]
+      out <- out[order(out$date_time), ]
+      return(out)
+    } else {
+      return(out)
+    }
   }
 
   # filter on fix type if supplied
@@ -187,8 +228,12 @@ em38_surveyline <- function(survey_line = NULL,
   #  readings[!(readings$timestamp_ms %in% readings_in$timestamp_ms), ]
 
   all_data <- dplyr::bind_rows(loc_f, readings_in)
+  # put comments in their own col, give 'em a location
+  if(all(!is.na(com))) {
+    all_data <- dplyr::bind_rows(all_data, com)
+  }
   all_data <-
-    all_data[with(all_data, order(all_data$timestamp_ms)), ]
+    all_data[order(all_data$timestamp_ms), ]
   all_data$TS_LAG_AD <-
     all_data$timestamp_ms - dplyr::lag(all_data$timestamp_ms)
   all_data$TS_LAG_AD[is.na(all_data$TS_LAG_AD)] <- 0
@@ -252,18 +297,29 @@ em38_surveyline <- function(survey_line = NULL,
                                    all_data$timestamp_ms)
 
   # filter to just keep instrument readings and interpolated locations
-  out_data <-
-    all_data[, c('indicator', 'marker', 'mode', 'cond_05', 'cond_1', 'IP_05',
-                 'IP_1', 'temp_05', 'temp_1', 'date_time', 'NEW_LAT', 'NEW_LONG')]
-  out_data <- out_data[complete.cases(out_data), ]
-  out_data <- cbind('ID' = seq(nrow(out_data)), out_data)
+  if(all(is.na(com))) {
+    out_data <-
+      all_data[, c('indicator', 'marker', 'mode', 'cond_05', 'cond_1', 'IP_05',
+                   'IP_1', 'temp_05', 'temp_1', 'date_time',
+                   'NEW_LAT', 'NEW_LONG')]
+    out_data <- out_data[complete.cases(out_data), ]
+    out_data <- cbind('ID' = seq(nrow(out_data)), out_data)
+  } else {
+    out_data <-
+      all_data[, c('indicator', 'marker', 'mode', 'cond_05', 'cond_1', 'IP_05',
+                   'IP_1', 'temp_05', 'temp_1', 'comment', 'date_time',
+                   'NEW_LAT', 'NEW_LONG')]
+    out_data <- out_data[which(!is.na(out_data$indicator) |
+                                 !is.na(out_data$comment)), ]
+    out_data <- cbind('ID' = seq(nrow(out_data)), out_data)
+  }
 
   # spatialise output and return
   sf::st_as_sf(out_data,
                coords = c('NEW_LONG', 'NEW_LAT'),
                crs = 4326) # may need to epoch at some point??
-  }
 
+}
 
 #' Process EM38 data
 #'

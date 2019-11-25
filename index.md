@@ -59,9 +59,9 @@ plot(sl1[sl1$mode == 'Vertical', 'cond_05'], pch = 20,
      main = 'Conductivity, Vertical Dipole Mode, Coil Separation 0.5m')
 ```
 
-[![cover\_image](man/figures/README-example-1.png)](https://obrl-soil.github.io/em38)
+![em38-track-plot](man/figures/README-example-1.png)
 
-Its surprisingly difficult to walk in a straight line across a paddock…
+Its surprisingly difficult to walk in a straight line across a paddock 😶
 
 If you want to look at the intermediate data more closely,
 

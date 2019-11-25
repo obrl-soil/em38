@@ -1,3 +1,8 @@
+# v 0.0.2
+
+  * Bugfix for GH-1 comment processing, many thanks to sanjaykmenon for 
+    providing test data  
+
 # v 0.0.1
 
   * Major refactor - process survey lines separately, cope with missing/bad GPS

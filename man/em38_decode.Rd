@@ -4,8 +4,12 @@
 \alias{em38_decode}
 \title{Process EM38 data}
 \usage{
-em38_decode(n38_decoded = NULL, hdop_filter = 3, time_filter = 5,
-  fix_filter = NULL)
+em38_decode(
+  n38_decoded = NULL,
+  hdop_filter = 3,
+  time_filter = 5,
+  fix_filter = NULL
+)
 }
 \arguments{
 \item{n38_decoded}{Nested list output by \code{\link{n38_decode}}.}

@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -126,8 +126,8 @@
 <a class="sourceLine" id="cb2-11" title="11">sl1 &lt;-<span class="st"> </span>demo_survey<span class="op">$</span>survey_lines[[<span class="dv">1</span>]]</a>
 <a class="sourceLine" id="cb2-12" title="12"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(sl1[sl1<span class="op">$</span>mode <span class="op">==</span><span class="st"> 'Vertical'</span>, <span class="st">'cond_05'</span>], <span class="dt">pch =</span> <span class="dv">20</span>, </a>
 <a class="sourceLine" id="cb2-13" title="13">     <span class="dt">main =</span> <span class="st">'Conductivity, Vertical Dipole Mode, Coil Separation 0.5m'</span>)</a></code></pre></div>
-<p><a href="https://obrl-soil.github.io/em38"><img src="reference/figures/README-example-1.png" alt="cover_image"></a></p>
-<p>Its surprisingly difficult to walk in a straight line across a paddock…</p>
+<p><img src="reference/figures/README-example-1.png" alt="em38-track-plot"></p>
+<p>Its surprisingly difficult to walk in a straight line across a paddock 😶</p>
 <p>If you want to look at the intermediate data more closely,</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># import binary file as raw() type matrix</span></a>
 <a class="sourceLine" id="cb3-2" title="2">n38_mat     &lt;-<span class="st"> </span><span class="kw"><a href="reference/n38_import.html">n38_import</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"em38_demo.n38"</span>, <span class="dt">package =</span> <span class="st">"em38"</span>))</a>

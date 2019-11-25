@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -92,9 +92,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Introduction to em38</h1>
-                        <h4 class="author">Lauren O’Brien</h4>
+                        <h4 class="author"><span class="citation">@obrl_soil</span></h4>
             
-            <h4 class="date">2019-10-08</h4>
+            <h4 class="date">2019-11-25</h4>
       
       
       <div class="hidden name"><code>Using_em38.Rmd</code></div>
@@ -125,8 +125,17 @@
 <a class="sourceLine" id="cb2-4" title="4">                 <span class="dt">hdop_filter =</span> <span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb2-5" title="5"></a>
 <a class="sourceLine" id="cb2-6" title="6">sl1 &lt;-<span class="st"> </span>demo_survey<span class="op">$</span>survey_lines[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb2-7" title="7"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(sl1[sl1<span class="op">$</span>mode <span class="op">==</span><span class="st"> 'Vertical'</span>, <span class="st">'cond_05'</span>], <span class="dt">pch =</span> <span class="dv">20</span>, </a>
-<a class="sourceLine" id="cb2-8" title="8">     <span class="dt">main =</span> <span class="st">'Conductivity, Vertical Dipole Mode, Coil Separation 1.0m'</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="kw">ggplot</span>(sl1) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="st">  </span><span class="kw">geom_sf</span>(<span class="kw">aes</span>(<span class="dt">col =</span> cond_<span class="dv">05</span>), <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="st">  </span><span class="kw">scale_colour_viridis_c</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-11" title="11"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'ECa mS/m'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">27.4423</span>, <span class="fl">-27.4424</span>, <span class="fl">-27.4425</span>, <span class="fl">-27.4426</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-13" title="13"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">151.4341</span>, <span class="fl">151.4342</span>, <span class="fl">151.4343</span>, <span class="fl">151.4344</span>, <span class="fl">151.4345</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-14" title="14"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">'EM38-MKII Conductivity'</span>, </a>
+<a class="sourceLine" id="cb2-15" title="15">          <span class="dt">subtitle =</span> <span class="st">'Vertical Dipole Mode, Coil Separation 0.5m'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-16" title="16"><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-17" title="17"><span class="st">  </span><span class="kw">coord_sf</span>()</a></code></pre></div>
 <p><img src="Using_em38_files/figure-html/demo1-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"></a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(sl1, <span class="ot">NULL</span>)[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'ID'</span>, <span class="st">'cond_05'</span>, <span class="st">'date_time'</span>)])</a>
@@ -150,55 +159,54 @@
 <a class="sourceLine" id="cb4-5" title="5"></a>
 <a class="sourceLine" id="cb4-6" title="6"><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(dat, <span class="kw">between</span>(ID, <span class="dv">0</span>, <span class="dv">500</span>))) <span class="op">+</span></a>
 <a class="sourceLine" id="cb4-7" title="7"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ID, <span class="dt">y =</span> value, <span class="dt">group =</span> key, <span class="dt">col =</span> key), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb4-8" title="8"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">'Decoded track, first 100 records'</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb4-9" title="9"><span class="st">  </span><span class="kw">theme_minimal</span>()</a></code></pre></div>
+<a class="sourceLine" id="cb4-8" title="8"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">"EM38-MKII"</span>,</a>
+<a class="sourceLine" id="cb4-9" title="9">          <span class="dt">subtitle =</span> <span class="st">'Vertical channels, First 100 records'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Channel'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="st">  </span><span class="kw">theme_minimal</span>() </a></code></pre></div>
 <p><img src="Using_em38_files/figure-html/graphing-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"></a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="co"># the operator must have put the machine down, because a couple of</span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="co"># points are in horizontal mode:</span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(dat, <span class="kw">between</span>(ID, <span class="dv">1250</span>, <span class="dv">1350</span>))) <span class="op">+</span></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ID, <span class="dt">y =</span> value, <span class="dt">group =</span> key, <span class="dt">col =</span> key), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">'Decoded track, first 100 records'</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="st">  </span><span class="kw">theme_minimal</span>()</a></code></pre></div>
-<p><img src="Using_em38_files/figure-html/graphing-2.png" width="576" style="display: block; margin: auto;"></p>
 <p>Since conductivity and temperature readings are on very different scales, it is preferable to facet the plot. Below, an additional ‘measurement type’ grouping variable is added before plotting, and used to split the data into separate panels.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="co"># better grouping - split out by measurement type</span></a>
-<a class="sourceLine" id="cb6-2" title="2">dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">TYPE =</span> </a>
-<a class="sourceLine" id="cb6-4" title="4">                  dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">'cond'</span>, key) <span class="op">~</span><span class="st"> 'Conductivity'</span>,</a>
-<a class="sourceLine" id="cb6-5" title="5">                                   <span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">'IP'</span>, key) <span class="op">~</span><span class="st"> 'In Phase'</span>,</a>
-<a class="sourceLine" id="cb6-6" title="6">                                   <span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">'temp'</span>, key) <span class="op">~</span><span class="st"> 'Temperature'</span>))</a>
-<a class="sourceLine" id="cb6-7" title="7"></a>
-<a class="sourceLine" id="cb6-8" title="8"><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(dat, ID <span class="op">&lt;=</span><span class="st"> </span><span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(TYPE <span class="op">!=</span><span class="st"> 'INPHASE'</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb6-9" title="9"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ID, <span class="dt">y =</span> value, <span class="dt">group =</span> key, <span class="dt">col =</span> key), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb6-10" title="10"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>TYPE, <span class="dt">scales =</span> <span class="st">'free_y'</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb6-11" title="11"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">'Decoded track, first 500 records'</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb6-12" title="12"><span class="st">  </span><span class="kw">theme_minimal</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="co"># better grouping - split out by measurement type</span></a>
+<a class="sourceLine" id="cb5-2" title="2">dat &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">TYPE =</span> </a>
+<a class="sourceLine" id="cb5-4" title="4">                  dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">'cond'</span>, key) <span class="op">~</span><span class="st"> 'Conductivity'</span>,</a>
+<a class="sourceLine" id="cb5-5" title="5">                                   <span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">'IP'</span>, key) <span class="op">~</span><span class="st"> 'In Phase'</span>,</a>
+<a class="sourceLine" id="cb5-6" title="6">                                   <span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">'temp'</span>, key) <span class="op">~</span><span class="st"> 'Temperature'</span>))</a>
+<a class="sourceLine" id="cb5-7" title="7"></a>
+<a class="sourceLine" id="cb5-8" title="8"><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(dat, ID <span class="op">&lt;=</span><span class="st"> </span><span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(TYPE <span class="op">!=</span><span class="st"> 'INPHASE'</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-9" title="9"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ID, <span class="dt">y =</span> value, <span class="dt">group =</span> key, <span class="dt">col =</span> key), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-10" title="10"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>TYPE, <span class="dt">scales =</span> <span class="st">'free_y'</span>, <span class="dt">nrow =</span> <span class="dv">3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-11" title="11"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">"EM38-MKII"</span>,</a>
+<a class="sourceLine" id="cb5-12" title="12">          <span class="dt">subtitle =</span> <span class="st">'Vertical channels, First 500 records'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-13" title="13"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Channel'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-14" title="14"><span class="st">  </span><span class="kw">theme_minimal</span>()</a></code></pre></div>
 <p><img src="Using_em38_files/figure-html/grpplot-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>If you want more control over plot aesthetics, <code>patchwork</code> is helpful:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># devtools::install_github("thomasp85/patchwork")</span></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(patchwork)</a>
-<a class="sourceLine" id="cb7-3" title="3"></a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="co"># common plot aesthetics</span></a>
-<a class="sourceLine" id="cb7-5" title="5">thm &lt;-<span class="st"> </span><span class="kw">theme_minimal</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-6" title="6"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">'bottom'</span>, </a>
-<a class="sourceLine" id="cb7-7" title="7">        <span class="dt">legend.title =</span> <span class="kw">element_blank</span>(),</a>
-<a class="sourceLine" id="cb7-8" title="8">        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>())</a>
-<a class="sourceLine" id="cb7-9" title="9"></a>
-<a class="sourceLine" id="cb7-10" title="10">cond &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(dat, ID <span class="op">&lt;=</span><span class="st"> </span><span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-11" title="11"><span class="st">                 </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(TYPE <span class="op">==</span><span class="st"> 'Conductivity'</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-12" title="12"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ID, <span class="dt">y =</span> value, <span class="dt">group =</span> key, <span class="dt">col =</span> key), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-13" title="13"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">250</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-14" title="14"><span class="st">  </span>thm</a>
-<a class="sourceLine" id="cb7-15" title="15"></a>
-<a class="sourceLine" id="cb7-16" title="16">temp &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(dat, ID <span class="op">&lt;=</span><span class="st"> </span><span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-17" title="17"><span class="st">                 </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(TYPE <span class="op">==</span><span class="st"> 'Temperature'</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-18" title="18"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ID, <span class="dt">y =</span> value, <span class="dt">group =</span> key, <span class="dt">col =</span> key), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-19" title="19"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">33</span>, <span class="dv">36</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-20" title="20"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">'Temperature (C)'</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-21" title="21"><span class="st">  </span>thm</a>
-<a class="sourceLine" id="cb7-22" title="22"></a>
-<a class="sourceLine" id="cb7-23" title="23">cond <span class="op">+</span><span class="st"> </span>temp <span class="op">+</span><span class="st"> </span><span class="kw">plot_annotation</span>(<span class="dt">title =</span> <span class="st">'Decoded track, first 500 records'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="co"># devtools::install_github("thomasp85/patchwork")</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(patchwork)</a>
+<a class="sourceLine" id="cb6-3" title="3"></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="co"># common plot aesthetics</span></a>
+<a class="sourceLine" id="cb6-5" title="5">thm &lt;-<span class="st"> </span><span class="kw">theme_minimal</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">'bottom'</span>, </a>
+<a class="sourceLine" id="cb6-7" title="7">        <span class="dt">legend.title =</span> <span class="kw">element_blank</span>(),</a>
+<a class="sourceLine" id="cb6-8" title="8">        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>())</a>
+<a class="sourceLine" id="cb6-9" title="9"></a>
+<a class="sourceLine" id="cb6-10" title="10">cond &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(dat, ID <span class="op">&lt;=</span><span class="st"> </span><span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="st">                 </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(TYPE <span class="op">==</span><span class="st"> 'Conductivity'</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-12" title="12"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ID, <span class="dt">y =</span> value, <span class="dt">group =</span> key, <span class="dt">col =</span> key), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-13" title="13"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">250</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-14" title="14"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">'ECa mS/m'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-15" title="15"><span class="st">  </span>thm</a>
+<a class="sourceLine" id="cb6-16" title="16"></a>
+<a class="sourceLine" id="cb6-17" title="17">temp &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(dat, ID <span class="op">&lt;=</span><span class="st"> </span><span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-18" title="18"><span class="st">                 </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(TYPE <span class="op">==</span><span class="st"> 'Temperature'</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-19" title="19"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> ID, <span class="dt">y =</span> value, <span class="dt">group =</span> key, <span class="dt">col =</span> key), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-20" title="20"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">33</span>, <span class="dv">36</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-21" title="21"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">'Temperature (C)'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-22" title="22"><span class="st">  </span>thm</a>
+<a class="sourceLine" id="cb6-23" title="23"></a>
+<a class="sourceLine" id="cb6-24" title="24">cond <span class="op">+</span><span class="st"> </span>temp <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-25" title="25"><span class="st">  </span><span class="kw">plot_annotation</span>(<span class="dt">title =</span> <span class="st">'Decoded track, first 500 records'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-26" title="26"><span class="st">  </span><span class="kw">plot_layout</span>(<span class="dt">nrow =</span> <span class="dv">2</span>)</a></code></pre></div>
 <p><img src="Using_em38_files/figure-html/patchy-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="raster-interpolation" class="section level2">

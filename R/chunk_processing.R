@@ -212,7 +212,7 @@ process_comment <- function(comment = NULL) {
   out        <- vector('list', length = 2)
   names(out) <- c('comment', 'timestamp_ms')
 
-  out[['comment']]       <- rawToChar(comment[2:12])
+  out[['comment']]       <- trimws(rawToChar(comment[2:12]))
   out[['timestamp_ms']]  <- as.integer(rawToChar(comment[16:25]))
 
   out

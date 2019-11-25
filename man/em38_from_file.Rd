@@ -4,8 +4,12 @@
 \alias{em38_from_file}
 \title{Import and convert N38 logfiles}
 \usage{
-em38_from_file(path = NULL, hdop_filter = 3, time_filter = 5,
-  fix_filter = NULL)
+em38_from_file(
+  path = NULL,
+  hdop_filter = 3,
+  time_filter = 5,
+  fix_filter = NULL
+)
 }
 \arguments{
 \item{path}{A file path pointing to a valid *.N38 file, produced by a

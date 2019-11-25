@@ -15,6 +15,6 @@ Geonics Ltd. (2011)
   Computer Program Manual (Survey Data Reduction Manual)}. v 1.12, June 2011.
 }
 \author{
-\strong{Maintainer}: Lauren O'Brien \email{obrlsoilau@gmail.com} (0000-0002-7336-2171)
+\strong{Maintainer}: Lauren O'Brien \email{obrlsoilau@gmail.com} (\href{https://orcid.org/0000-0002-7336-2171}{ORCID})
 
 }

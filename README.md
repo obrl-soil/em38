@@ -59,7 +59,7 @@ plot(sl1[sl1$mode == 'Vertical', 'cond_05'], pch = 20,
      main = 'Conductivity, Vertical Dipole Mode, Coil Separation 0.5m')
 ```
 
-![](README-example-1.png)
+![](man/figures/README-example-1.png)
 
 Its surprisingly difficult to walk in a straight line across a paddock
 :no\_mouth:

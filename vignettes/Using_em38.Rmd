@@ -1,10 +1,10 @@
 ---
 title: "Introduction to em38"
-author: "Lauren O'Brien"
+author: "@obrl_soil"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Introduction to em38}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -45,8 +45,17 @@ demo_survey <-
                  hdop_filter = 3)
 
 sl1 <- demo_survey$survey_lines[[1]]
-plot(sl1[sl1$mode == 'Vertical', 'cond_05'], pch = 20, 
-     main = 'Conductivity, Vertical Dipole Mode, Coil Separation 1.0m')
+
+ggplot(sl1) +
+  geom_sf(aes(col = cond_05), pch = 20, size = 2) +
+  scale_colour_viridis_c() +
+  labs(col = 'ECa mS/m') +
+  scale_y_continuous(breaks = c(-27.4423, -27.4424, -27.4425, -27.4426)) +
+  scale_x_continuous(breaks = c(151.4341, 151.4342, 151.4343, 151.4344, 151.4345)) +
+  ggtitle('EM38-MKII Conductivity', 
+          subtitle = 'Vertical Dipole Mode, Coil Separation 0.5m') +
+  theme_minimal() +
+  coord_sf()
 
 head(sf::st_set_geometry(sl1, NULL)[, c('ID', 'cond_05', 'date_time')])
 ```
@@ -65,15 +74,10 @@ dat <- sf::st_set_geometry(sl1, NULL) %>%
 
 ggplot(dplyr::filter(dat, between(ID, 0, 500))) +
   geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
-  ggtitle('Decoded track, first 100 records') +
-  theme_minimal()
-
-# the operator must have put the machine down, because a couple of
-# points are in horizontal mode:
-ggplot(dplyr::filter(dat, between(ID, 1250, 1350))) +
-  geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
-  ggtitle('Decoded track, first 100 records') +
-  theme_minimal()
+  ggtitle("EM38-MKII",
+          subtitle = 'Vertical channels, First 100 records') +
+  labs(col = 'Channel') +
+  theme_minimal() 
 ```
 
 Since conductivity and temperature readings are on very different scales, it is preferable to facet the plot. Below, an additional 'measurement type' grouping variable is added before plotting, and used to split the data into separate panels.
@@ -88,8 +92,10 @@ dat <- dat %>%
 
 ggplot(dplyr::filter(dat, ID <= 500) %>% dplyr::filter(TYPE != 'INPHASE')) +
   geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
-  facet_wrap(~TYPE, scales = 'free_y') +
-  ggtitle('Decoded track, first 500 records') +
+  facet_wrap(~TYPE, scales = 'free_y', nrow = 3) +
+    ggtitle("EM38-MKII",
+          subtitle = 'Vertical channels, First 500 records') +
+  labs(col = 'Channel') +
   theme_minimal()
 ```
 
@@ -109,6 +115,7 @@ cond <- ggplot(dplyr::filter(dat, ID <= 500) %>%
                  dplyr::filter(TYPE == 'Conductivity')) +
   geom_path(aes(x = ID, y = value, group = key, col = key), size = 1) +
   scale_y_continuous(limits = c(0, 250)) +
+  labs(y = 'ECa mS/m') +
   thm
 
 temp <- ggplot(dplyr::filter(dat, ID <= 500) %>% 
@@ -118,7 +125,9 @@ temp <- ggplot(dplyr::filter(dat, ID <= 500) %>%
   labs(y = 'Temperature (C)') +
   thm
 
-cond + temp + plot_annotation(title = 'Decoded track, first 500 records')
+cond + temp + 
+  plot_annotation(title = 'Decoded track, first 500 records') +
+  plot_layout(nrow = 2)
 
 ```
 

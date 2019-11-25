@@ -4,8 +4,12 @@
 \alias{em38_surveyline}
 \title{Process EM38 Survey line}
 \usage{
-em38_surveyline(survey_line = NULL, hdop_filter = NULL,
-  time_filter = NULL, fix_filter = NULL)
+em38_surveyline(
+  survey_line = NULL,
+  hdop_filter = NULL,
+  time_filter = NULL,
+  fix_filter = NULL
+)
 }
 \arguments{
 \item{survey_line}{a decoded survey line from \code{\link{n38_decode}}.}
