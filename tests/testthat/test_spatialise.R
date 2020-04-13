@@ -31,8 +31,7 @@ test_that(
     expect_is(sl1, 'sf'),
     expect_equal(dim(sl1)[1], 3164L),
     expect_equal(dim(sl1)[2], 12L),
-    expect_equal(sf::st_crs(sl1)$proj4string,
-                 "+proj=longlat +datum=WGS84 +no_defs"),
+    expect_equal(sf::st_crs(sl1), sf::st_crs(4326)),
     expect_equal(sf::st_bbox(sl1)[[1]], 151.4341589),
     # no loc data
     sl2 <- n38_decoded[[2]],

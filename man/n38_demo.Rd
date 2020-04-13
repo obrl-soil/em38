@@ -4,9 +4,11 @@
 \name{n38_demo}
 \alias{n38_demo}
 \title{Data: imported N38 track file}
-\format{A matrix of raw bytes, 25 columns by 37249 rows, created by calling
+\format{
+A matrix of raw bytes, 25 columns by 37249 rows, created by calling
   \code{\link{n38_import}} on \code{system.file("extdata", "em38_demo.n38",
-  package = "em38")}.}
+  package = "em38")}.
+}
 \source{
 This dataset was recorded on a farm near Jondaryan, South East
   Queensland in March 2018 during a training exercise. The track mostly
