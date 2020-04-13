@@ -1,0 +1,10 @@
+pandoc: 2.7.3
+pkgdown: 1.5.1.9000
+pkgdown_sha: cb74ce08c4b25adda98256ea46196b1182f4e0ea
+articles:
+  Using_em38: Using_em38.html
+last_built: 2020-04-13T06:51Z
+urls:
+  reference: https://obrl-soil.github.io/em38//reference
+  article: https://obrl-soil.github.io/em38//articles
+
