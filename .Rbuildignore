@@ -2,10 +2,8 @@
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^README-.*\.png$
-^.travis.yml$
-^codecov\.yml$
 ^_pkgdown\.yml$
-^docs$
 ^pkgdown$
 ^index.Rmd$
 ^index.md$
+^\.github$
