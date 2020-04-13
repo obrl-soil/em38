@@ -19,9 +19,10 @@ jobs:
       matrix:
         config:
           - {os: windows-latest, r: '3.6'}
-          - {os: macOS-latest, r: '3.6'}
-          - {os: macOS-latest, r: 'devel'}
+          - {os: macOS-latest, r: '3.6', args: '--install-args=\"--configure-args=--with-proj-lib=/usr/local/lib/\"", "--ignore-vignettes', build_args: "--no-build-vignettes"}
+          - {os: macOS-latest, r: 'devel', args: '--install-args=\"--configure-args=--with-proj-lib=/usr/local/lib/\"", "--ignore-vignettes', build_args: "--no-build-vignettes"}
           - {os: ubuntu-16.04, r: '3.6', rspm: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
+          - {os: ubuntu-latest, r: 'release'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -35,6 +36,28 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Brew and macOS config
+        if: runner.os == 'macOS'
+        run: |
+          brew install pkg-config
+          brew install udunits
+          brew install gdal
+          cat <<EOT >> .Renviron
+          PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+          PROJ_LIB=/usr/local/opt/proj/share/proj/
+          # for installing XML package from source
+          XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config
+          EOT
+          cat <<EOT >> .Rprofile
+          r <- getOption("repos")
+          r["CRAN"] <- "https://cran.rstudio.com"
+          r["rccp_drat"] <- "https://RcppCore.github.io/drat"
+          config_args <- c("sf" = "--with-proj-lib=/usr/local/lib/", "rgdal" = "--with-proj-lib=/usr/local/lib/ --with-proj-include=/usr/local/include/")
+          options(configure.args = config_args,
+                  install.packages.compile.from.source = "yes",
+                  repos = r)
+          EOT
 
       - name: Query dependencies
         run: |
@@ -52,8 +75,20 @@ jobs:
 
       - name: Install system dependencies
         if: runner.os == 'Linux'
+       env:
+          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
-          sudo -s eval "export DEBIAN_FRONTEND=noninteractive; apt-get -y update && apt-get install -y gdal-bin libgdal-dev libudunits2-dev pandoc pandoc-citeproc git-core libssl-dev libcurl4-openssl-dev libproj-dev"
+          Rscript -e "remotes::install_github('r-hub/sysreqs')"
+          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+          sudo -s eval "$sysreqs"
+          # install spatial dependencies
+          sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+          sudo apt update
+          sudo apt install \
+            libudunits2-dev \
+            libgdal-dev \
+            libgeos-dev \
+            libproj-dev
 
       - name: Install dependencies
         run: |
