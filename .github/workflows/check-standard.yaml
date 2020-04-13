@@ -53,7 +53,7 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
-          sudo -s eval "export DEBIAN_FRONTEND=noninteractive; apt-get -y update && apt-get install -y libgeos-dev gdal-bin libgdal-dev libudunits2-dev pandoc pandoc-citeproc git-core libssl-dev libcurl4-openssl-dev libproj-dev"
+          sudo -s eval "export DEBIAN_FRONTEND=noninteractive; apt-get -y update && apt-get install -y gdal-bin libgdal-dev libudunits2-dev pandoc pandoc-citeproc git-core libssl-dev libcurl4-openssl-dev libproj-dev"
 
       - name: Install dependencies
         run: |
