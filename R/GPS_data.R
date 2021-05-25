@@ -37,7 +37,7 @@ nmea_check <- function(string = NULL) {
 #' # first GPGGA msg from data('n38_demo')
 #' msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
 #' gpgga_1 <- em38:::process_gpgga(string = msg_1)
-#' @importFrom units ud_units
+#' @importFrom units as_units
 #'
 process_gpgga <- function(string = NULL) {
   gga_reading <- unlist(strsplit(string, split = c(',')))
@@ -59,10 +59,10 @@ process_gpgga <- function(string = NULL) {
   out[['HDOP']]      <- as.numeric(gga_reading[9])
   out[['antenna_alt']] <- as.numeric(gga_reading[10])
   # antenna_alt is always in metres afaict
-  units(out[['antenna_alt']]) <- with(units::ud_units, m)
+  units(out[['antenna_alt']]) <- units::as_units('m')
   out[['geoid_sep']] <- as.numeric(gga_reading[12])
   # same here
-  units(out[['geoid_sep']]) <- with(units::ud_units, m)
+  units(out[['geoid_sep']]) <- units::as_units('m')
   # only in use if differential gps is (fix_quality == '2', possibly some other
   # vals as well)
   out[['difcor_age_s']] <-  as.numeric(gga_reading[14])
@@ -95,7 +95,7 @@ process_gpgga <- function(string = NULL) {
 #' # first GPGVTG msg from data('n38_demo')
 #' msg_1   <- "$GPVTG,208.02,T,,M,0.32,N,0.59,K,A*38"
 #' gpvtg_1 <- em38:::process_gpvtg(string = msg_1)
-#' @importFrom units ud_units
+#' @importFrom units as_units
 #'
 process_gpvtg <- function(string = NULL) {
   vtg_reading <- unlist(strsplit(string, split = c(',')))
@@ -109,7 +109,7 @@ process_gpvtg <- function(string = NULL) {
   out[['TMG_True']] <- as.numeric(vtg_reading[4])
   out[['speed_knots']] <- as.numeric(vtg_reading[6])
   out[['speed_kmh']] <- as.numeric(vtg_reading[8])
-  units(out[['speed_kmh']]) <- with(units::ud_units, km/h)
+  units(out[['speed_kmh']]) <- units::as_units('km/h')
   # http://www.gpsinformation.org/dale/nmea.htm#2.3
   # fix type: A = autonomous, D = differential, E = Estimated, N = not valid,
   # S = Simulator

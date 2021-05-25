@@ -1,3 +1,7 @@
+# v. 0.0.3
+
+  * Update for compatibility with newer versions of `units`
+
 # v 0.0.2
 
   * Bugfix for GH-1 comment processing, many thanks to sanjaykmenon for 

@@ -1,8 +1,8 @@
 Package: em38
 Type: Package
 Title: Process N38 binary files from EM38-MK2 sensors
-Version: 0.0.2
-Date: 2019-11-25
+Version: 0.0.3
+Date: 2021-05-25
 Authors@R: person("Lauren", "O'Brien", email = "obrlsoilau@gmail.com", role = c('aut', 'cre'), comment = c(ORCID = "0000-0002-7336-2171"))
 Description: Interprets and decodes the '.N38' file format used by the 
     Geonics EM38-MK2 ground conductivity meter, as described in its 
@@ -16,18 +16,18 @@ LazyData: true
 Depends:
     R (>= 2.10)
 Imports:
-    dplyr,	
-    purrr,
+  dplyr,	
+  purrr,
 	rlang,
 	sf,
 	tidyr,
-    units
+  units (>= 0.7)
 Suggests:
-    ggplot2,
-	patchwork,
-    testthat,
-    covr,
-    knitr,
-    rmarkdown
-RoxygenNote: 7.1.0
+  ggplot2,
+  patchwork,
+  testthat,
+  covr,
+  knitr,
+  rmarkdown
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
