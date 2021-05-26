@@ -48,6 +48,8 @@ DAT38MK2 application." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -69,9 +71,16 @@ DAT38MK2 application." />
 </script>
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -85,7 +94,7 @@ DAT38MK2 application." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -93,7 +102,7 @@ DAT38MK2 application." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -122,7 +131,7 @@ DAT38MK2 application." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/obrl-soil/em38">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -151,7 +160,7 @@ outputs with Geonics' own conversion software or process it further with the
 DAT38MK2 application.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>n38_to_m38</span>(<span class='kw'>n38_decoded</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>n38_to_m38</span><span class='op'>(</span>n38_decoded <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,14 +178,15 @@ DAT38MK2 application.</p>
   'official' m38 file at the microsecond level.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Write output to file in working directory with e.g. <code><a href='https://rdrr.io/r/base/write.html'>write(m38_example,
-  paste0('m38_from_R_', Sys.Date(), '.m38'))</a></code></p>
+    <p>Write output to file in working directory with e.g. <code>write(m38_example,
+  paste0('m38_from_R_', Sys.Date(), '.m38'))</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'n38_demo'</span>)
-<span class='no'>n38_chunks</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='n38_chunk.html'>n38_chunk</a></span>(<span class='no'>n38_demo</span>)
-<span class='no'>n38_decoded</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='n38_decode.html'>n38_decode</a></span>(<span class='no'>n38_chunks</span>)
-<span class='no'>m38_example</span> <span class='kw'>&lt;-</span> <span class='fu'>n38_to_m38</span>(<span class='no'>n38_decoded</span>)</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>'n38_demo'</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>n38_chunks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='n38_chunk.html'>n38_chunk</a></span><span class='op'>(</span><span class='va'>n38_demo</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>n38_decoded</span> <span class='op'>&lt;-</span> <span class='fu'><a href='n38_decode.html'>n38_decode</a></span><span class='op'>(</span><span class='va'>n38_chunks</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>m38_example</span> <span class='op'>&lt;-</span> <span class='fu'>n38_to_m38</span><span class='op'>(</span><span class='va'>n38_decoded</span><span class='op'>)</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -188,11 +198,11 @@ DAT38MK2 application.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Lauren O'Brien.</p>
+  <p><p>Developed by Lauren O’Brien.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -200,6 +210,8 @@ DAT38MK2 application.</p>
 
   
 
+
+  
 
   </body>
 </html>

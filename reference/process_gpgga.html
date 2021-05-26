@@ -46,6 +46,8 @@ dumps it into a list." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -67,9 +69,16 @@ dumps it into a list." />
 </script>
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -83,7 +92,7 @@ dumps it into a list." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -91,7 +100,7 @@ dumps it into a list." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -120,7 +129,7 @@ dumps it into a list." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/obrl-soil/em38">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -147,7 +156,7 @@ dumps it into a list." />
 dumps it into a list.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>process_gpgga</span>(<span class='kw'>string</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>process_gpgga</span><span class='op'>(</span>string <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,9 +173,10 @@ dumps it into a list.</p>
   chunks. Elements are given appropriate R data types.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># first GPGGA msg from data('n38_demo')</span>
-<span class='no'>msg_1</span>   <span class='kw'>&lt;-</span> <span class='st'>"$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"</span>
-<span class='no'>gpgga_1</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>em38</span><span class='kw ns'>:::</span><span class='fu'>process_gpgga</span>(<span class='kw'>string</span> <span class='kw'>=</span> <span class='no'>msg_1</span>)</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># first GPGGA msg from data('n38_demo')</span></span>
+<span class='r-in'><span class='va'>msg_1</span>   <span class='op'>&lt;-</span> <span class='st'>"$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"</span></span>
+<span class='r-in'><span class='va'>gpgga_1</span> <span class='op'>&lt;-</span> <span class='fu'>em38</span><span class='fu'>:::</span><span class='fu'>process_gpgga</span><span class='op'>(</span>string <span class='op'>=</span> <span class='va'>msg_1</span><span class='op'>)</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -178,11 +188,11 @@ dumps it into a list.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Lauren O'Brien.</p>
+  <p><p>Developed by Lauren O’Brien.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -190,6 +200,8 @@ dumps it into a list.</p>
 
   
 
+
+  
 
   </body>
 </html>
