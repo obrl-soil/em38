@@ -1,10 +1,10 @@
 #' Calculate NMEA-0183 XOR checksum
 #'
-#' This function calculates the checksum for NMEA-0183 GPGGA strings.
-#' @param string A string with valid NMEA-0183 GPGGA structure.
+#' This function calculates the checksum for NMEA-0183 G*GGA strings.
+#' @param string A string with valid NMEA-0183 G*GGA structure.
 #' @return Logical; TRUE if checksum is correct.
 #' @examples
-#' # first GPGGA msg from data('n38_demo')
+#' # first G*GGA msg from data('n38_demo')
 #' msg_1 <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
 #' msg_2 <- "$GPG5808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
 #' chk_1 <- em38:::nmea_check(string = msg_1)
@@ -26,20 +26,20 @@ nmea_check <- function(string = NULL) {
   if(prs_chksum == chk) { TRUE } else { FALSE }
 }
 
-#' Process NMEA-0183 GPGGA messages
+#' Process NMEA-0183 G*GGA messages
 #'
-#' This function pulls out position fix data from NMEA-0183 GPGGA strings and
+#' This function pulls out position fix data from NMEA-0183 G*GGA strings and
 #' dumps it into a list.
-#' @param string A string with valid NMEA-0183 GPGGA structure.
-#' @return A list containing the data elements recorded in NMEA-0183 GPGGA data
+#' @param string A string with valid NMEA-0183 G*GGA structure.
+#' @return A list containing the data elements recorded in NMEA-0183 G*GGA data
 #'   chunks. Elements are given appropriate R data types.
 #' @examples
 #' # first GPGGA msg from data('n38_demo')
 #' msg_1   <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79"
-#' gpgga_1 <- em38:::process_gpgga(string = msg_1)
+#' gpgga_1 <- em38:::process_gga(string = msg_1)
 #' @importFrom units as_units
 #'
-process_gpgga <- function(string = NULL) {
+process_gga <- function(string = NULL) {
   gga_reading <- unlist(strsplit(string, split = c(',')))
 
   out        <- vector('list', length = 11)
@@ -52,8 +52,8 @@ process_gpgga <- function(string = NULL) {
                                    tz = 'UTC')
 
   # see signal_conversion.R for lat/long retrieval. inputs shld be WGS84
-  out[['latitude']]  <- gpgga_lat(gga_reading[3],gga_reading[4])
-  out[['longitude']] <- gpgga_long(gga_reading[5],gga_reading[6])
+  out[['latitude']]  <- gga_lat(gga_reading[3],gga_reading[4])
+  out[['longitude']] <- gga_long(gga_reading[5],gga_reading[6])
   out[['fix_quality']]   <- gga_reading[7] # allowed: 0-9
   out[['n_sats']]    <- as.integer(gga_reading[8])
   out[['HDOP']]      <- as.numeric(gga_reading[9])
@@ -84,20 +84,20 @@ process_gpgga <- function(string = NULL) {
   out
 }
 
-#' Process NMEA-0183 GPVTG messages
+#' Process NMEA-0183 G*VTG messages
 #'
 #' This function pulls out track made good and speed over ground data from
-#' NMEA-0183 GPVTG strings and dumps it into a list.
-#' @param string A string with valid NMEA-0183 GPVTG structure.
-#' @return A list containing 6 data elements recorded in NMEA-0183 GPVTG data
+#' NMEA-0183 G*VTG strings and dumps it into a list.
+#' @param string A string with valid NMEA-0183 G*VTG structure.
+#' @return A list containing 6 data elements recorded in NMEA-0183 G*VTG data
 #'   chunks. Elements are given appropriate data types.
 #' @examples
-#' # first GPGVTG msg from data('n38_demo')
+#' # first GPVTG msg from data('n38_demo')
 #' msg_1   <- "$GPVTG,208.02,T,,M,0.32,N,0.59,K,A*38"
-#' gpvtg_1 <- em38:::process_gpvtg(string = msg_1)
+#' gpvtg_1 <- em38:::process_vtg(string = msg_1)
 #' @importFrom units as_units
 #'
-process_gpvtg <- function(string = NULL) {
+process_vtg <- function(string = NULL) {
   vtg_reading <- unlist(strsplit(string, split = c(',')))
 
   out        <- vector('list', length = 6)
@@ -118,19 +118,19 @@ process_gpvtg <- function(string = NULL) {
   out
 }
 
-#' Process NMEA-0183 GPRMC messages
+#' Process NMEA-0183 G*RMC messages
 #'
 #' This function pulls out reccommended minimum sentence data from NMEA-0183
-#' GPRMC strings and dumps it into a list.
-#' @param string A string with valid NMEA-0183 GPRMC structure.
-#' @return A list containing 9 data elements recorded in NMEA-0183 GPRMC data
+#' G*RMC strings and dumps it into a list.
+#' @param string A string with valid NMEA-0183 G*RMC structure.
+#' @return A list containing 9 data elements recorded in NMEA-0183 G*RMC data
 #'   chunks. Elements are given appropriate data types.
 #' @examples
 #' # first GPRMC msg from data('n38_demo')
 #' msg_1   <- "$GPRMC,015808.00,A,2726.53758,S,15126.05255,E,0.32,208.02,160318,,,A*48"
-#' gprmc_1 <- em38:::process_gprmc(string = msg_1)
+#' gprmc_1 <- em38:::process_rmc(string = msg_1)
 #'
-process_gprmc <- function(string = NULL) {
+process_rmc <- function(string = NULL) {
   rmc_reading <- unlist(strsplit(string, split = c(',')))
 
   out        <- vector('list', length = 10)
@@ -155,8 +155,8 @@ process_gprmc <- function(string = NULL) {
                               "A" = "ok",
                               "V" = "invalid")
   # see signal_conversion.R for lat/long retrieval. inputs shld be WGS84
-  out[['latitude']]  <- gpgga_lat(rmc_reading[4],rmc_reading[5])
-  out[['longitude']] <- gpgga_long(rmc_reading[6],rmc_reading[7])
+  out[['latitude']]  <- gga_lat(rmc_reading[4],rmc_reading[5])
+  out[['longitude']] <- gga_long(rmc_reading[6],rmc_reading[7])
   out[['speed_knots']] <- as.numeric(rmc_reading[8])
   out[['TMG_Mag']] <- as.numeric(rmc_reading[9])
   out[['mag_var']] <- as.numeric(rmc_reading[11])
@@ -166,19 +166,19 @@ process_gprmc <- function(string = NULL) {
   out
 }
 
-#' Process NMEA-0183 GPGSA messages
+#' Process NMEA-0183 G*GSA messages
 #'
 #' This function pulls out GPS DOP and active satellites data from NMEA-0183
-#' GPGSA strings and dumps it into a list.
-#' @param string A string with valid NMEA-0183 GPGSA structure.
-#' @return A list containing n data elements recorded in NMEA-0183 GPGSA data
+#' G*GSA strings and dumps it into a list.
+#' @param string A string with valid NMEA-0183 G*GSA structure.
+#' @return A list containing n data elements recorded in NMEA-0183 G*GSA data
 #'   chunks. Elements are given appropriate data types.
 #' @examples
 #' # first GPGSA msg from data('n38_demo')
 #' msg_1   <- "$GPGSA,M,3,05,10,15,16,20,21,26,29,,,,,1.6,1.0,1.2*32"
-#' gpgsa_1 <- em38:::process_gpgsa(string = msg_1)
+#' gpgsa_1 <- em38:::process_gsa(string = msg_1)
 #'
-process_gpgsa <- function(string = NULL) {
+process_gsa <- function(string = NULL) {
   gsa_reading <- unlist(strsplit(string, split = c(',')))
 
   out        <- vector('list', length = 8)
@@ -206,12 +206,12 @@ process_gpgsa <- function(string = NULL) {
 }
 
 
-#' Process NMEA-0183 GPGSV messages
+#' Process NMEA-0183 G*GSV messages
 #'
-#' This function pulls out satellites in view data from NMEA-0183 GPGSV strings
+#' This function pulls out satellites in view data from NMEA-0183 G*GSV strings
 #' and dumps it into a list.
-#' @param string A string with valid NMEA-0183 GPGSV structure.
-#' @return A list containing 15 data elements recorded in NMEA-0183 GPGSV data
+#' @param string A string with valid NMEA-0183 G*GSV structure.
+#' @return A list containing 15 data elements recorded in NMEA-0183 G*GSV data
 #'   chunks. Elements are given appropriate data types. Note that depending on
 #'   the number of satellites in view, up to three of these messages may exist
 #'   for every GPS reading. Up to four satellites are reported on per string.
@@ -220,9 +220,9 @@ process_gpgsa <- function(string = NULL) {
 #' @examples
 #' # first GPGSV msg from data('n38_demo')
 #' msg_1   <- "$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76"
-#' gpgsv_1 <- em38:::process_gpgsv(string = msg_1)
+#' gpgsv_1 <- em38:::process_gsv(string = msg_1)
 #'
-process_gpgsv <- function(string = NULL) {
+process_gsv <- function(string = NULL) {
   gsv_reading <- unlist(strsplit(string, split = c(',')))
 
   out        <- vector('list', length = 19)

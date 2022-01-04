@@ -1,13 +1,18 @@
-# v. 0.0.3
+# Version 0.0.4
+
+  * package can now handle GPS messages from GLONASS, GALILEO, and multi-GNSS
+  systems
+
+# Version 0.0.3
 
   * Update for compatibility with newer versions of `units`
 
-# v 0.0.2
+# Version 0.0.2
 
   * Bugfix for GH-1 comment processing, many thanks to sanjaykmenon for 
     providing test data  
 
-# v 0.0.1
+# Version 0.0.1
 
   * Major refactor - process survey lines separately, cope with missing/bad GPS
     data, better paired data handling
@@ -23,7 +28,7 @@
   * Added filters for GPS time delay and signal quality.
   * Various small bugfixes
 
-# v 0.0.0.9003
+# Version 0.0.0.9003
 
   * `n38_decode()` better living through proper vectorisation - speed 
     improvement.
@@ -31,7 +36,7 @@
   * Package-level metadata.
   * Travis-CI integration
 
-# v 0.0.0.9002
+# Version 0.0.0.9002
 
   * New `em38_pair()` - combines data from manual-mode surveys where 
     horizontal and vertical readings have been taken at each station.
@@ -40,7 +45,7 @@
   * Who's got two thumbs and forgot about `@keywords Internal`? \*gestures at 
     self\*. The help menu is less cluttered now.
 
-# v. 0.0.0.9001
+# Version 0.0.0.9001
 
   * New `n38_to_points()` wrapper function - on-disk file to spatial points 
     in one hit.
@@ -49,7 +54,7 @@
     when allowable values aren't supplied.
   * Rebuilt demo data to match demo extdata.
 
-# v. 0.0.0.9000
+# Version 0.0.0.9000
 
   * Basic functions: import N38 files, convert them to a nested list of raw() 
     matrices, decode those, output an M38 file, output a spatial point dataset.

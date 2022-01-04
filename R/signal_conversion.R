@@ -32,22 +32,22 @@ get_temp <- function(signal = NULL) {
   signal / 3.108 - 50
 }
 
-#' GPGGA latitude
+#' G*GGA latitude
 #'
-#' This function retrieves latitude position information from a GPGGA string.
-#' @param lat String containing latitude information. GPGGA strings are
+#' This function retrieves latitude position information from a G*GGA string.
+#' @param lat String containing latitude information. G*GGA strings are
 #'   comma-separated, latitude is in the second delimited position
 #' @param dir String determining whether latitude is N or S of the equator.
-#'   GPGGA strings are comma-separated, NS status is in the third delimited
+#'   G*GGA strings are comma-separated, NS status is in the third delimited
 #'   position
 #' @return Numeric, latitude in decimal degrees.
 #' @note Inputting a numeric to lat will give incorrect results for latitude -10
 #'   < x < 10 due to loss of leading zero(s).
 #' @keywords internal
 #' @examples
-#' lat <- em38:::gpgga_lat('2729.10198', 'S')
+#' lat <- em38:::gga_lat('2729.10198', 'S')
 #'
-gpgga_lat <- function(lat = NULL, dir = NULL) {
+gga_lat <- function(lat = NULL, dir = NULL) {
   # this is potentially stupid depending on how the numbers are stored
   # - need more raw datasets for testing
   # its safe if leading zeros are used correctly
@@ -63,10 +63,10 @@ gpgga_lat <- function(lat = NULL, dir = NULL) {
   }
 }
 
-#' GPGGA longitude
+#' G*GGA longitude
 #'
-#' This function retrieves longitude position information from a GPGGA string.
-#' @param long String containing longitude information. GPGGA strings are
+#' This function retrieves longitude position information from a G*GGA string.
+#' @param long String containing longitude information. G*GGA strings are
 #'   comma-separated, longitude is in the fourth delimited position
 #' @param dir String determining whether longitude is E or W of 0 degrees. GPGGA
 #'   strings are comma-separated, EW status is in the fifth delimited position
@@ -75,9 +75,9 @@ gpgga_lat <- function(lat = NULL, dir = NULL) {
 #'   -100 < x < 100 due to loss of leading zero(s).
 #' @keywords internal
 #' @examples
-#' lat <- em38:::gpgga_long('15257.5556', 'E')
+#' lat <- em38:::gga_long('15257.5556', 'E')
 #'
-gpgga_long <- function(long = NULL, dir = NULL) {
+gga_long <- function(long = NULL, dir = NULL) {
 
   degrees <- as.integer(substr(long, 1, 3))
   dec_minutes <- as.numeric(substr(long, 4, nchar(long)))

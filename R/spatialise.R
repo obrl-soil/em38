@@ -14,28 +14,26 @@
 #'
 get_loc_data <- function(block = NULL) {
 
-  # all the interesting stuff is in the GPGGA message
-  gpgga  <- block[block$TYPE == 'GPGGA', ]
-  gpgga  <- process_gpgga(toString(paste0(gpgga[[1]][1], ',', gpgga[[2]][1])))
+  # all the interesting stuff is in the G*GGA message
+  gga  <- block[block$TYPE %in% c('GPGGA', 'GLGGA', 'GAGGA', 'GNGGA'), ]
+  gga  <- process_gga(toString(paste0(gga[[1]][1], ',', gga[[2]][1])))
 
   ## keeping these for later but no need to decode the entire block just yet
-  #gpvtg <- em38:::process_gpvtg(paste0('$GPVTG,', x$MESSAGE[x$TYPE == 'GPVTG']))
-  #gprmc <- em38:::process_gprmc(paste0('$GPRMC,', x[x$TYPE == 'GPRMC', 'MESSAGE' ]))
-  #gpgsa <- em38:::process_gpgsa(paste0('$GPGSA,', x[x$TYPE == 'GPGSA', 'MESSAGE' ]))
-  #gpgsv <- split(x[x$TYPE == 'GPGSV', 'MESSAGE' ], 1:nrow(x[x$TYPE == 'GPGSV', ]))
-  #gpgsv <- lapply(gpgsv, function(row) { em38:::process_gpgsv(paste0('$GPGSV,', row)) })
+  #vtg <- em38:::process_vtg(paste0('$GPVTG,', x$MESSAGE[x$TYPE == 'GPVTG']))
+  #rmc <- em38:::process_rmc(paste0('$GPRMC,', x[x$TYPE == 'GPRMC', 'MESSAGE' ]))
+  #gsa <- em38:::process_gsa(paste0('$GPGSA,', x[x$TYPE == 'GPGSA', 'MESSAGE' ]))
+  #gsv <- split(x[x$TYPE == 'GPGSV', 'MESSAGE' ], 1:nrow(x[x$TYPE == 'GPGSV', ]))
+  #gsv <- lapply(gpgsv, function(row) { em38:::process_gsv(paste0('$GPGSV,', row)) })
 
   # what actually needs to be output?
-  data.frame('LATITUDE'     = gpgga[['latitude']],
-             'LONGITUDE'    = gpgga[['longitude']],
-             'FIX'          = gpgga[['fix_quality']],
-             'HDOP'         = gpgga[['HDOP']],
-             'CHKSUM'       = block$CHKSUM[block$TYPE == 'GPGGA'],
-             'timestamp_ms' = block$timestamp_ms[block$TYPE == 'GPGGA'])
-  # if this fails it'll likely be that messages are coming from
-  # a GPS device that doesn't return GPGGA (e.g. GLGPA, or GPRMC)
-  # will defo need to add handlers for GLONASS and other systems but need test
-  # data
+  data.frame('LATITUDE'     = gga[['latitude']],
+             'LONGITUDE'    = gga[['longitude']],
+             'FIX'          = gga[['fix_quality']],
+             'HDOP'         = gga[['HDOP']],
+             # note: D-:
+             'CHKSUM'       = block$CHKSUM[block$TYPE %in% c('GPGGA', 'GLGGA', 'GAGGA', 'GNGGA')],
+             'timestamp_ms' = block$timestamp_ms[block$TYPE %in% c('GPGGA', 'GLGGA', 'GAGGA', 'GNGGA')])
+  # note 2022-01-05 - coding this for all GPS systems blind for now
 
 }
 
@@ -133,10 +131,14 @@ em38_surveyline <- function(survey_line = NULL,
   loc$lag_chk <- ifelse(loc$TYPE == loc$TYPE[1], TRUE, FALSE)
   loc$group   <- cumsum(loc$lag_chk) # can't use CHKSUM bc NA stuffs grouping
   loc_s <- split(loc, loc$group)
-  # drop any chunks that don't have a GPGGA message (usually a start/pause
+  # drop any chunks that don't have a G*GGA message (usually a start/pause
   # error)
   keep <- sapply(loc_s, function(x) {
-    if(any(x$TYPE %in% 'GPGGA')) { TRUE } else { FALSE }
+    if (any(x$TYPE %in% c('GPGGA', 'GLGGA', 'GAGGA', 'GNGGA'))) {
+      TRUE
+    } else {
+      FALSE
+    }
   })
   loc_s <- loc_s[keep]
   # decode messages and keep only the essential data

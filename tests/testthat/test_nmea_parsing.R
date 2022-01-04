@@ -15,61 +15,61 @@ test_that(
   )
 )
 
-# 2. process_gpgga
+# 2. process_gga
 test_that(
-  'process_gpgga works correctly',
+  'process_gga works correctly',
   c(
     msg <- "$GPGGA,015808.00,2726.53758,S,15126.05255,E,1,08,1.0,365.1,M,39.5,M,,*79",
-    expect_type(process_gpgga(msg), 'list'),
-    expect_length(process_gpgga(msg), 11L),
-    expect_is(process_gpgga(msg)[[1]], class = 'POSIXct'),
-    expect_equal(process_gpgga(msg)$base_stn, NA)
+    expect_type(process_gga(msg), 'list'),
+    expect_length(process_gga(msg), 11L),
+    expect_is(process_gga(msg)[[1]], class = 'POSIXct'),
+    expect_equal(process_gga(msg)$base_stn, NA)
   )
 )
 
-# 3. process_gpvtg
+# 3. process_vtg
 test_that(
-  'process_gpvtg works correctly',
+  'process_vtg works correctly',
   c(
     msg <- "$GPVTG,208.02,T,,M,0.32,N,0.59,K,A*38",
-    expect_type(process_gpvtg(msg), 'list'),
-    expect_length(process_gpvtg(msg), 6L),
-    expect_is(process_gpvtg(msg)$speed_kmh, 'units'),
-    expect_equal(process_gpvtg(msg)$fix_type, 'A')
+    expect_type(process_vtg(msg), 'list'),
+    expect_length(process_vtg(msg), 6L),
+    expect_is(process_vtg(msg)$speed_kmh, 'units'),
+    expect_equal(process_vtg(msg)$fix_type, 'A')
   )
 )
 
-# 4. process_gprmc
+# 4. process_rmc
 test_that(
-  'process_gprmc works correctly',
+  'process_rmc works correctly',
   c(
     msg <- "$GPRMC,015808.00,A,2726.53758,S,15126.05255,E,0.32,208.02,160318,,,A*48",
-    expect_type(process_gprmc(msg), 'list'),
-    expect_length(process_gprmc(msg), 10L),
-    expect_is(process_gprmc(msg)$UTC_date_time, 'POSIXct'),
-    expect_equal(format(process_gprmc(msg)$UTC_date_time), '2018-03-16 01:58:08'),
-    expect_equal(process_gprmc(msg)$fix_type, 'A')
+    expect_type(process_rmc(msg), 'list'),
+    expect_length(process_rmc(msg), 10L),
+    expect_is(process_rmc(msg)$UTC_date_time, 'POSIXct'),
+    expect_equal(format(process_rmc(msg)$UTC_date_time), '2018-03-16 01:58:08'),
+    expect_equal(process_rmc(msg)$fix_type, 'A')
   )
 )
 
-# 5. process_gpgsa
+# 5. process_gsa
 test_that(
-  'process_gpgsa works correctly',
+  'process_gsa works correctly',
   c(
     msg <- "$GPGSA,M,3,05,10,15,16,20,21,26,29,,,,,1.6,1.0,1.2*32",
-    expect_type(process_gpgsa(msg), 'list'),
-    expect_length(process_gpgsa(msg), 8L),
-    expect_equal(process_gpgsa(msg)$VDOP, 1.2)
+    expect_type(process_gsa(msg), 'list'),
+    expect_length(process_gsa(msg), 8L),
+    expect_equal(process_gsa(msg)$VDOP, 1.2)
   )
 )
 
-# 6. process_gpgsa
+# 6. process_gsv
 test_that(
-  'process_gpgsv works correctly',
+  'process_gsv works correctly',
   c(
     msg <- "$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76",
-    expect_type(process_gpgsv(msg), 'list'),
-    expect_length(process_gpgsv(msg), 19L),
-    expect_equal(process_gpgsv(msg)$sat_4_SNR, NA_real_)
+    expect_type(process_gsv(msg), 'list'),
+    expect_length(process_gsv(msg), 19L),
+    expect_equal(process_gsv(msg)$sat_4_SNR, NA_real_)
   )
 )

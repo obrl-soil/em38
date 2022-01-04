@@ -231,17 +231,17 @@ n38_decode <- function(chunks = NULL) {
     locs <- locs[keep]
 
     # split up string into main components (decode happens later)
-    # note that only TYPE = 'GPGGA' is used in final output
-    # will probs have to change to %in% c('GPGGA', 'GLGGA') soon
+    # note that only TYPE = 'G*GGA' is used in final output
     bang <- as.integer(gregexpr('!', locs))
     type <- substr(locs, 3, 7)
     out  <- list('TYPE'         = type,
                  'MESSAGE'      = substr(locs, 9, bang - 1),
                  # NB this only works if a checksum failure does not involve
                  # scrambling/loss of the message type - check is skipped if
-                 # GPGGA is scrambled to e.g. GPGA,. Such failures are still
+                 # G*GGA is scrambled to e.g. GPGA,. Such failures are still
                  # never decoded down the track so not a big deal
-                 'CHKSUM'       = ifelse(type == 'GPGGA',
+                 'CHKSUM'       = ifelse(type %in% c('GPGGA', 'GLGGA', 'GAGGA',
+                                                     'GNGGA'),
                                          nmea_check(substr(locs, 2, bang - 1)),
                                          NA),
                  'timestamp_ms' =
@@ -435,7 +435,10 @@ n38_to_m38 <- function(n38_decoded = NULL) {
   # only some location messages are output
   loc_subset <-
     n38_decoded[[i]]$location_data[n38_decoded[[i]]$location_data$TYPE %in%
-                                     c('GPGGA', 'GPGSA') , ]
+                                     c('GPGGA', 'GPGSA',
+                                       'GLGGA', 'GLGSA',
+                                       'GAGGA', 'GAGSA',
+                                       'GNGGA', 'GNGSA'), ]
 
   locations <- apply(loc_subset, MARGIN = 1, FUN = function(row) {
       sentence <- paste0('$', row['TYPE'], ',', row['MESSAGE'], ',')
