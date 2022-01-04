@@ -49,10 +49,10 @@
     <loc>https://obrl-soil.github.io/em38/reference/get_temp.html</loc>
   </url>
   <url>
-    <loc>https://obrl-soil.github.io/em38/reference/gpgga_lat.html</loc>
+    <loc>https://obrl-soil.github.io/em38/reference/gga_lat.html</loc>
   </url>
   <url>
-    <loc>https://obrl-soil.github.io/em38/reference/gpgga_long.html</loc>
+    <loc>https://obrl-soil.github.io/em38/reference/gga_long.html</loc>
   </url>
   <url>
     <loc>https://obrl-soil.github.io/em38/reference/index.html</loc>
@@ -85,19 +85,13 @@
     <loc>https://obrl-soil.github.io/em38/reference/process_fheader.html</loc>
   </url>
   <url>
-    <loc>https://obrl-soil.github.io/em38/reference/process_gpgga.html</loc>
+    <loc>https://obrl-soil.github.io/em38/reference/process_gga.html</loc>
   </url>
   <url>
-    <loc>https://obrl-soil.github.io/em38/reference/process_gpgsa.html</loc>
+    <loc>https://obrl-soil.github.io/em38/reference/process_gsa.html</loc>
   </url>
   <url>
-    <loc>https://obrl-soil.github.io/em38/reference/process_gpgsv.html</loc>
-  </url>
-  <url>
-    <loc>https://obrl-soil.github.io/em38/reference/process_gprmc.html</loc>
-  </url>
-  <url>
-    <loc>https://obrl-soil.github.io/em38/reference/process_gpvtg.html</loc>
+    <loc>https://obrl-soil.github.io/em38/reference/process_gsv.html</loc>
   </url>
   <url>
     <loc>https://obrl-soil.github.io/em38/reference/process_nstat.html</loc>
@@ -106,9 +100,15 @@
     <loc>https://obrl-soil.github.io/em38/reference/process_reading.html</loc>
   </url>
   <url>
+    <loc>https://obrl-soil.github.io/em38/reference/process_rmc.html</loc>
+  </url>
+  <url>
     <loc>https://obrl-soil.github.io/em38/reference/process_slheader.html</loc>
   </url>
   <url>
     <loc>https://obrl-soil.github.io/em38/reference/process_timer.html</loc>
+  </url>
+  <url>
+    <loc>https://obrl-soil.github.io/em38/reference/process_vtg.html</loc>
   </url>
 </urlset>
