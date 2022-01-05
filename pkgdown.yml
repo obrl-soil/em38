@@ -3,7 +3,7 @@ pkgdown: 2.0.1
 pkgdown_sha: ~
 articles:
   Using_em38: Using_em38.html
-last_built: 2022-01-04T23:37Z
+last_built: 2022-01-05T00:34Z
 urls:
   reference: https://obrl-soil.github.io/em38/reference
   article: https://obrl-soil.github.io/em38/articles
