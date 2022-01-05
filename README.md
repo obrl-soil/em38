@@ -2,6 +2,12 @@
 
 [![R build
 status](https://github.com/obrl-soil/em38/workflows/R-CMD-check/badge.svg)](https://github.com/obrl-soil/em38/actions)
+[![R build
+status](https://github.com/obrl-soil/em38/workflows/test-coverage/badge.svg)](https://github.com/obrl-soil/em38/actions)
+[![R build
+status](https://github.com/obrl-soil/em38/workflows/pkgdown/badge.svg)](https://github.com/obrl-soil/em38/actions)
+[![Coverage
+status](https://codecov.io/gh/obrl-soil/em38/branch/master/graph/badge.svg)](https://codecov.io/github/obrl-soil/em38?branch=master)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -57,7 +63,7 @@ plot(sl1[sl1$mode == 'Vertical', 'cond_05'], pch = 20,
 ![](man/figures/README-example-1.png)<!-- -->
 
 Its surprisingly difficult to walk in a straight line across a paddock
-:no\_mouth:
+:no_mouth:
 
 If you want to look at the intermediate data more closely,
 
@@ -79,4 +85,4 @@ m38_example <- n38_to_m38(n38_decoded)
 #  write(m38_example, paste0('m38_from_R_', Sys.Date(), '.m38'))
 ```
 
------
+------------------------------------------------------------------------

@@ -6,8 +6,10 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Build Status](https://travis-ci.com/obrl-soil/em38.svg?branch=master)](https://travis-ci.com/obrl-soil/em38)
-[![Coverage Status](https://img.shields.io/codecov/c/github/obrl-soil/em38/master.svg)](https://codecov.io/github/obrl-soil/em38?branch=master)
+[![R build status](https://github.com/obrl-soil/em38/workflows/R-CMD-check/badge.svg)](https://github.com/obrl-soil/em38/actions)
+[![R build status](https://github.com/obrl-soil/em38/workflows/test-coverage/badge.svg)](https://github.com/obrl-soil/em38/actions)
+[![R build status](https://github.com/obrl-soil/em38/workflows/pkgdown/badge.svg)](https://github.com/obrl-soil/em38/actions)
+[![Coverage status](https://codecov.io/gh/obrl-soil/em38/branch/master/graph/badge.svg)](https://codecov.io/github/obrl-soil/em38?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ```{r, echo = FALSE}
