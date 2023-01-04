@@ -29,7 +29,7 @@ em38_from_file."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5</span>
       </span>
     </div>
 
@@ -47,7 +47,7 @@ em38_from_file."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -90,7 +90,7 @@ have been generated using <code><a href="em38_decode.html">em38_decode</a></code
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">em38_pair</span><span class="op">(</span>decode <span class="op">=</span> <span class="cn">NULL</span>, time_filter <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">em38_pair</span><span class="op">(</span>decode <span class="op">=</span> <span class="cn">NULL</span>, time_filter <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -98,13 +98,18 @@ have been generated using <code><a href="em38_decode.html">em38_decode</a></code
     <dl><dt>decode</dt>
 <dd><p>spatial point dataframe for a survey line produced by
 <code><a href="em38_decode.html">em38_decode</a></code> or <code><a href="em38_from_file.html">em38_from_file</a></code>.</p></dd>
+
+
 <dt>time_filter</dt>
 <dd><p>removes point pairs that are close together but that were
 sampled more than n seconds apart.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An sf data frame with sfc_POINT geometry. WGS84 projection. Output
+    
+
+<p>An sf data frame with sfc_POINT geometry. WGS84 projection. Output
   locations are averages of input horizontal/vertical paired locations.</p>
     </div>
     <div id="note">
@@ -126,7 +131,7 @@ sampled more than n seconds apart.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

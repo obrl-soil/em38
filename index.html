@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -108,8 +108,8 @@
 </h2>
 <p>Install from github with</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
-<span class="fu">install_github</span><span class="op">(</span><span class="st">"obrl-soil/em38"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
+<span><span class="fu">install_github</span><span class="op">(</span><span class="st">"obrl-soil/em38"</span><span class="op">)</span></span></code></pre></div>
 <p>This package is in early development phase. Improving its reliability requires access to a wide variety of test datasets, so if you have an *.n38 file that fails to decode correctly, please consider sending it to me. I have been able to test decoding on around 50 sample files from two different EM38-MKII devices, but could always use more. The device and its logger have a large number of possible setting combinations, and I have not seen all of them. Additionally, a third-party GPS needs to be attached to the device and its data-logger, and GPS output data are notoriously variable by brand and model.</p>
 </div>
 <div class="section level2">
@@ -117,36 +117,36 @@
 </h2>
 <p>em38 is accompanied by a demo dataset gathered during a training exercise:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">em38</span><span class="op">)</span>
-
-<span class="co"># all-in-one wrapper function:</span>
-<span class="va">demo_survey</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/em38_from_file.html">em38_from_file</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"em38_demo.n38"</span>, 
-                                                  package <span class="op">=</span> <span class="st">"em38"</span><span class="op">)</span>,
-                               hdop_filter <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-
-
-<span class="co"># Plot spatialised output of survey line 1 (calibrated conductivity for coil</span>
-<span class="co"># separation 0.5m)</span>
-<span class="va">sl1</span> <span class="op">&lt;-</span> <span class="va">demo_survey</span><span class="op">$</span><span class="va">survey_lines</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sl1</span><span class="op">[</span><span class="va">sl1</span><span class="op">$</span><span class="va">mode</span> <span class="op">==</span> <span class="st">'Vertical'</span>, <span class="st">'cond_05'</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">20</span>, 
-     main <span class="op">=</span> <span class="st">'Conductivity, Vertical Dipole Mode, Coil Separation 0.5m'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">em38</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># all-in-one wrapper function:</span></span>
+<span><span class="va">demo_survey</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/em38_from_file.html">em38_from_file</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"em38_demo.n38"</span>, </span>
+<span>                                                  package <span class="op">=</span> <span class="st">"em38"</span><span class="op">)</span>,</span>
+<span>                               hdop_filter <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Plot spatialised output of survey line 1 (calibrated conductivity for coil</span></span>
+<span><span class="co"># separation 0.5m)</span></span>
+<span><span class="va">sl1</span> <span class="op">&lt;-</span> <span class="va">demo_survey</span><span class="op">$</span><span class="va">survey_lines</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sl1</span><span class="op">[</span><span class="va">sl1</span><span class="op">$</span><span class="va">mode</span> <span class="op">==</span> <span class="st">'Vertical'</span>, <span class="st">'cond_05'</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">20</span>, </span>
+<span>     main <span class="op">=</span> <span class="st">'Conductivity, Vertical Dipole Mode, Coil Separation 0.5m'</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="reference/figures/README-example-1.png" alt=""><p class="caption">em38-track-plot</p>
 </div>
 <p>Its surprisingly difficult to walk in a straight line across a paddock 😶</p>
 <p>If you want to look at the intermediate data more closely,</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># import binary file as raw() type matrix</span>
-<span class="va">n38_mat</span>     <span class="op">&lt;-</span> <span class="fu"><a href="reference/n38_import.html">n38_import</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"em38_demo.n38"</span>, package <span class="op">=</span> <span class="st">"em38"</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># break matrix into sections according to file spec </span>
-<span class="va">n38_chunks</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/n38_chunk.html">n38_chunk</a></span><span class="op">(</span><span class="va">n38_mat</span><span class="op">)</span>
-<span class="co"># decode matrix chunks into useable data</span>
-<span class="va">n38_decoded</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/n38_decode.html">n38_decode</a></span><span class="op">(</span><span class="va">n38_chunks</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># import binary file as raw() type matrix</span></span>
+<span><span class="va">n38_mat</span>     <span class="op">&lt;-</span> <span class="fu"><a href="reference/n38_import.html">n38_import</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"em38_demo.n38"</span>, package <span class="op">=</span> <span class="st">"em38"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># break matrix into sections according to file spec </span></span>
+<span><span class="va">n38_chunks</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/n38_chunk.html">n38_chunk</a></span><span class="op">(</span><span class="va">n38_mat</span><span class="op">)</span></span>
+<span><span class="co"># decode matrix chunks into useable data</span></span>
+<span><span class="va">n38_decoded</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/n38_decode.html">n38_decode</a></span><span class="op">(</span><span class="va">n38_chunks</span><span class="op">)</span></span></code></pre></div>
 <p>You can also create the equivalent of an *.M38 text file, for comparison.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m38_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/n38_to_m38.html">n38_to_m38</a></span><span class="op">(</span><span class="va">n38_decoded</span><span class="op">)</span>
-<span class="co"># write to file as e.g.</span>
-<span class="co">#  write(m38_example, paste0('m38_from_R_', Sys.Date(), '.m38'))</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">m38_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/n38_to_m38.html">n38_to_m38</a></span><span class="op">(</span><span class="va">n38_decoded</span><span class="op">)</span></span>
+<span><span class="co"># write to file as e.g.</span></span>
+<span><span class="co">#  write(m38_example, paste0('m38_from_R_', Sys.Date(), '.m38'))</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -200,7 +200,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

@@ -26,7 +26,7 @@ DAT38MK2 application."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@ DAT38MK2 application."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -84,17 +84,20 @@ DAT38MK2 application.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">n38_to_m38</span><span class="op">(</span>n38_decoded <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">n38_to_m38</span><span class="op">(</span>n38_decoded <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n38_decoded</dt>
 <dd><p>Nested list output by n38_decode</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Large character; combination of location data and calibrated
+    
+
+<p>Large character; combination of location data and calibrated
   instrument readings. Note that record timestamps won't always agree with an
   'official' m38 file at the microsecond level.</p>
     </div>
@@ -106,10 +109,10 @@ DAT38MK2 application.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'n38_demo'</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n38_chunks</span> <span class="op">&lt;-</span> <span class="fu"><a href="n38_chunk.html">n38_chunk</a></span><span class="op">(</span><span class="va">n38_demo</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n38_decoded</span> <span class="op">&lt;-</span> <span class="fu"><a href="n38_decode.html">n38_decode</a></span><span class="op">(</span><span class="va">n38_chunks</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">m38_example</span> <span class="op">&lt;-</span> <span class="fu">n38_to_m38</span><span class="op">(</span><span class="va">n38_decoded</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'n38_demo'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n38_chunks</span> <span class="op">&lt;-</span> <span class="fu"><a href="n38_chunk.html">n38_chunk</a></span><span class="op">(</span><span class="va">n38_demo</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n38_decoded</span> <span class="op">&lt;-</span> <span class="fu"><a href="n38_decode.html">n38_decode</a></span><span class="op">(</span><span class="va">n38_chunks</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m38_example</span> <span class="op">&lt;-</span> <span class="fu">n38_to_m38</span><span class="op">(</span><span class="va">n38_decoded</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -124,7 +127,7 @@ DAT38MK2 application.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

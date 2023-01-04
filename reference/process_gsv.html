@@ -24,7 +24,7 @@ and dumps it into a list."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5</span>
       </span>
     </div>
 
@@ -42,7 +42,7 @@ and dumps it into a list."><!-- mathjax --><script src="https://cdnjs.cloudflare
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -80,17 +80,20 @@ and dumps it into a list.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">process_gsv</span><span class="op">(</span>string <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">process_gsv</span><span class="op">(</span>string <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>string</dt>
 <dd><p>A string with valid NMEA-0183 G*GSV structure.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list containing 15 data elements recorded in NMEA-0183 G*GSV data
+    
+
+<p>A list containing 15 data elements recorded in NMEA-0183 G*GSV data
   chunks. Elements are given appropriate data types. Note that depending on
   the number of satellites in view, up to three of these messages may exist
   for every GPS reading. Up to four satellites are reported on per string.
@@ -100,10 +103,10 @@ and dumps it into a list.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># first GPGSV msg from data('n38_demo')</span></span>
-<span class="r-in"><span class="va">msg_1</span>   <span class="op">&lt;-</span> <span class="st">"$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76"</span></span>
-<span class="r-in"><span class="va">gpgsv_1</span> <span class="op">&lt;-</span> <span class="fu">em38</span><span class="fu">:::</span><span class="fu">process_gsv</span><span class="op">(</span>string <span class="op">=</span> <span class="va">msg_1</span><span class="op">)</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># first GPGSV msg from data('n38_demo')</span></span></span>
+<span class="r-in"><span><span class="va">msg_1</span>   <span class="op">&lt;-</span> <span class="st">"$GPGSV,3,1,11,05,14,138,46,10,14,316,37,12,04,012,,13,24,100,*76"</span></span></span>
+<span class="r-in"><span><span class="va">gpgsv_1</span> <span class="op">&lt;-</span> <span class="fu">em38</span><span class="fu">:::</span><span class="fu">process_gsv</span><span class="op">(</span>string <span class="op">=</span> <span class="va">msg_1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -118,7 +121,7 @@ and dumps it into a list.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

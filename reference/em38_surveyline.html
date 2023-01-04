@@ -24,7 +24,7 @@ spatial."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">em38</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5</span>
       </span>
     </div>
 
@@ -42,7 +42,7 @@ spatial."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -80,26 +80,32 @@ spatial.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">em38_surveyline</span><span class="op">(</span>
-  survey_line <span class="op">=</span> <span class="cn">NULL</span>,
-  hdop_filter <span class="op">=</span> <span class="cn">NULL</span>,
-  time_filter <span class="op">=</span> <span class="cn">NULL</span>,
-  fix_filter <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">em38_surveyline</span><span class="op">(</span></span>
+<span>  survey_line <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  hdop_filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fix_filter <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>survey_line</dt>
 <dd><p>a decoded survey line from <code><a href="n38_decode.html">n38_decode</a></code>.</p></dd>
+
+
 <dt>hdop_filter</dt>
 <dd><p>Numeric, discard GPS data where the Horizontal Dilution of
 Precision is greater than this number. Defaults to 3 metres. Set to NULL to
 keep all readings.</p></dd>
+
+
 <dt>time_filter</dt>
 <dd><p>Numeric, discard readings taken more than <code>n</code> seconds
 after the last acceptable GPS reading. Usually best to set this to 2-3x GPS
 aquisition frequency.</p></dd>
+
+
 <dt>fix_filter</dt>
 <dd><p>Select readings with a minimum quality of GPS fix.
   Options are:</p><ol><li><p>Autonomous GPS fix.</p></li>
@@ -113,10 +119,13 @@ aquisition frequency.</p></dd>
 <li><p>simulation mode</p></li>
 <li><p>WAAS fix.</p></li>
 </ol><p>To filter on multiple options, supply a vector e.g. <code>c(2, 9)</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If valid GPS data is present, an `sf` data frame with sfc_POINT
+    
+
+<p>If valid GPS data is present, an `sf` data frame with sfc_POINT
   geometry. Otherwise, if valid instrument data is present, a data frame.
   Otherwise, a string explaining failure to process.</p>
     </div>
@@ -127,12 +136,12 @@ aquisition frequency.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'n38_demo'</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n38_chunks</span>  <span class="op">&lt;-</span> <span class="fu"><a href="n38_chunk.html">n38_chunk</a></span><span class="op">(</span><span class="va">n38_demo</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n38_decoded</span> <span class="op">&lt;-</span> <span class="fu"><a href="n38_decode.html">n38_decode</a></span><span class="op">(</span><span class="va">n38_chunks</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">demo_line_1</span> <span class="op">&lt;-</span> <span class="fu">em38_surveyline</span><span class="op">(</span><span class="va">n38_decoded</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">demo_line_2</span> <span class="op">&lt;-</span> <span class="fu">em38_surveyline</span><span class="op">(</span><span class="va">n38_decoded</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">3</span>, <span class="fl">0.2</span><span class="op">)</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'n38_demo'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n38_chunks</span>  <span class="op">&lt;-</span> <span class="fu"><a href="n38_chunk.html">n38_chunk</a></span><span class="op">(</span><span class="va">n38_demo</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n38_decoded</span> <span class="op">&lt;-</span> <span class="fu"><a href="n38_decode.html">n38_decode</a></span><span class="op">(</span><span class="va">n38_chunks</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">demo_line_1</span> <span class="op">&lt;-</span> <span class="fu">em38_surveyline</span><span class="op">(</span><span class="va">n38_decoded</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">demo_line_2</span> <span class="op">&lt;-</span> <span class="fu">em38_surveyline</span><span class="op">(</span><span class="va">n38_decoded</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">3</span>, <span class="fl">0.2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -147,7 +156,7 @@ aquisition frequency.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
