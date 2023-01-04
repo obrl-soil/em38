@@ -30,6 +30,7 @@ get_loc_data <- function(block = NULL) {
              'LONGITUDE'    = gga[['longitude']],
              'FIX'          = gga[['fix_quality']],
              'HDOP'         = gga[['HDOP']],
+             'ELEVATION_M'  = gga[['antenna_alt']] - gga[['geoid_sep']],
              # note: D-:
              'CHKSUM'       = block$CHKSUM[block$TYPE %in% c('GPGGA', 'GLGGA', 'GAGGA', 'GNGGA')],
              'timestamp_ms' = block$timestamp_ms[block$TYPE %in% c('GPGGA', 'GLGGA', 'GAGGA', 'GNGGA')])
@@ -219,13 +220,14 @@ em38_surveyline <- function(survey_line = NULL,
   # readings. Timestamps are proxying for distance fractions later
   loc_f$LEAD_LAT  <- dplyr::lead(loc_f$LATITUDE)
   loc_f$LEAD_LONG <- dplyr::lead(loc_f$LONGITUDE)
+  loc_f$LEAD_ELEVATION_M <- dplyr::lead(loc_f$ELEVATION_M)
   loc_f$TS_LAG    <- dplyr::lead(loc_f$timestamp_ms) - loc_f$timestamp_ms
 
   # remove readings outside first and last gps reading
   readings_in <- rdg[rdg$timestamp_ms > loc_f$timestamp_ms[1] &
                        rdg$timestamp_ms < loc_f$timestamp_ms[dim(loc_f)[1]], ]
 
-  # nb might be able to add them back in later (not yet impemented)
+  # nb might be able to add them back in later (not yet implemented)
   #readings_out <-
   #  readings[!(readings$timestamp_ms %in% readings_in$timestamp_ms), ]
 
@@ -244,9 +246,10 @@ em38_surveyline <- function(survey_line = NULL,
   # for interpolation
   all_data <-
     tidyr::fill(all_data,
-                .data$LATITUDE, .data$LONGITUDE,
-                .data$LEAD_LAT, .data$LEAD_LONG,
-                .data$TS_LAG,
+                "LATITUDE", "LONGITUDE",
+                "LEAD_LAT", "LEAD_LONG",
+                "ELEVATION_M", "LEAD_ELEVATION_M",
+                "TS_LAG",
                 .direction = 'down'
     )
   # group recombined data so that GPS reading(s) and following instrument
@@ -294,6 +297,13 @@ em38_surveyline <- function(survey_line = NULL,
   all_data$NEW_LAT <- round(all_data$NEW_LAT, 7)
   all_data$NEW_LONG <- round(all_data$NEW_LONG, 7)
 
+  all_data$NEW_ELEVATION_M <- all_data$ELEVATION_M  + (
+    all_data$TS_NOW / all_data$TS_LAG  *
+      (all_data$LEAD_ELEVATION_M  - all_data$ELEVATION_M)
+  )
+  # 0.001 = 1 mm
+  all_data$NEW_ELEVATION_M <- round(all_data$NEW_ELEVATION_M, 3)
+
   # convert timestamp to real time
   all_data$date_time <- conv_stamp(tim$computer_time, tim$timestamp_ms,
                                    all_data$timestamp_ms)
@@ -303,20 +313,24 @@ em38_surveyline <- function(survey_line = NULL,
     out_data <-
       all_data[, c('indicator', 'marker', 'mode', 'cond_05', 'cond_1', 'IP_05',
                    'IP_1', 'temp_05', 'temp_1', 'date_time',
-                   'NEW_LAT', 'NEW_LONG')]
+                   'NEW_LAT', 'NEW_LONG', 'NEW_ELEVATION_M')]
     out_data <- out_data[complete.cases(out_data), ]
+    out_data <- dplyr::rename(out_data, "ELEVATION_M" = "NEW_ELEVATION_M")
     out_data <- cbind('ID' = seq(nrow(out_data)), out_data)
   } else {
     out_data <-
       all_data[, c('indicator', 'marker', 'mode', 'cond_05', 'cond_1', 'IP_05',
                    'IP_1', 'temp_05', 'temp_1', 'comment', 'date_time',
-                   'NEW_LAT', 'NEW_LONG')]
+                   'NEW_LAT', 'NEW_LONG', 'NEW_ELEVATION_M')]
     out_data <- out_data[which(!is.na(out_data$indicator) |
                                  !is.na(out_data$comment)), ]
+    out_data <- dplyr::rename(out_data, "ELEVATION_M" = "NEW_ELEVATION_M")
     out_data <- cbind('ID' = seq(nrow(out_data)), out_data)
   }
 
   # spatialise output and return
+  # NB no Z coords, reported elevation still needs further adjustment
+  # to a local datum first. User gets to sort that one out
   sf::st_as_sf(out_data,
                coords = c('NEW_LONG', 'NEW_LAT'),
                crs = 4326) # may need to epoch at some point??

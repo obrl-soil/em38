@@ -1,3 +1,7 @@
+# Version 0.0.5
+
+  * package now reports orthometric height of each spatialised reading, calculated from GPS data, per user request (thanks dukarvat!). Note that elevation data may still need further correction to a local vertical datum before use.
+
 # Version 0.0.4
 
   * package can now handle GPS messages from GLONASS, GALILEO, and multi-GNSS

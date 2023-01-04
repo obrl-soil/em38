@@ -9,13 +9,14 @@ test_that(
     loc_1 <- n38_decoded$survey_line_1$location_data[1:7, ],
     expect_is(get_loc_data(loc_1), 'data.frame'),
     expect_equal(names(get_loc_data(loc_1)),
-                 c('LATITUDE', 'LONGITUDE', 'FIX', 'HDOP', 'CHKSUM',
-                   'timestamp_ms')),
+                 c('LATITUDE', 'LONGITUDE', 'FIX', 'HDOP', 'ELEVATION_M',
+                   'CHKSUM', 'timestamp_ms')),
     expect_equal(dim(get_loc_data(loc_1))[1], 1),
-    expect_equal(dim(get_loc_data(loc_1))[2], 6),
+    expect_equal(dim(get_loc_data(loc_1))[2], 7),
     expect_is(get_loc_data(loc_1)$LATITUDE, 'numeric'),
     expect_is(get_loc_data(loc_1)$LONGITUDE, 'numeric'),
     expect_is(get_loc_data(loc_1)$HDOP, 'numeric'),
+    expect_is(get_loc_data(loc_1)$ELEVATION_M, 'units'),
     expect_is(get_loc_data(loc_1)$CHKSUM, 'logical'),
     expect_is(get_loc_data(loc_1)$timestamp_ms, 'integer')
     )
@@ -30,7 +31,7 @@ test_that(
     sl1 <- em38_surveyline(n38_decoded[[2]], 3),
     expect_is(sl1, 'sf'),
     expect_equal(dim(sl1)[1], 3164L),
-    expect_equal(dim(sl1)[2], 12L),
+    expect_equal(dim(sl1)[2], 13L),
     expect_equal(sf::st_crs(sl1), sf::st_crs(4326)),
     expect_equal(sf::st_bbox(sl1)[[1]], 151.4341589),
     # no loc data
