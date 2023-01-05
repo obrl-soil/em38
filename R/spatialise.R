@@ -315,7 +315,7 @@ em38_surveyline <- function(survey_line = NULL,
                    'IP_1', 'temp_05', 'temp_1', 'date_time',
                    'NEW_LAT', 'NEW_LONG', 'NEW_ELEVATION_M')]
     out_data <- out_data[complete.cases(out_data), ]
-    out_data <- dplyr::rename(out_data, "ELEVATION_M" = "NEW_ELEVATION_M")
+    out_data <- dplyr::rename(out_data, "elevation_m" = "NEW_ELEVATION_M")
     out_data <- cbind('ID' = seq(nrow(out_data)), out_data)
   } else {
     out_data <-
@@ -324,7 +324,7 @@ em38_surveyline <- function(survey_line = NULL,
                    'NEW_LAT', 'NEW_LONG', 'NEW_ELEVATION_M')]
     out_data <- out_data[which(!is.na(out_data$indicator) |
                                  !is.na(out_data$comment)), ]
-    out_data <- dplyr::rename(out_data, "ELEVATION_M" = "NEW_ELEVATION_M")
+    out_data <- dplyr::rename(out_data, "elevation_m" = "NEW_ELEVATION_M")
     out_data <- cbind('ID' = seq(nrow(out_data)), out_data)
   }
 
