@@ -128,7 +128,8 @@ process_timer <- function(timer_rel = NULL) {
   names(out) <- c('computer_time', 'timestamp_ms')
   # may combine these later, not sure how best to handle yet
   out[['computer_time']] <- as.POSIXlt(rawToChar(timer_rel[2:13]), format = '%H:%M:%OS')
-  out[['timestamp_ms']]  <- as.integer(rawToChar(timer_rel[16:25]))
+  # sometimes timestamps are too big for integer format (2023-09-24)
+  out[['timestamp_ms']]  <- as.numeric(rawToChar(timer_rel[16:25]))
 
   return(out)
 
@@ -187,7 +188,7 @@ process_reading <- function(reading = NULL) {
   out[['temp_1']]  <- get_temp(as.integer(reading[13]) * 256 +
                                as.integer(reading[14]))
 
-  out[['timestamp_ms']]  <- as.integer(rawToChar(reading[16:25]))
+  out[['timestamp_ms']]  <- as.numeric(rawToChar(reading[16:25]))
 
   out
 }
@@ -213,7 +214,7 @@ process_comment <- function(comment = NULL) {
   names(out) <- c('comment', 'timestamp_ms')
 
   out[['comment']]       <- trimws(rawToChar(comment[2:12]))
-  out[['timestamp_ms']]  <- as.integer(rawToChar(comment[16:25]))
+  out[['timestamp_ms']]  <- as.numeric(rawToChar(comment[16:25]))
 
   out
 }
@@ -239,7 +240,7 @@ process_nstat <- function(nstat = NULL) {
   names(out) <- c('new_station', 'timestamp_ms')
 
   out[['new_station']]  <- as.integer(rawToChar(nstat[2:12]))
-  out[['timestamp_ms']] <- as.integer(rawToChar(nstat[16:25]))
+  out[['timestamp_ms']] <- as.numeric(rawToChar(nstat[16:25]))
 
   out
 }
