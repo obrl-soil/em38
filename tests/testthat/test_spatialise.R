@@ -18,7 +18,7 @@ test_that(
     expect_is(get_loc_data(loc_1)$HDOP, 'numeric'),
     expect_is(get_loc_data(loc_1)$ELEVATION_M, 'units'),
     expect_is(get_loc_data(loc_1)$CHKSUM, 'logical'),
-    expect_is(get_loc_data(loc_1)$timestamp_ms, 'integer')
+    expect_is(get_loc_data(loc_1)$timestamp_ms, 'numeric')
     )
 )
 
