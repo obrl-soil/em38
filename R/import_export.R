@@ -215,6 +215,9 @@ n38_decode <- function(chunks = NULL) {
         } else {
           loc  <- rawToChar(unlist(t(chunks[[i]][['location_data']])),
                             multiple = TRUE)
+          # drop nuls before we get too far
+          keep <- which(loc != '\xcc')
+          loc <- loc[keep]
           locs <- split(loc, cumsum(loc %in% c('@', '?')))
 
     # ditch the `#` newline signifiers and whitespace, convert to string
@@ -230,9 +233,16 @@ n38_decode <- function(chunks = NULL) {
     keep <- purrr::map_lgl(locs, function(x) grepl('^@.+\\!', x))
     locs <- locs[keep]
 
+    # 20230924: Geode-brand devices report battery information using a custom
+    # string of the form $PJSI,BAT,a,b,c,d,*CC<CR><LF>
+    # see https://junipersys.com/support/article/14754
+    # these can also be dropped
+    drop <- purrr::map_lgl(locs, function(x) grepl('^@\\$PJSI', x))
+    locs <- locs[!drop]
+
     # split up string into main components (decode happens later)
     # note that only TYPE = 'G*GGA' is used in final output
-    bang <- as.integer(gregexpr('!', locs))
+    bang <- as.numeric(gregexpr('!', locs))
     type <- substr(locs, 3, 7)
     out  <- list('TYPE'         = type,
                  'MESSAGE'      = substr(locs, 9, bang - 1),
@@ -245,7 +255,7 @@ n38_decode <- function(chunks = NULL) {
                                          nmea_check(substr(locs, 2, bang - 1)),
                                          NA),
                  'timestamp_ms' =
-                   as.integer(substr(locs, bang + 1, nchar(locs))))
+                   as.numeric(substr(locs, bang + 1, nchar(locs))))
     as.data.frame(out, col.names = names(out), stringsAsFactors = FALSE)
     }
 
@@ -334,8 +344,8 @@ n38_to_m38 <- function(n38_decoded = NULL) {
       } else {
         'M'
       }
-    datetime <- as.character(n38_decoded[[i]]$sl_header$timestamp,
-                             format = '%d/%m/%Y %H:%M:%S')
+    datetime <- format(n38_decoded[[i]]$sl_header$timestamp,
+                       format = '%d/%m/%Y %H:%M:%S')
 
     sl_header <- paste0('L', paste0(rep.int(' ', times = 3), collapse = ''),
            n38_decoded[[i]]$sl_header$line_name, ' ',
@@ -394,7 +404,7 @@ n38_to_m38 <- function(n38_decoded = NULL) {
              # timestamp - should be ok but doesn't quite match offical version -
              # some kind of rounding at 3rd dec pl, difference is never more than a couple of ms
              # main thing is that order of records is not affected so all good
-             as.character(conv_stamp(n38_decoded[[i]]$timer_data$computer_time,
+             format(conv_stamp(n38_decoded[[i]]$timer_data$computer_time,
                                      n38_decoded[[i]]$timer_data$timestamp_ms,
                                      row$timestamp_ms),
                           format = '%H:%M:%OS') # note options set above
@@ -443,7 +453,7 @@ n38_to_m38 <- function(n38_decoded = NULL) {
   locations <- apply(loc_subset, MARGIN = 1, FUN = function(row) {
       sentence <- paste0('$', row['TYPE'], ',', row['MESSAGE'], ',')
       timestamp <-
-        as.character(n38_decoded[[i]]$timer_data$computer_time +
+        format(n38_decoded[[i]]$timer_data$computer_time +
                        (as.numeric(row['timestamp_ms']) -
                           n38_decoded[[i]]$timer_data$timestamp_ms) / 1000,
                      format = '%H:%M:%OS')
