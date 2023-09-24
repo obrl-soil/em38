@@ -1,3 +1,9 @@
+# Version 0.0.6
+
+  * some under-the-hood corrections to work with recent R changes
+  * some improvements in handling data from certain GNSS receivers, many thanks to the person who supplied a test dataset :pray:
+  * updated vignette, various methods of spatially interpolating the raw data are now demonstrated
+
 # Version 0.0.5
 
   * package now reports orthometric height of each spatialised reading, calculated from GPS data, per user request (thanks dukarvat!). Note that elevation data may still need further correction to a local vertical datum before use.
